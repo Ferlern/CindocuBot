@@ -32,7 +32,7 @@ class RestartCog(commands.Cog):
             except ExtensionNotLoaded:
                 pass
             except Exception as e:
-                logger.exception('Failed to load extension')
+                logger.exception('Failed to unload extension')
                 exception = False
             try:
                 self.bot.load_extension(extension)
@@ -47,7 +47,7 @@ class RestartCog(commands.Cog):
             close_connection()
             create_database("./core_elements/data_controller/data.db")
         except Exception as e:
-            logger.exception('Failed to load extension')
+            logger.exception('Failed to load drop db')
             await ctx.tick(False)
         else:
             await ctx.tick(True)
@@ -59,7 +59,7 @@ class RestartCog(commands.Cog):
             configurator.dump()
             self.bot.reload_config()
         except Exception as e:
-            logger.exception('Failed to load extension')
+            logger.exception('Failed to reload config file')
             await ctx.tick(False)
         else:
             await ctx.tick(True)

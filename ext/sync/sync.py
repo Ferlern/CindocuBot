@@ -65,7 +65,7 @@ class Sync(commands.Cog):
         try:
             await self.sync_user(ctx.author)
         except Exception as e:
-            logger.exception('Failed to load extension')
+            logger.exception('Failed to sync user')
             await ctx.tick(False)
         else:
             await ctx.tick(True)

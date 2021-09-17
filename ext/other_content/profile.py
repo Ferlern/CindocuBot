@@ -53,16 +53,25 @@ class profile(commands.Cog):
 
         embed = DefaultEmbed(
             title=f"Profile {member.name}",
-            description=f"{bio}\n\n```diff\n{likes} reputation```")
+            description=f"{bio}")
         
-        embed.add_field(name=f"{self.emoji['balance']} Balance", value=f"**{balance}** {coin}")
+        embed.add_field(
+            name=f"{self.emoji['reputation']} reputation",
+            value=f"```diff\n{likes}```",
+            inline=False
+        )
+        
+        embed.add_field(
+            name=f"{self.emoji['balance']} Balance",
+            value=f"**{balance}**"
+        )
         
         embed.add_field(
             name=f"{self.emoji['level']} Level",
             value=f'**{level}** ({gained_after_lvl_up}/{left_before_lvl_up})')
         
-        embed.add_field(name=f"{self.emoji['voice']} Voice",
-                        value=f'{display_time(int(voice_activity))}')
+        embed.add_field(name=f"{self.emoji['voice']} Voice time",
+                        value=f'**{display_time(int(voice_activity))}**')
         
         if soul_mate:
             embed.add_field(

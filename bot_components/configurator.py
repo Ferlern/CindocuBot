@@ -72,18 +72,3 @@ class Configurator:
 
 configurator = Configurator()
 configurator.load()
-
-if __name__ == '__main__':
-    configurator.config["warns_system"] = [{
-        "text":
-        "This is your first warning. Remember that with every warning, the punishment increases",
-        "mute_time": 3600
-    }, {
-        "text":
-        "This is your second warning. Remember that along with the third warning you will be banned",
-        "mute_time": 21600
-    }, {
-        "text": "This is your last warning",
-        "ban": True
-    }]
-    configurator.reload()

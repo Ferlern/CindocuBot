@@ -118,7 +118,3 @@ def create_database(db_filename):
 
     conn.commit()
     conn.close()
-
-
-if __name__ == "__main__":
-    create_database("./core_elements/data_controller/data.db")

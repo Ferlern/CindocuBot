@@ -109,10 +109,3 @@ class Suggestions(BaseModel):
 
 def close_connection():
     conn.close()
-
-
-if __name__ == "__main__":
-    saved_roles = User_roles.select(User_roles.role_id).where(
-        User_roles.user == 511090102270475).dicts().execute()
-    saved_roles_ids = [role['role_id'] for role in saved_roles]
-    print(saved_roles_ids)

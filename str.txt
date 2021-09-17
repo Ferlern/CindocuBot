@@ -1,0 +1,44 @@
+main.py
+utils.py
+core.py
+
+
+bot_components
+    data_controller
+        db_controller.py
+        db_clear.py
+        models.py
+
+    config
+        configurator.py
+        config.json
+
+
+ext
+    control
+        cog.py
+
+    logger
+        cog.py
+
+    moderation
+        cog.py
+
+    economy
+        cog.py
+        utils.py
+
+        cog_elements
+            shop.py
+            business.py
+
+            casino
+                dice.py
+
+    utils
+        converters.py
+        checks.py
+
+
+core_elements
+    user.py

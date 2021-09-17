@@ -20,6 +20,7 @@ next_bitrate = {'64': 96, '96': 128, '128': 192, '192': 256, '256': 384}
 class economyCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.economy_emoji = self.bot.config['additional_emoji']['economy']
 
     def build_role_shop_embed(self, items, page):
         coin = self.bot.config["coin"]
@@ -41,7 +42,7 @@ class economyCog(commands.Cog):
         else:
             buy_select = []
             description = 'There are no roles in the shop.'
-        embed = DefaultEmbed(title='Roles shop', description=description)
+        embed = DefaultEmbed(title=f'{self.economy_emoji["roles_shop"]} Roles shop', description=description)
         return embed, buy_select
 
     def build_voice_shop_embed(self, values: dict):
@@ -50,7 +51,7 @@ class economyCog(commands.Cog):
         member = Member_data_controller(id=values['author'])
         current_voice = member.user_info.user_personal_voice
         embed = DefaultEmbed(
-            title='Private voice shop',
+            title=f'{self.economy_emoji["voice_shop"]} Private voice shop',
             description=
             'Here you can buy a personal voice channel on the server and "upgrade" it'
         )
@@ -280,7 +281,7 @@ class economyCog(commands.Cog):
         description = f"{daily} {coin} have been successfully transferred to your balance. Now you have {member.balance} {coin}"
         description += f"\n\nYou can get the bonus again <t:{int(time.time() + TimeConstans.day)}:R>"
 
-        embed = DefaultEmbed(title="Daily bonus received!",
+        embed = DefaultEmbed(title=f"{self.economy_emoji['daily_recieved']} Daily bonus received!",
                              description=description)
         embed.set_thumbnail(url=ctx.author.avatar_url)
 
@@ -290,7 +291,7 @@ class economyCog(commands.Cog):
     async def daily_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             embed = DefaultEmbed(
-                title="Bonus not available yet",
+                title=f"{self.economy_emoji['daily_cooldown']} Bonus not available yet",
                 description=
                 f"Your today's bonus has already been received.\n\nYou can get the bonus again <t:{int(time.time() + error.retry_after)}:R>"
             )

@@ -14,6 +14,8 @@ loger = logging.getLogger('Arctic')
 class profile(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.emoji = self.bot.config['additional_emoji']['profile']
+        self.hearth_emoji = self.bot.config['additional_emoji']['other']['heart']
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
@@ -29,7 +31,6 @@ class profile(commands.Cog):
     async def profile(self,
                       ctx,
                       member: typing.Optional[discord.Member] = None):
-        1 / 0
         await ctx.message.delete()
         if not member:
             member = ctx.author
@@ -45,7 +46,6 @@ class profile(commands.Cog):
         warn = member_info.user_info.warn
         bio = member_info.user_info.biography
         likes = member_info.likes
-        heart = self.bot.config['additional_emoji'].get('heart', '')
         
         if likes > 0:
             likes = f'+{likes}'
@@ -55,25 +55,25 @@ class profile(commands.Cog):
             title=f"Profile {member.name}",
             description=f"{bio}\n\n```diff\n{likes} reputation```")
         
-        embed.add_field(name='Balance', value=f'**{balance}** {coin}')
+        embed.add_field(name=f"{self.emoji['balance']} Balance", value=f"**{balance}** {coin}")
         
         embed.add_field(
-            name='Level',
+            name=f"{self.emoji['level']} Level",
             value=f'**{level}** ({gained_after_lvl_up}/{left_before_lvl_up})')
         
-        embed.add_field(name='Voice',
+        embed.add_field(name=f"{self.emoji['voice']} Voice",
                         value=f'{display_time(int(voice_activity))}')
         
         if soul_mate:
             embed.add_field(
-                name='Soul mate',
-                value=f'<@{soul_mate}> since <t:{married_time}:F> {heart}',
+                name=f"{self.emoji['soul_mate']} Soul mate",
+                value=f'<@{soul_mate}> since <t:{married_time}:F> {self.hearth_emoji}',
                 inline=False)
             
         value = f'joined at <t:{int(member.joined_at.timestamp())}:F>'
         if warn:
             value += f'\nwarned **{warn}** times'
-        embed.add_field(name='Other', value=value, inline=False)
+        embed.add_field(name=f"{self.emoji['other']} Other", value=value, inline=False)
 
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)

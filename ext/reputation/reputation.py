@@ -16,6 +16,7 @@ loger = logging.getLogger('Arctic')
 class reputation(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.emoji = self.bot.config["additional_emoji"]["reputation"]
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
@@ -48,21 +49,21 @@ class reputation(commands.Cog):
             if type == 1:
                 member.like(to_member)
                 embed = discord.Embed(
-                    title="Reputation increased",
+                    title=f"{self.emoji['increased']} Reputation increased",
                     description=
                     f"{ctx.author.mention} increased {to_member.mention}'s reputation ",
                     color=discord.Colour.green())
             elif type == -1:
                 member.dislike(to_member)
                 embed = discord.Embed(
-                    title="Reputation decreased",
+                    title=f"{self.emoji['decreased']} Reputation decreased",
                     description=
                     f"{ctx.author.mention} decreased {to_member.mention}'s reputation ",
                     color=discord.Colour.red())
             elif type == 0:
                 member.reset_like(to_member)
                 embed = DefaultEmbed(
-                    title="Reset", description='Reputation successfully reset')
+                    title=f"{self.emoji['reset']} Reset", description='Reputation successfully reset')
             embed.set_thumbnail(url=ctx.author.avatar_url)
         except AlreadyLiked:
             embed = DefaultEmbed(description="You can't do it twice")

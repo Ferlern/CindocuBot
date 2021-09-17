@@ -20,6 +20,7 @@ loger = logging.getLogger('Arctic')
 class relationship(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.emoji = self.bot.config['additional_emoji']['relationship']
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
@@ -35,7 +36,7 @@ class relationship(commands.Cog):
             member.divorce(confirmed=True)
             member.save()
             embed = Embed(
-                title="Divorce",
+                title=f"{self.emoji['divorce']} Divorce",
                 description=
                 f"couple <@{author_id}> & <@{target_id}> decides to end their relationship.",
                 colour=discord.Colour.red())
@@ -81,7 +82,7 @@ class relationship(commands.Cog):
             )
         else:
             embed = Embed(
-                title="Marriage proposal",
+                title=f"{self.emoji['sent']} Marriage proposal",
                 description=
                 f"{target.mention}, {ctx.author.mention} offer to get married, do you agree?",
                 colour=0xffc0cb)
@@ -111,7 +112,7 @@ class relationship(commands.Cog):
             pair_id = member.soul_mate
             member.divorce()
             to_send['embed'] = DefaultEmbed(
-                title='Divorce?..',
+                title=f"{self.emoji['divorce']} Divorce?..",
                 description=
                 f"Are you sure you want to end your relationship with <@{pair_id}>?"
             )
@@ -140,9 +141,9 @@ class relationship(commands.Cog):
             await self.divorce_handler(interaction, author_id)
             return
 
-        # if target_id != interaction.author.id:
-        #     await interaction.respond(content='This offer is not for you.')
-        #     return
+        if target_id != interaction.author.id:
+            await interaction.respond(content='This offer is not for you.')
+            return
 
         if component.label == 'Accept':
             member = Member_data_controller(id=author_id)
@@ -160,13 +161,13 @@ class relationship(commands.Cog):
                 return
             member.save()
             embed = Embed(
-                title="Offer accepted",
+                title=f"{self.emoji['accepted']} Offer accepted",
                 description=
                 f"There is a new couple on this server\n<@{author_id}> & <@{target_id}>",
                 colour=0x9cee90)
         elif component.label == 'Refuse':
             embed = Embed(
-                title="Offer refused",
+                title=f"{self.emoji['refused']} Offer refused",
                 description=
                 f"<@{target_id}> refuse the offer. Perhaps it's time to realize your true feelings.",
                 colour=discord.Colour.red())

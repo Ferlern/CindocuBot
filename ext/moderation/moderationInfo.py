@@ -22,6 +22,7 @@ INT_PATTERN = r"\d+"
 class ModerationInfo(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.emoji = self.bot.config["additional_emoji"]["other"]
 
     async def cog_check(self, ctx):
         if not ctx.guild:
@@ -68,7 +69,7 @@ class ModerationInfo(commands.Cog):
         else:
             table = 'No logs found, try changing filters'
 
-        embed = DefaultEmbed(title="All found moderation logs",
+        embed = DefaultEmbed(title=f"{self.emoji['all_mod_log']} All found moderation logs",
                              description=f'```\n{str(table)}```')
         if filters:
             embed.add_field(name='Sorted by:',

@@ -1,5 +1,6 @@
 import json
 from typing import TypedDict
+from .bot_emoji import Additional_emoji
 
 
 class Warn(TypedDict):
@@ -27,10 +28,6 @@ class Experience_system(TypedDict):
     experience_per_message: list[int]
     roles: dict[str, int]
     coins_per_level_up: int
-
-
-class Additional_emoji(TypedDict):
-    heart: str
 
 
 class Config(TypedDict):

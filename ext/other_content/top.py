@@ -18,6 +18,7 @@ loger = logging.getLogger('Arctic')
 class Top(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.emoji = self.bot.config["additional_emoji"]["top"]
 
         config = self.bot.config
         add_emoji = config["additional_emoji"]
@@ -29,12 +30,19 @@ class Top(commands.Cog):
             "experience": "level",
             "voice_activity": "voice activity"
         }
-        self.emoji_dict = {
+        self.end_emoji_dict = {
             "balance": config["coin"],
             "likes": add_emoji.get('heart', ''),
             "married_time": "",
             "experience": "",
             "voice_activity": ""
+        }
+        self.start_emoji_dict = {
+            "balance": self.emoji["balance"],
+            "likes": self.emoji["reputation"],
+            "married_time": self.emoji["soul_mate"],
+            "experience": self.emoji["level"],
+            "voice_activity": self.emoji["voice"]
         }
 
     async def cog_command_error(self, ctx, error):
@@ -45,20 +53,20 @@ class Top(commands.Cog):
 
     def embed_builder(self, selected, items):
         rename_dict = self.rename_dict
-        emoji_dict = self.emoji_dict
+        end_emoji_dict = self.end_emoji_dict
 
         if selected == 'married_time':
             embed = DefaultEmbed(
-                title=f"Top by {rename_dict[selected]}",
+                title=f"{self.start_emoji_dict[selected]} Top by {rename_dict[selected]}",
                 description=("\n".join([
-                    f"{index}. <@{item['user']}> & <@{item['soul_mate']}> — from <t:{item[selected]}:f> {emoji_dict[selected]}"
+                    f"{index}. <@{item['user']}> & <@{item['soul_mate']}> — from <t:{item[selected]}:f> {end_emoji_dict[selected]}"
                     for index, item in enumerate(items, 1)
                 ])) if items else 'Empty :(')
         else:
             embed = DefaultEmbed(
-                title=f"Top by {rename_dict[selected]}",
+                title=f"{self.start_emoji_dict[selected]} Top by {rename_dict[selected]}",
                 description=("\n".join([
-                    f"{index}. <@{item['id']}> — {item[selected]} {emoji_dict[selected]}"
+                    f"{index}. <@{item['id']}> — {item[selected]} {end_emoji_dict[selected]}"
                     for index, item in enumerate(items, 1)
                 ])) if items else 'Empty :(')
         return embed

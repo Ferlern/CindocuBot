@@ -27,6 +27,7 @@ from discord_components import Button, ButtonStyle
 class suggestions(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
+        self.emoji = self.bot.config['additional_emoji']['suggestion']
 
     async def suggestions_embed_builder(self, suggestion: dict):
         author = await self.bot.get_or_fetch_member(suggestion['author'])
@@ -43,7 +44,7 @@ class suggestions(commands.Cog):
         return embed
 
     def suggestions_control_embed_builder(self, actual_items: dict):
-        embed = DefaultEmbed(title='List of suggestions')
+        embed = DefaultEmbed(title=f"{self.emoji['list']} List of suggestions")
         if not actual_items:
             embed.description = 'There are currently no suggestions'
         else:
@@ -204,7 +205,7 @@ class suggestions(commands.Cog):
             raise BadArgument('Suggestion must be less than 4000 characters')
 
         await ctx.send(embed=DefaultEmbed(
-            description='Your suggestion has been sent successfully'))
+            description=f"{self.emoji['send']} Your suggestion has been sent successfully"))
 
         embed = DefaultEmbed(description=suggestion)
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)

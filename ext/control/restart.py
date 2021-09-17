@@ -47,7 +47,7 @@ class RestartCog(commands.Cog):
             close_connection()
             create_database("./core_elements/data_controller/data.db")
         except Exception as e:
-            logger.exception('Failed to load drop db')
+            logger.exception('Failed to drop db')
             await ctx.tick(False)
         else:
             await ctx.tick(True)

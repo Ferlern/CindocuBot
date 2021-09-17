@@ -1,6 +1,8 @@
+from functools import update_wrapper
 import re
 
 import discord
+from peewee import DoesNotExist, Query
 from core import Logs
 from core_elements.data_controller.models import Mod_log
 from discord.ext import commands
@@ -11,74 +13,10 @@ from utils.utils import DefaultEmbed, DiscordTable, TimeConstans, display_time
 
 from ..utils.checks import is_mod
 from ..utils.utils import wait_for_message
+from ..utils import Interaction_inspect
+from ..utils.build import page_implementation, update_message, build_page_components
 
 INT_PATTERN = r"\d+"
-
-
-class InteractionInspector:
-    @classmethod
-    def get_button_click_result(cls, interaction):
-        component = interaction.component
-        if isinstance(component, Button):
-            return component.label if component.label else component.emoji
-
-    @classmethod
-    def get_filters(cls, interaction):
-        message = interaction.message
-        components = message.components
-
-        button_with_moderator = components[3].components[1]
-        select_with_period = components[1].components[0]
-        select_with_action = components[2].components[0]
-
-        filters = {}
-        try:
-            moderator = int(
-                re.findall(INT_PATTERN, button_with_moderator.id)[0])
-            filters['moderator'] = moderator
-        except IndexError:
-            pass
-        try:
-            period = int(re.findall(INT_PATTERN, select_with_period.id)[0])
-            filters['period'] = int(period)
-        except IndexError:
-            pass
-        try:
-            action_id: str = select_with_action.id
-            action = action_id.removeprefix("moderationInfoSelectAction")
-            if action != "None":
-                filters['action'] = action
-        except IndexError:
-            pass
-
-        try:
-            value = interaction.values[0]
-            try:
-                int(value)
-                filters["period"] = int(value)
-                if int(value) == 0:
-                    del filters["period"]
-            except Exception:
-                filters["action"] = value
-                if value == "any":
-                    del filters["action"]
-        except IndexError:
-            pass
-
-        return filters
-
-    @classmethod
-    def get_page(cls, interaction):
-        message = interaction.message
-        components = message.components
-
-        button_with_page = components[0].components[2]
-        current_page = int(re.findall(INT_PATTERN,
-                                      button_with_page.label)[0]) - 1
-        last_page = int(re.findall(INT_PATTERN, button_with_page.label)[1]) - 1
-        if current_page > last_page:
-            current_page = last_page
-        return current_page, last_page
 
 
 class ModerationInfo(commands.Cog):
@@ -97,78 +35,12 @@ class ModerationInfo(commands.Cog):
                                   color=0x93a5cd)
             await ctx.send(embed=embed)
 
-    async def get_actual_info(self, ctx, button_result=None):
-        filters = InteractionInspector.get_filters(ctx)
-        page, last_page = InteractionInspector.get_page(ctx)
-
-        if str(button_result) in ["⏮️", "◀️", "▶️", "⏭️"]:
-            if str(button_result) == "⏮️":
-                page = 0
-            elif str(button_result) == "◀️":
-                page -= 1
-                if page < 0:
-                    page = last_page
-            elif str(button_result) == "▶️":
-                page += 1
-                if page > last_page:
-                    page = 0
-            elif str(button_result) == "⏭️":
-                page = last_page
-            try:
-                filters['moderator'] = await self.bot.get_or_fetch_member(
-                    filters['moderator'])
-            except KeyError:
-                pass
-
-        else:
-            if isinstance(button_result, discord.User):
-                filters['moderator'] = button_result
-            elif isinstance(button_result, str):
-                try:
-                    del filters['moderator']
-                except KeyError:
-                    pass
-            else:
-                try:
-                    filters['moderator'] = await self.bot.get_or_fetch_member(
-                        filters['moderator'])
-                except KeyError:
-                    pass
-
-        return filters, page
-
-    async def build_actual_components(self, page, **filters):
-        def get_last_page(logs):
-            page = (len(logs) - 1) // 10
-            return page if page >= 0 else 0
-
-        def cut_logs(logs, page):
-            if not len(logs):
-                return
-
-            expected_last_page = get_last_page(logs)
-            cut = logs[page * 10:(page + 1) * 10]
-
-            if not cut:
-                cut = cut_logs(logs, expected_last_page)
-
-            return cut
-
-        logs = Logs.get_mod_logs(**filters)
-
-        last_page = get_last_page(logs)
-        if page > last_page:
-            page = last_page
-
-        actual_log = cut_logs(logs, page)
-        if not actual_log:
-            actual_log = []
-
+    async def embed_builder(self, logs, filters):
         columns_names = ['#', 'moderator', 'action', 'target']
         columns_max_lengts = [6, 12, 6, 12]
         columns_values = []
 
-        for log in actual_log:
+        for log in logs:
             id = str(log['id'])
             moderator = await self.bot.get_or_fetch_member(log['moderator'])
             moderator = moderator.name
@@ -204,7 +76,10 @@ class ModerationInfo(commands.Cog):
                                 f"`{key}`: {value}"
                                 for key, value in filters.items()
                             ]))
+            
+        return embed
 
+    def components_builder(self, filters):
         period = filters.get('period')
         action = filters.get('action')
         moderator = filters.get('moderator')
@@ -220,15 +95,6 @@ class ModerationInfo(commands.Cog):
         ]
 
         components = [
-            [
-                Button(emoji=str("⏮️"), id='moderationInfotrack_previous'),
-                Button(emoji=str("◀️"), id='moderationInfoarrow_backward'),
-                Button(label=f"({page+1}/{last_page+1})",
-                       disabled=True,
-                       id='moderationInfo'),
-                Button(emoji=str("▶️"), id='moderationInfoarrow_forward'),
-                Button(emoji=str("⏭️"), id='moderationInfotrack_next'),
-            ],
             Select(id=f'moderationInfoSelectPeriod{str(period)}',
                    placeholder="select time period for search",
                    options=[
@@ -267,52 +133,93 @@ class ModerationInfo(commands.Cog):
             ]
         ]
 
-        return embed, components
+        return components
 
+    async def moderation_logs_builder(self, values: dict):
+        if selected := values.get('selected'):
+            try:
+                values["period"] = int(selected)
+                if int(selected) == 0:
+                    del values["period"]
+            except Exception:
+                values["action"] = selected
+                if selected == "any":
+                    del values["action"]
+                    
+        if moderator := values.get('moderator'):
+            moderator = await self.bot.get_or_fetch_member(moderator)
+            if moderator:
+                values['moderator'] = moderator
+            else:
+                del values['moderator']
+        
+        filters_type = ['period', 'action', 'moderator']
+        
+        filters = {}
+        for filter_type in filters_type:
+            filter_value = values.get(filter_type)
+            if filter_value: filters[filter_type] = filter_value
+        
+        logs_query: Query = Logs.get_mod_logs(**filters)
+        
+        page, last_page, logs = page_implementation(values, logs_query)
+        
+        page_components = build_page_components(page, last_page, 'moderationInfo')
+        embed = await self.embed_builder(logs, filters)
+        components = self.components_builder(filters)
+        
+        if page_components:
+            components.insert(0, page_components)
+            
+        if values.get('moderator'):
+            values["moderator"] = values["moderator"].id
+        
+        return embed, components, values
+
+    async def select_moderator(self, interaction):
+        await interaction.respond(content='Write id / name / mention for search')
+        moderator = await wait_for_message(self.bot, interaction)
+        
+        values = Interaction_inspect.get_values(interaction)
+        
+        values['moderator'] = moderator
+            
+        embed, components, values = await self.moderation_logs_builder(values)
+        components = Interaction_inspect.inject(components, values)
+        await interaction.message.edit(embed=embed, components=components)
+    
     @commands.Cog.listener()
-    async def on_button_click(self, ctx: Interaction):
-        component = ctx.component
-        id: str = component.id
-        if not id.startswith("moderationInfo"):
-            return
+    async def on_button_click(self, interaction: Interaction):
+        if not Interaction_inspect.check_prefix(interaction, 'moderationInfo'): return
 
+        component = interaction.component
         if component.label == 'moderator':
-            await ctx.respond(content='Write id / name / mention for search')
-            moderator = await wait_for_message(self.bot, ctx)
-            new_moderator = await self.bot.get_or_fetch_member(moderator)
-            button_result = new_moderator if new_moderator else moderator
+            await self.select_moderator(interaction)
+            return
+            
         else:
-            button_result = InteractionInspector.get_button_click_result(ctx)
-            await ctx.respond(type=7)
-
-        filters, page = await self.get_actual_info(ctx, button_result)
-
-        embed, components = await self.build_actual_components(page, **filters)
-
-        await ctx.message.edit(embed=embed, components=components)
+            await update_message(self.bot, self.moderation_logs_builder, interaction)
 
     @commands.Cog.listener()
-    async def on_select_option(self, ctx: Interaction):
-        component = ctx.component
-        id: str = component.id
-        if not id.startswith("moderationInfo"):
-            return
-
-        filters, page = await self.get_actual_info(ctx)
-
-        embed, components = await self.build_actual_components(page, **filters)
-
-        await ctx.respond(type=7, embed=embed, components=components)
+    async def on_select_option(self, interaction: Interaction):
+        if not Interaction_inspect.check_prefix(interaction, 'moderationInfo'): return
+        await update_message(self.bot, self.moderation_logs_builder, interaction)
 
     @commands.command(aliases=['ml'])
     async def moderation_logs(self, ctx, log: int = None):
         await ctx.message.delete()
         if not log:
-            embed, components = await self.build_actual_components(0)
+            values = {'page': 0}
+            embed, components, values = await self.moderation_logs_builder(values)
+            components = Interaction_inspect.inject(components, values)
             await ctx.send(embed=embed, components=components)
             return
 
         log: Mod_log = Logs.get_mod_log(id=int(log))
+        if not log:
+            await ctx.send(embed = DefaultEmbed(description = 'Log not found'))
+            return    
+        
         moderator = await self.bot.get_or_fetch_member(log.moderator)
 
         embed = DefaultEmbed(

@@ -73,14 +73,14 @@ class Logs:
         if expression_list:
             anded_expr = reduce(operator.and_, expression_list)
             return Mod_log.select().where(anded_expr).order_by(
-                Mod_log.id.desc()).dicts().execute()
+                Mod_log.id.desc())
         else:
             return Mod_log.select().order_by(
-                Mod_log.id.desc()).dicts().execute()
+                Mod_log.id.desc())
 
     @classmethod
     def get_mod_log(cls, id: int):
-        return Mod_log.get(id=id)
+        return Mod_log.get_or_none(id=id)
 
     @classmethod
     def get_mod_log_targets(cls, id: int):

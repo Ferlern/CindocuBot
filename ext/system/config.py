@@ -62,8 +62,10 @@ class Config(commands.Cog):
         selected = values['selected']
 
         await interaction.respond(content='Write new value')
-        new_value = await wait_message_from_author(self.bot, interaction,
+        new_value: str = await wait_message_from_author(self.bot, interaction,
                                                    values['author'])
+        
+        new_value = new_value.strip('```\n')
 
         expected = type(self.data[selected])
         try:

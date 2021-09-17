@@ -42,9 +42,7 @@ class SEBot(commands.AutoShardedBot):
                 self.load_extension(extension)
                 logger.info(f'extension {extension} installed successfully')
             except Exception as e:
-                print(f'Failed to load extension {extension}.',
-                      file=sys.stderr)
-                traceback.print_exc()
+                logger.exception('Failed to load extension')
 
     async def on_ready(self):
         DiscordComponents(self)
@@ -53,7 +51,7 @@ class SEBot(commands.AutoShardedBot):
         else:
             return
 
-        print(f'Ready: {self.user} (ID: {self.user.id})')
+        logger.info(f'Ready: {self.user} (ID: {self.user.id})')
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.NoPrivateMessage):
@@ -66,10 +64,10 @@ class SEBot(commands.AutoShardedBot):
             original = error.original
 
             if not isinstance(original, discord.HTTPException):
-                print(f'В {ctx.command.qualified_name}:', file=sys.stderr)
-                traceback.print_tb(original.__traceback__)
-                print(f'{original.__class__.__name__}: {original}',
-                      file=sys.stderr)
+                stackSummary = traceback.extract_tb(original.__traceback__, limit=20)
+                traceback_list = traceback.format_list(stackSummary)
+                
+                logger.error(f'In command {ctx.command.qualified_name}:\n' + f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}")
         elif isinstance(error, commands.ArgumentParsingError):
             await ctx.send(error)
 

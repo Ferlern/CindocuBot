@@ -1,3 +1,4 @@
+import logging
 import sys
 import traceback
 
@@ -5,9 +6,12 @@ from bot_components.configurator import configurator
 from core import create_database
 from core_elements.data_controller.models import close_connection
 from discord.ext import commands
+from discord.ext.commands.errors import ExtensionNotLoaded
 from main import SEBot
 
 from ..utils.checks import is_owner
+
+logger = logging.getLogger('Arctic')
 
 
 class RestartCog(commands.Cog):
@@ -25,17 +29,15 @@ class RestartCog(commands.Cog):
                 continue
             try:
                 self.bot.unload_extension(extension)
+            except ExtensionNotLoaded:
+                pass
             except Exception as e:
-                print(f'Failed to unload extension {extension}.',
-                      file=sys.stderr)
-                traceback.print_exc()
+                logger.exception('Failed to load extension')
                 exception = False
             try:
                 self.bot.load_extension(extension)
             except Exception as e:
-                print(f'Failed to load extension {extension}.',
-                      file=sys.stderr)
-                traceback.print_exc()
+                logger.exception('Failed to load extension')
                 exception = False
         await ctx.tick(exception)
 
@@ -45,8 +47,7 @@ class RestartCog(commands.Cog):
             close_connection()
             create_database("./core_elements/data_controller/data.db")
         except Exception as e:
-            print(f'Failed to clear data.', file=sys.stderr)
-            traceback.print_exc()
+            logger.exception('Failed to load extension')
             await ctx.tick(False)
         else:
             await ctx.tick(True)
@@ -58,8 +59,7 @@ class RestartCog(commands.Cog):
             configurator.dump()
             self.bot.reload_config()
         except Exception as e:
-            print(f'Failed to reload config.', file=sys.stderr)
-            traceback.print_exc()
+            logger.exception('Failed to load extension')
             await ctx.tick(False)
         else:
             await ctx.tick(True)

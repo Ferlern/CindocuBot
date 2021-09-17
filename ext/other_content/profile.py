@@ -29,6 +29,7 @@ class profile(commands.Cog):
     async def profile(self,
                       ctx,
                       member: typing.Optional[discord.Member] = None):
+        1 / 0
         await ctx.message.delete()
         if not member:
             member = ctx.author

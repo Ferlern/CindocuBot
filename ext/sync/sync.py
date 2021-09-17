@@ -65,8 +65,7 @@ class Sync(commands.Cog):
         try:
             await self.sync_user(ctx.author)
         except Exception as e:
-            print(f'Failed to sync user.', file=sys.stderr)
-            traceback.print_exc()
+            logger.exception('Failed to load extension')
             await ctx.tick(False)
         else:
             await ctx.tick(True)

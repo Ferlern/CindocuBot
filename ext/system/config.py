@@ -49,7 +49,6 @@ class Config(commands.Cog):
             SelectOption(label=key, value=key, default=selected == key)
             for key in self.data.keys()
         ])
-        print(len(options), options)
 
         components = [Select(id='config_select', options=options)]
         if selected:
@@ -69,7 +68,6 @@ class Config(commands.Cog):
         expected = type(self.data[selected])
         try:
             new_value = json.loads(new_value)
-            print(type(new_value), '?', expected)
             assert type(new_value) == expected, 'type should not change'
         except Exception as e:
             await interaction.channel.send(embed=DefaultEmbed(

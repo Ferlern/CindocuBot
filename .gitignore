@@ -4,3 +4,6 @@ __pycache__/
 # data & config
 data.db
 config.json
+
+# vscode
+.vscode/

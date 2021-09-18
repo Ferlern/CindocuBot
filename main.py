@@ -9,7 +9,8 @@ from discord_components import DiscordComponents
 
 from bot_components.configurator import configurator
 from utils.custom_context import Context
-from utils.custom_errors import NotСonfigured
+from utils.custom_errors import (ConfirmationError, NotСonfigured,
+                                 OnlyAuthorError, WaitError)
 
 logger = logging.getLogger('Arctic')
 
@@ -26,6 +27,8 @@ class SEBot(commands.AutoShardedBot):
         self.configurator = configurator
         self.config = configurator.config
         self.system = configurator.system
+        self.expected_exception = (ConfirmationError, NotСonfigured,
+                                   OnlyAuthorError, WaitError)
         allowed_mentions = discord.AllowedMentions(roles=True,
                                                    everyone=True,
                                                    users=True)
@@ -70,6 +73,16 @@ class SEBot(commands.AutoShardedBot):
                 logger.error(f'In command {ctx.command.qualified_name}:\n' + f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}")
         elif isinstance(error, commands.ArgumentParsingError):
             await ctx.send(error)
+            
+    async def on_error(self, event_method, *args, **kwargs):
+        exception_info = sys.exc_info()
+        if exception_info[0] in self.expected_exception:
+            logger.debug(f'ignore expected exception {exception_info[0]}, in {event_method}')
+        else:
+            stackSummary = traceback.extract_tb(exception_info[2], limit=20)
+            traceback_list = traceback.format_list(stackSummary)
+            
+            logger.error(f'Ignoring exception in {event_method}\n' + f"{''.join(traceback_list)}\n{exception_info[0].__name__}: {exception_info[1]}")
 
     async def process_commands(self, message):
         ctx = await self.get_context(message, cls=Context)

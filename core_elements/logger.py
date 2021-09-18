@@ -5,7 +5,7 @@ def create_logger(level):
     logger = logging.getLogger('Arctic')
     logger.setLevel(level=logging.getLevelName(level))
     handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
+    handler.setLevel(level=logging.getLevelName(level))
     logger.addHandler(handler)
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')

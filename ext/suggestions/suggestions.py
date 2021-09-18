@@ -221,10 +221,13 @@ class suggestions(commands.Cog):
 
     @suggest.error
     async def suggest_error(self, ctx, error):
+        embed = DefaultEmbed(title="Failed to make suggestion")
         if isinstance(error, commands.BadArgument):
-            embed = DefaultEmbed(title="Failed to make suggestion",
-                                 description=f"**Error**: {error}")
-            await ctx.send(embed=embed)
+            embed.description = f"**Error**: {error}"
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.message.delete()
+            embed.description = "describe your suggestion"
+        await ctx.send(embed=embed)
 
     @is_admin()
     @commands.command(aliases=['sc'])

@@ -23,10 +23,14 @@ class relationship(commands.Cog):
         self.emoji = self.bot.config['additional_emoji']['relationship']
 
     async def cog_command_error(self, ctx, error):
+        embed = DefaultEmbed(title="Сan't send a marriage proposal")
         if isinstance(error, commands.BadArgument):
-            embed = DefaultEmbed(title="Сan't send a marriage proposal",
-                                 description=f"**Error**: {error}")
-            await ctx.send(embed=embed)
+            embed.description = f"**Error**: {error}"
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.message.delete()
+            embed.description = f"**Error**: specify member"
+        
+        await ctx.send(embed=embed)
 
     async def divorce_handler(self, interaction: Interaction, author_id: int):
         await Interaction_inspect.only_author(interaction)

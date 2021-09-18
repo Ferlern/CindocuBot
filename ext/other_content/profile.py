@@ -56,7 +56,7 @@ class profile(commands.Cog):
             description=f"{bio}")
         
         embed.add_field(
-            name=f"{self.emoji['reputation']} reputation",
+            name=f"{self.emoji['reputation']} Reputation",
             value=f"```diff\n{likes}```",
             inline=False
         )
@@ -102,6 +102,14 @@ class profile(commands.Cog):
             member.save()
             await ctx.send(embed=DefaultEmbed(
                 description='Biography has been successfully updated'))
+            
+    @biography.error
+    async def handle(self, ctx, error):
+        await ctx.message.delete()
+        if isinstance(error, commands.MissingRequiredArgument):
+            embed = DefaultEmbed(title="Сan't set biography",
+                                    description=f"**Error**: specify bio")
+            await ctx.send(embed=embed)
 
 
 def setup(bot):

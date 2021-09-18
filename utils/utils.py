@@ -94,3 +94,19 @@ def display_time(seconds, granularity=3, full=False):
             else:
                 result.append("**{}**{}".format(value, name[:1]))
     return ' '.join(result[:granularity])
+
+def experience_converting(current_exp: int):
+    """Return tuple(level, gained_after_lvl_up, left_before_lvl_up)"""
+    a1 = 100
+    q = 1.1
+    current_lvl = 0
+    Sn = 100
+    prevSn = 0
+    while Sn <= current_exp:
+        prevSn = Sn
+        Sn = int(a1 * (q**(current_lvl + 2) - 1) / (q - 1))
+        current_lvl += 1
+
+    need_for_lvl_up = Sn - prevSn
+    gained_after_lvl_up = current_exp - prevSn
+    return (current_lvl, gained_after_lvl_up, need_for_lvl_up)

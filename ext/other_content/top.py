@@ -1,5 +1,7 @@
 import logging
 
+from discord import emoji
+
 import core
 from core import Likes, User_info
 from discord.ext import commands
@@ -7,7 +9,7 @@ from discord_components import Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot
 from peewee import JOIN, fn
-from utils.utils import DefaultEmbed
+from utils.utils import DefaultEmbed, experience_converting
 
 from ..utils import Interaction_inspect
 from ..utils.build import update_message
@@ -21,7 +23,7 @@ class Top(commands.Cog):
         self.emoji = self.bot.config["additional_emoji"]["top"]
 
         config = self.bot.config
-        add_emoji = config["additional_emoji"]
+        add_emoji = config["additional_emoji"]["other"]
 
         self.rename_dict = {
             "balance": "balance",
@@ -55,20 +57,33 @@ class Top(commands.Cog):
         rename_dict = self.rename_dict
         end_emoji_dict = self.end_emoji_dict
 
+        embed = DefaultEmbed(
+            title=
+            f"{self.start_emoji_dict[selected]} Top by {rename_dict[selected]}"
+        )
+        
+        template = "{index}. <@{item_id}> — {item_selected} {emoji}"
         if selected == 'married_time':
-            embed = DefaultEmbed(
-                title=f"{self.start_emoji_dict[selected]} Top by {rename_dict[selected]}",
-                description=("\n".join([
-                    f"{index}. <@{item['user']}> & <@{item['soul_mate']}> — from <t:{item[selected]}:f> {end_emoji_dict[selected]}"
-                    for index, item in enumerate(items, 1)
-                ])) if items else 'Empty :(')
-        else:
-            embed = DefaultEmbed(
-                title=f"{self.start_emoji_dict[selected]} Top by {rename_dict[selected]}",
-                description=("\n".join([
-                    f"{index}. <@{item['id']}> — {item[selected]} {end_emoji_dict[selected]}"
-                    for index, item in enumerate(items, 1)
-                ])) if items else 'Empty :(')
+            template = "{index}. <@{item_user}> & <@{item_soul_mate}> — from <t:{item_selected}:f> {emoji}"
+        elif selected == 'experience':
+            for item in items:
+                level, gained_after_lvl_up, left_before_lvl_up = experience_converting(item[selected])
+                item[selected] = f'**{level}** ({gained_after_lvl_up}/{left_before_lvl_up})'
+                
+        embed.description = (
+            "\n".join([
+                template.format(
+                    index = index,
+                    item_id = item['id'],
+                    item_user = item['user'] if selected == 'married_time' else None,
+                    item_soul_mate = item['soul_mate'] if selected == 'married_time' else None,
+                    item_selected = item[selected],
+                    emoji = end_emoji_dict[selected]
+                )
+                for index, item in enumerate(items, 1)
+            ])
+            if items else 'Empty :('
+        )
         return embed
 
     def build_components(self, selected):

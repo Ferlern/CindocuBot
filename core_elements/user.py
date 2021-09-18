@@ -7,6 +7,7 @@ from utils.custom_errors import (AlreadyLiked, MaxBitrateReached,
                                  MaxSlotsAmount, NotEnoughMoney, NotMarried,
                                  TargetAlreadyMarried, UserAlreadyMarried,
                                  VoiceAlreadyCreated)
+from utils.utils import experience_converting
 
 from .data_controller.models import (Likes, Personal_voice, Relationship,
                                      User_info, User_roles)
@@ -133,19 +134,7 @@ class Member_data_controller:
     def level(self) -> tuple[int]:
         """Return tuple(level, gained_after_lvl_up, left_before_lvl_up)"""
         current_exp = self.user_info.experience
-        a1 = 100
-        q = 1.1
-        current_lvl = 0
-        Sn = 100
-        prevSn = 0
-        while Sn <= current_exp:
-            prevSn = Sn
-            Sn = int(a1 * (q**(current_lvl + 2) - 1) / (q - 1))
-            current_lvl += 1
-
-        need_for_lvl_up = Sn - prevSn
-        gained_after_lvl_up = current_exp - prevSn
-        return (current_lvl, gained_after_lvl_up, need_for_lvl_up)
+        return experience_converting(current_exp)
 
     @property
     def likes(self) -> int:

@@ -217,7 +217,7 @@ class moderationCog(commands.Cog):
 
         banned = await self.ban_members(ctx, members, delete_days, reason)
         for member in banned:
-            await mail(ctx, member, "banned", reason, time=time)
+            await mail(ctx, member, "banned", reason)
         banned_string = to_string(banned)
         if not reason:
             reason = "not specified."
@@ -242,7 +242,7 @@ class moderationCog(commands.Cog):
 
         to_ban = []
         for id in ids:
-            user = await self.bot.get_or_fetch_member(id)
+            user = await self.bot.get_or_fetch_user(id)
             if user:
                 to_ban.append(user)
 
@@ -293,7 +293,7 @@ class moderationCog(commands.Cog):
 
         unbaned = []
         for id in ids:
-            user = await self.bot.get_or_fetch_member(id)
+            user = await self.bot.get_or_fetch_user(id)
             if not user:
                 continue
             try:

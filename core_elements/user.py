@@ -7,14 +7,12 @@ from utils.custom_errors import (AlreadyLiked, MaxBitrateReached,
                                  MaxSlotsAmount, NotEnoughMoney, NotMarried,
                                  TargetAlreadyMarried, UserAlreadyMarried,
                                  VoiceAlreadyCreated)
-from utils.utils import experience_converting
+from utils.utils import experience_converting, next_bitrate
 
 from .data_controller.models import (Likes, Personal_voice, Relationship,
                                      User_info, User_roles)
 
 loger = logging.getLogger('Arctic')
-
-next_bitrate = {'64': 96, '96': 128, '128': 192, '192': 256, '256': 384}
 
 
 class Member_data_controller:

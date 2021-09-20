@@ -8,13 +8,11 @@ from discord_components.component import Select, SelectOption
 from main import SEBot
 from utils.custom_errors import (MaxBitrateReached, MaxSlotsAmount,
                                  NotEnoughMoney)
-from utils.utils import DefaultEmbed, TimeConstans
+from utils.utils import DefaultEmbed, TimeConstans, next_bitrate
 
 from ..utils import Interaction_inspect
 from ..utils.build import (build_page_components, get_last_page,
                            page_implementation, update_message)
-
-next_bitrate = {'64': 96, '96': 128, '128': 192, '192': 256, '256': 384}
 
 
 class economyCog(commands.Cog):

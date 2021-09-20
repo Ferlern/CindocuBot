@@ -67,8 +67,8 @@ class SEBot(commands.AutoShardedBot):
             original = error.original
 
             if not isinstance(original, discord.HTTPException):
-                stackSummary = traceback.extract_tb(original.__traceback__, limit=20)
-                traceback_list = traceback.format_list(stackSummary)
+                stack_summary = traceback.extract_tb(original.__traceback__, limit=20)
+                traceback_list = traceback.format_list(stack_summary)
                 
                 logger.error(f'In command {ctx.command.qualified_name}:\n' + f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}")
         elif isinstance(error, commands.ArgumentParsingError):
@@ -79,8 +79,8 @@ class SEBot(commands.AutoShardedBot):
         if exception_info[0] in self.expected_exception:
             logger.debug(f'ignore expected exception {exception_info[0]}, in {event_method}')
         else:
-            stackSummary = traceback.extract_tb(exception_info[2], limit=20)
-            traceback_list = traceback.format_list(stackSummary)
+            stack_summary = traceback.extract_tb(exception_info[2], limit=20)
+            traceback_list = traceback.format_list(stack_summary)
             
             logger.error(f'Ignoring exception in {event_method}\n' + f"{''.join(traceback_list)}\n{exception_info[0].__name__}: {exception_info[1]}")
 
@@ -92,7 +92,7 @@ class SEBot(commands.AutoShardedBot):
 
         await self.invoke(ctx)
 
-    async def get_or_fetch_member(self, user_id) -> discord.User:
+    async def get_or_fetch_user(self, user_id) -> discord.User:
         user = self.get_user(user_id)
         if user:
             return user

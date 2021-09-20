@@ -43,7 +43,7 @@ class ModerationInfo(commands.Cog):
 
         for log in logs:
             id = str(log['id'])
-            moderator = await self.bot.get_or_fetch_member(log['moderator'])
+            moderator = await self.bot.get_or_fetch_user(log['moderator'])
             moderator = moderator.name
             action = log['action']
 
@@ -52,7 +52,7 @@ class ModerationInfo(commands.Cog):
             if targets_amount == 0:
                 target = "None"
             elif targets_amount == 1:
-                target = await self.bot.get_or_fetch_member(
+                target = await self.bot.get_or_fetch_user(
                     targets[0]['target'])
                 target = target.name
             else:
@@ -148,7 +148,7 @@ class ModerationInfo(commands.Cog):
                     del values["action"]
                     
         if moderator := values.get('moderator'):
-            moderator = await self.bot.get_or_fetch_member(moderator)
+            moderator = await self.bot.get_or_fetch_user(moderator)
             if moderator:
                 values['moderator'] = moderator
             else:
@@ -221,7 +221,7 @@ class ModerationInfo(commands.Cog):
             await ctx.send(embed = DefaultEmbed(description = 'Log not found'))
             return    
         
-        moderator = await self.bot.get_or_fetch_member(log.moderator)
+        moderator = await self.bot.get_or_fetch_user(log.moderator)
 
         embed = DefaultEmbed(
             title=f"Information about action {log.id}",
@@ -241,7 +241,7 @@ class ModerationInfo(commands.Cog):
         targets = Logs.get_mod_log_targets(log)
         targets = [target['target'] for target in targets]
         targets = [
-            await self.bot.get_or_fetch_member(target) for target in targets
+            await self.bot.get_or_fetch_user(target) for target in targets
         ]
 
         if targets:

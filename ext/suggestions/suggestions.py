@@ -30,7 +30,7 @@ class suggestions(commands.Cog):
         self.emoji = self.bot.config['additional_emoji']['suggestion']
 
     async def suggestions_embed_builder(self, suggestion: dict):
-        author = await self.bot.get_or_fetch_member(suggestion['author'])
+        author = await self.bot.get_or_fetch_user(suggestion['author'])
         embed = DefaultEmbed(title=f'Suggestion',
                              description=suggestion['text'])
         embed.set_author(
@@ -131,7 +131,7 @@ class suggestions(commands.Cog):
         items_with_offset = items.offset(items_amount - 1)
         suggestion = items.offset(int(
             values['selected'])).limit(1).dicts().execute()[0]
-        author = await self.bot.get_or_fetch_member(suggestion['author'])
+        author = await self.bot.get_or_fetch_user(suggestion['author'])
         guild = self.bot.get_guild(self.bot.config['guild'])
         channel = guild.get_channel(self.bot.config['suggestions_channel'])
         try:

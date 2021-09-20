@@ -110,3 +110,5 @@ def experience_converting(current_exp: int):
     need_for_lvl_up = Sn - prevSn
     gained_after_lvl_up = current_exp - prevSn
     return (current_lvl, gained_after_lvl_up, need_for_lvl_up)
+
+next_bitrate = {'64': 96, '96': 128, '128': 192, '192': 256, '256': 384}

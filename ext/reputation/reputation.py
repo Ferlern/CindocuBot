@@ -8,7 +8,7 @@ from main import SEBot
 from utils.custom_errors import AlreadyLiked
 from utils.utils import DefaultEmbed
 
-from ..utils.converters import Reputation
+from ..utils.converters import Reputation, Interacted_member
 
 loger = logging.getLogger('Arctic')
 
@@ -40,10 +40,8 @@ class reputation(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(aliases=['rep'])
-    async def reputation(self, ctx, to_member: discord.Member,
+    async def reputation(self, ctx, to_member: Interacted_member,
                          type: Reputation):
-        if to_member == ctx.author:
-            raise BadArgument("You can't change your reputation")
         await ctx.message.delete()
         member = Member_data_controller(ctx.author.id)
         try:

@@ -13,6 +13,7 @@ from utils.custom_errors import (MarriedWithAnother, NotEnoughMoney,
 from utils.utils import DefaultEmbed
 
 from ..utils import Interaction_inspect
+from ..utils.converters import Interacted_member
 
 loger = logging.getLogger('Arctic')
 
@@ -55,11 +56,7 @@ class relationship(commands.Cog):
             await interaction.respond(type=7, embed=embed, components=[])
 
     @commands.command()
-    async def marry(self, ctx, target: discord.Member):
-        if ctx.author == target:
-            raise BadArgument('The specified user must not be ... you')
-        if target.bot:
-            raise BadArgument('The specified user must not be a bot')
+    async def marry(self, ctx, target: Interacted_member):
         
         loger.info(f'marry proposal from {ctx.author} to {target}')
         await ctx.message.delete()

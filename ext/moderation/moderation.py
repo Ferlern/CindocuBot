@@ -13,7 +13,7 @@ from utils.custom_errors import NotСonfigured
 from utils.utils import DefaultEmbed, display_time
 
 from ..utils.checks import is_mod
-from ..utils.converters import Time_and_ReasonConverter
+from ..utils.converters import Time_and_ReasonConverter, Moderated_member
 from ..utils.utils import to_string, to_string_with_ids
 from .components import mute_controller
 from .components.mail import mail
@@ -56,7 +56,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def mute(self,
                    ctx,
-                   members: commands.Greedy[discord.Member],
+                   members: commands.Greedy[Moderated_member],
                    *,
                    reason_and_time: Time_and_ReasonConverter = ""):
         if len(members) == 0:
@@ -91,7 +91,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def unmute(self,
                      ctx,
-                     members: commands.Greedy[discord.Member],
+                     members: commands.Greedy[Moderated_member],
                      *,
                      reason: typing.Optional[str] = "not specified."):
         if len(members) == 0:
@@ -120,7 +120,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def warn(self,
                    ctx,
-                   members: commands.Greedy[discord.Member],
+                   members: commands.Greedy[Moderated_member],
                    *,
                    reason: typing.Optional[str] = "not specified."):
         if len(members) == 0:
@@ -181,7 +181,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def unwarn(self,
                      ctx,
-                     members: commands.Greedy[discord.Member],
+                     members: commands.Greedy[Moderated_member],
                      *,
                      reason: typing.Optional[str] = "not specified."):
         if len(members) == 0:
@@ -208,7 +208,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def ban(self,
                   ctx,
-                  members: commands.Greedy[discord.Member],
+                  members: commands.Greedy[Moderated_member],
                   delete_days: typing.Optional[int] = 0,
                   *,
                   reason: typing.Optional[str]):

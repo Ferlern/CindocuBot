@@ -1,8 +1,12 @@
+import logging
 import re
+import discord
 
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 
+
+logger = logging.getLogger('Arctic')
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h": 3600, "s": 1, "m": 60, "d": 86400}
 reason_regex = re.compile(r"\b[^\d\s].+")
@@ -57,3 +61,30 @@ class Reputation(commands.Converter):
                                 +'\n`+` — increase reputation'\
                                 +'\n`-` — reduce reputation'\
                                 +"\n`?` — reset")
+
+class Interacted_member(commands.MemberConverter):
+    async def convert(self, ctx, argument) -> discord.Member:
+        member = await super().convert(ctx, argument)
+            
+        if member.bot:
+            raise commands.BadArgument('Specified user is a bot')
+        if member == ctx.author:
+            raise commands.BadArgument('Specified user is yourself')
+        return member
+
+class Moderated_member(Interacted_member):
+    
+    async def convert(self, ctx, argument) -> discord.Member:
+        member = await super().convert(ctx, argument)
+        mod_roles_ids = set(ctx.bot.config["moderators_roles"])
+        member_roles_ids = set([role.id for role in member.roles])
+        if mod_roles_ids & member_roles_ids:
+            raise BadArgument('Specified user is moderator')
+        
+        permissions = member.guild_permissions
+        if permissions.administrator:
+            raise BadArgument('Specified user is administrator')
+        if member.id == ctx.bot.owner_id:
+            raise BadArgument('Specified user is bot owner')
+        
+        return member

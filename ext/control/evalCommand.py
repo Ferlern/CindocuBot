@@ -6,6 +6,7 @@ from inspect import getsource
 import discord
 from discord.ext import commands
 from ..utils.checks import is_owner
+from core_elements.data_controller import models 
 
 codes = []
 
@@ -52,8 +53,9 @@ class EvalCommandCog(commands.Cog):
             "sys": sys,
             "os": os,
             "imp": __import__,
-            "this": self,
-            "ctx": ctx
+            "self": self,
+            "ctx": ctx,
+            "conn": models.conn
         }
 
         try:

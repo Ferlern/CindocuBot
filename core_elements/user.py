@@ -123,9 +123,8 @@ class Member_data_controller:
 
     @property
     def roles(self) -> list[int]:
-        roles = User_roles.select(User_roles.role_id).where(
-            User_roles.user == self.user_info.id).dicts().execute()
-        roles = [list(role.values())[0] for role in roles]
+        roles = self.user_info.user_roles.dicts().execute()
+        roles = [role['role_id'] for role in roles]
         return roles
 
     @property

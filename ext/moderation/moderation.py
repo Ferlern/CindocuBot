@@ -252,10 +252,8 @@ class moderationCog(commands.Cog):
         to_ban_string = to_string_with_ids(to_ban)
         embed = DefaultEmbed(title="Ban by ID",
                              description=f"Ready to ban:\n{to_ban_string}")
-
-        components = [Button(label="confirm")]
-        message = await ctx.send(embed=embed, components=components)
-        await ctx.confirm(message)
+        
+        message = await ctx.confirm(embed=embed)
 
         banned = []
         for user in to_ban:

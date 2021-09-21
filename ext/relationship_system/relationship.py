@@ -25,10 +25,13 @@ class relationship(commands.Cog):
     async def cog_command_error(self, ctx, error):
         embed = DefaultEmbed(title="Сan't send a marriage proposal")
         if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
             embed.description = f"**Error**: {error}"
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.delete()
             embed.description = f"**Error**: specify member"
+        else:
+            embed.description = f"**Error**: unknown error"
         
         await ctx.send(embed=embed)
 
@@ -53,13 +56,13 @@ class relationship(commands.Cog):
 
     @commands.command()
     async def marry(self, ctx, target: discord.Member):
-        loger.info(f'marry proposal from {ctx.author} to {target}')
-        await ctx.message.delete()
-
         if ctx.author == target:
             raise BadArgument('The specified user must not be ... you')
         if target.bot:
             raise BadArgument('The specified user must not be a bot')
+        
+        loger.info(f'marry proposal from {ctx.author} to {target}')
+        await ctx.message.delete()
 
         member = Member_data_controller(id=ctx.author.id)
         coin = self.bot.config["coin"]

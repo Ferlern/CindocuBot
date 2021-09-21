@@ -19,6 +19,7 @@ class profile(commands.Cog):
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
             embed = DefaultEmbed(title="Сan't set biography",
                                  description=f"**Error**: {error}")
             await ctx.send(embed=embed)
@@ -89,7 +90,6 @@ class profile(commands.Cog):
 
     @commands.command(aliases=['bio'])
     async def biography(self, ctx, *, biography: str):
-        await ctx.message.delete()
         member = Member_data_controller(id=ctx.author.id)
         new_lines = biography.count('\n')
 
@@ -98,6 +98,7 @@ class profile(commands.Cog):
         elif len(biography) > 200:
             raise BadArgument('Biography must be less than 200 characters')
         else:
+            await ctx.message.delete()
             member.user_info.biography = biography
             member.save()
             await ctx.send(embed=DefaultEmbed(

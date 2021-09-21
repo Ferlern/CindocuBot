@@ -6,6 +6,7 @@ import core
 import discord
 from discord.ext import commands, tasks
 from main import SEBot
+from utils.custom_errors import NotСonfigured
 
 logger = logging.getLogger('Arctic')
 
@@ -70,7 +71,7 @@ class Mute_controller:
         role = discord.utils.get(members[0].guild.roles,
                                  id=self.bot.config["mute_role"])
         if not role:
-            raise commands.BadArgument("mute role not specified. Check config")
+            raise NotСonfigured("mute role not specified. Check config")
         muted = []
         for member in members:
             try:

@@ -20,6 +20,7 @@ class reputation(commands.Cog):
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
             embed = DefaultEmbed(title="Reputation not changed",
                                  description=f"**Error**: {error}")
             await ctx.send(embed=embed)
@@ -41,9 +42,9 @@ class reputation(commands.Cog):
     @commands.command(aliases=['rep'])
     async def reputation(self, ctx, to_member: discord.Member,
                          type: Reputation):
-        await ctx.message.delete()
         if to_member == ctx.author:
             raise BadArgument("You can't change your reputation")
+        await ctx.message.delete()
         member = Member_data_controller(ctx.author.id)
         try:
             if type == 1:

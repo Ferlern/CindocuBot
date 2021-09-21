@@ -18,6 +18,7 @@ class economy_control(commands.Cog):
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
             embed = DefaultEmbed(title="Failed to complete action",
                                  description=f"**Error**: {error}")
             await ctx.send(embed=embed)
@@ -35,13 +36,13 @@ class economy_control(commands.Cog):
 
     @commands.command()
     async def remove_role(self, ctx, role: discord.Role):
-        await ctx.message.delete()
         id = role.id
         try:
             shop_role = Shop_roles.get(role_id=id)
         except DoesNotExist:
             raise BadArgument("Can't find such role in the shop")
-
+        await ctx.message.delete()
+    
         shop_role.delete_instance()
         embed = DefaultEmbed(
             description=f'role {role} successfully deleted from the shop')

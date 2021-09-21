@@ -9,6 +9,7 @@ from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from discord_components import Button
 from main import SEBot
+from utils.custom_errors import NotСonfigured
 from utils.utils import DefaultEmbed, display_time
 
 from ..utils.checks import is_mod
@@ -31,6 +32,7 @@ class moderationCog(commands.Cog):
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
             embed = discord.Embed(title="Failed to complete action",
                                   description=f"**Error**: {error}",
                                   color=0x93a5cd)
@@ -57,12 +59,11 @@ class moderationCog(commands.Cog):
                    members: commands.Greedy[discord.Member],
                    *,
                    reason_and_time: Time_and_ReasonConverter = ""):
-
-        await ctx.message.delete()
         if len(members) == 0:
             raise commands.BadArgument("user not specified")
         if len(reason_and_time) == 0:
             raise commands.BadArgument("time and reason not specified")
+        await ctx.message.delete()
 
         time = int(reason_and_time[0])
         reason = reason_and_time[1]
@@ -93,9 +94,9 @@ class moderationCog(commands.Cog):
                      members: commands.Greedy[discord.Member],
                      *,
                      reason: typing.Optional[str] = "not specified."):
-        await ctx.message.delete()
         if len(members) == 0:
             raise commands.BadArgument("user not specified")
+        await ctx.message.delete()
 
         for member in members:
             member_info = core.Member_data_controller(member.id)
@@ -122,9 +123,9 @@ class moderationCog(commands.Cog):
                    members: commands.Greedy[discord.Member],
                    *,
                    reason: typing.Optional[str] = "not specified."):
-        await ctx.message.delete()
         if len(members) == 0:
             raise commands.BadArgument("user not specified")
+        await ctx.message.delete()
 
         for member in members:
             member_info = core.Member_data_controller(member.id)
@@ -140,10 +141,10 @@ class moderationCog(commands.Cog):
                 try:
                     actions = warn_system[-1]
                 except IndexError:
-                    raise commands.BadArgument(
+                    raise NotСonfigured(
                         "Set at least one warning in config")
             except TypeError:
-                raise commands.BadArgument("Warn system created incorrectly")
+                raise NotСonfigured("Warn system created incorrectly")
 
             if actions.get('ban'):
                 additional_description = actions[
@@ -183,9 +184,9 @@ class moderationCog(commands.Cog):
                      members: commands.Greedy[discord.Member],
                      *,
                      reason: typing.Optional[str] = "not specified."):
-        await ctx.message.delete()
         if len(members) == 0:
             raise commands.BadArgument("user not specified")
+        await ctx.message.delete()
 
         for member in members:
             member_info = core.Member_data_controller(member.id)
@@ -211,9 +212,9 @@ class moderationCog(commands.Cog):
                   delete_days: typing.Optional[int] = 0,
                   *,
                   reason: typing.Optional[str]):
-        await ctx.message.delete()
         if len(members) == 0:
             raise commands.BadArgument("user not specified")
+        await ctx.message.delete()
 
         banned = await self.ban_members(ctx, members, delete_days, reason)
         for member in banned:
@@ -236,7 +237,6 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def banid(self, ctx, ids: commands.Greedy[int],
                     reason: typing.Optional[str]):
-        await ctx.message.delete()
         if len(ids) == 0:
             raise commands.BadArgument("user not specified")
 
@@ -249,6 +249,8 @@ class moderationCog(commands.Cog):
         if not to_ban:
             raise BadArgument(
                 "can't find users. Maybe you are giving wrong IDs?")
+            
+        await ctx.message.delete()
         to_ban_string = to_string_with_ids(to_ban)
         embed = DefaultEmbed(title="Ban by ID",
                              description=f"Ready to ban:\n{to_ban_string}")
@@ -262,9 +264,11 @@ class moderationCog(commands.Cog):
                 banned.append(user)
             except Exception as e:
                 pass
-
+        
         if not banned:
-            raise BadArgument("can't ban users. Maybe you can't ban them")
+            embed = DefaultEmbed(description="can't ban users. Maybe you can't ban them")
+            await ctx.send(embed=embed)
+            return
 
         if not reason:
             reason = "not specified."
@@ -285,7 +289,6 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def unban(self, ctx, ids: commands.Greedy[int],
                     reason: typing.Optional[str]):
-        await ctx.message.delete()
         if len(ids) == 0:
             raise commands.BadArgument("user not specified")
 
@@ -303,6 +306,8 @@ class moderationCog(commands.Cog):
         if not unbaned:
             raise BadArgument(
                 "can't find users. Maybe you are giving wrong IDs?")
+            
+        await ctx.message.delete()
 
         if not reason:
             reason = "not specified."

@@ -188,22 +188,21 @@ class suggestions(commands.Cog):
     @guild_only()
     @commands.command()
     async def suggest(self, ctx, *, suggestion):
-        try:
-            url = ctx.message.attachments[0].url
-        except IndexError:
-            url = None
-        await ctx.message.delete()
-        channel = ctx.author.guild.get_channel(
-            self.bot.config['suggestions_channel'])
-        if not channel:
-            raise NotСonfigured('Channel for suggestions not specified')
-
         new_lines = suggestion.count('\n')
         if new_lines > 50:
             raise BadArgument('Too many line breaks')
         elif len(suggestion) > 4000:
             raise BadArgument('Suggestion must be less than 4000 characters')
-
+        
+        await ctx.message.delete()
+        try:
+            url = ctx.message.attachments[0].url
+        except IndexError:
+            url = None
+        channel = ctx.author.guild.get_channel(
+            self.bot.config['suggestions_channel'])
+        if not channel:
+            raise NotСonfigured('Channel for suggestions not specified')
         await ctx.send(embed=DefaultEmbed(
             description=f"{self.emoji['send']} Your suggestion has been sent successfully"))
 
@@ -223,6 +222,7 @@ class suggestions(commands.Cog):
     async def suggest_error(self, ctx, error):
         embed = DefaultEmbed(title="Failed to make suggestion")
         if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
             embed.description = f"**Error**: {error}"
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.delete()

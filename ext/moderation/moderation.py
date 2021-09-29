@@ -24,6 +24,7 @@ class moderationCog(commands.Cog):
         reload(mute_controller)
         self.bot = bot
         self.mute_controller = mute_controller.Mute_controller(bot)
+        self.mute_controller.start()
 
     async def cog_check(self, ctx):
         if not ctx.guild:
@@ -36,11 +37,7 @@ class moderationCog(commands.Cog):
             embed = discord.Embed(title="Failed to complete action",
                                   description=f"**Error**: {error}",
                                   color=0x93a5cd)
-            await ctx.send(embed=embed)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.mute_controller.start()
+            await ctx.send(embed=embed)     
 
     async def ban_members(self, ctx, members, delete_days, reason):
         banned = []

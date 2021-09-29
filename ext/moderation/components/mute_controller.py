@@ -43,6 +43,10 @@ class Mute_controller:
                 await self.clean_mute(d_member, time_to_end)
         except Exception as e:
             logger.exception('mute_controller caused an error')
+            
+    @mute_controller.before_loop
+    async def before_mute_controller(self):
+        await self.bot.wait_until_ready()
 
     async def clean_mute(self, member: discord.Member, mute_time: int = 0):
         """Checks if the mute time has expired, removes the role, removes the entry from the database

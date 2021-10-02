@@ -1,6 +1,6 @@
 import json
 from typing import TypedDict
-from .bot_emoji import Additional_emoji
+from .bot_emoji import AdditionalEmoji
 
 
 class Warn(TypedDict):
@@ -9,7 +9,7 @@ class Warn(TypedDict):
     ban: bool
 
 
-class Personal_voice(TypedDict):
+class PersonalVoice(TypedDict):
     categoty: int
     price: int
     slot_price: int
@@ -21,19 +21,25 @@ class System(TypedDict):
     initial_extensions: list[str]
 
 
-class Experience_system(TypedDict):
+class ExperienceSystem(TypedDict):
     experience_channel: int
     cooldown: int
     minimal_message_length: int
     experience_per_message: list[int]
     roles: dict[str, int]
     coins_per_level_up: int
+    
+
+class AutoTranslation(TypedDict):
+    channels: list
+    lang: str
 
 
 class Config(TypedDict):
     guild: int
     token: str
     prefixes: list[str]
+    commands_channels: list[int]
     mute_role: int
     suggestions_channel: int
     moderators_roles: list[int]
@@ -41,9 +47,10 @@ class Config(TypedDict):
     coin: str
     daily: int
     marry_price: int
-    personal_voice: Personal_voice
-    experience_system: Experience_system
-    additional_emoji: Additional_emoji
+    personal_voice: PersonalVoice
+    experience_system: ExperienceSystem
+    auto_translation: AutoTranslation
+    additional_emoji: AdditionalEmoji
 
 
 class Configurator:

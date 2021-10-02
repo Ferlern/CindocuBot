@@ -24,6 +24,7 @@ class RestartCog(commands.Cog):
     @commands.command(aliases=['re'])
     async def restart(self, ctx):
         exception = True
+        self.bot.reload_config()
         for extension in self.bot.system['initial_extensions']:
             if 'RestartCog' in extension:
                 continue

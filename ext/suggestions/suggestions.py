@@ -154,7 +154,7 @@ class suggestions(commands.Cog):
 
             embed.add_field(name='suggestion' +
                             (' denied' if action == 'Deny' else ' approved'),
-                            value=f'{author.mention}: {content}')
+                            value=f'{interaction.author.mention}: {content}')
             embed.color = discord.Colour.red(
             ) if action == 'Deny' else discord.Colour.green()
             await message.edit(embed=embed)

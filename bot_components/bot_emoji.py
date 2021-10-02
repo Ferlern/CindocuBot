@@ -1,7 +1,7 @@
 from typing import TypedDict
 
     
-class Profile_emoji(TypedDict):
+class ProfileEmoji(TypedDict):
     reputation: str
     balance: str
     level: str
@@ -10,7 +10,7 @@ class Profile_emoji(TypedDict):
     other: str
     
     
-class Top_emoji(TypedDict):
+class TopEmoji(TypedDict):
     reputation: str
     balance: str
     level: str
@@ -18,42 +18,42 @@ class Top_emoji(TypedDict):
     soul_mate: str
     
     
-class Economy_emoji(TypedDict):
+class EconomyEmoji(TypedDict):
     daily_recieved: str
     daily_cooldown: str
     roles_shop: str
     voice_shop: str
     
     
-class Relationship_emoji(TypedDict):
+class RelationshipEmoji(TypedDict):
     sent: str
     accepted: str
     refused: str
     divorce: str
     
     
-class Reputation_emoji(TypedDict):
+class ReputationEmoji(TypedDict):
     increased: str
     decreased: str
     reset: str
 
 
-class Suggestion_emoji(TypedDict):
+class SuggestionEmoji(TypedDict):
     list: str
     send: str
 
 
-class Other_emoji(TypedDict):
+class OtherEmoji(TypedDict):
     heart: str
     all_mod_log: str
 
 
-class Additional_emoji(TypedDict):
-    profile: Profile_emoji
-    top: Top_emoji
-    economy: Economy_emoji
-    relationship: Relationship_emoji
-    reputation: Reputation_emoji
-    suggestion: Suggestion_emoji
-    other: Other_emoji
+class AdditionalEmoji(TypedDict):
+    profile: ProfileEmoji
+    top: TopEmoji
+    economy: EconomyEmoji
+    relationship: RelationshipEmoji
+    reputation: ReputationEmoji
+    suggestion: SuggestionEmoji
+    other: OtherEmoji
     

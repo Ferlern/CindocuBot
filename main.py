@@ -2,12 +2,16 @@ import logging
 import sys
 import time
 import traceback
+from importlib import reload
 
 import discord
 from discord.ext import commands
+from discord.ext.commands.errors import MissingPermissions
 from discord_components import DiscordComponents
 
+from bot_components import translate
 from bot_components.configurator import configurator
+from ext.utils.checks import is_mod
 from utils.custom_context import Context
 from utils.custom_errors import (ConfirmationError, NotСonfigured,
                                  OnlyAuthorError, WaitError)
@@ -27,6 +31,7 @@ class SEBot(commands.AutoShardedBot):
         self.configurator = configurator
         self.config = configurator.config
         self.system = configurator.system
+        self.controller = translate.MessageController(self)
         self.expected_exception = (ConfirmationError, NotСonfigured,
                                    OnlyAuthorError, WaitError)
         allowed_mentions = discord.AllowedMentions(roles=True,
@@ -85,10 +90,18 @@ class SEBot(commands.AutoShardedBot):
             logger.error(f'Ignoring exception in {event_method}\n' + f"{''.join(traceback_list)}\n{exception_info[0].__name__}: {exception_info[1]}")
 
     async def process_commands(self, message):
+        if message.author.bot:
+            return
+        
         ctx = await self.get_context(message, cls=Context)
 
         if ctx.command is None:
+            await self.controller.check(ctx)
             return
+        
+        if ctx.channel.id not in self.config['commands_channels']:
+            if not await is_mod(self.config['moderators_roles']).predicate(ctx):
+                return
 
         await self.invoke(ctx)
 
@@ -115,6 +128,8 @@ class SEBot(commands.AutoShardedBot):
         self.configurator.reload()
         self.config = self.configurator.config
         self.system = self.configurator.system
+        reload(translate)
+        self.controller = translate.MessageController(self)
 
 
 bot = SEBot()

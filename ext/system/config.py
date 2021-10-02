@@ -77,7 +77,7 @@ class Config(commands.Cog):
             return
 
         self.data[selected] = new_value
-        self.bot.configurator.reload()
+        self.bot.reload_config()
 
         embed, components, values = self.config_builder(values)
         components = Interaction_inspect.inject(components, values)

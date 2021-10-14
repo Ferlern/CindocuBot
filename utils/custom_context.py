@@ -11,11 +11,11 @@ class Context(commands.Context):
         super().__init__(**kwargs)
 
     async def confirm(self, *args, **kwargs):
-        kwargs['components'] = kwargs.get('components', [Button(label="confirm")])
+        kwargs['components'] = kwargs.get('components', [Button(label="Confirm")])
         msg = await super().send(*args, **kwargs)
         try:
             interaction = await self.bot.wait_for('button_click',
-                                                  timeout=120,
+                                                  timeout=60,
                                                   check=confirm_check(self))
             await interaction.respond(type=7, components=[])
             return msg

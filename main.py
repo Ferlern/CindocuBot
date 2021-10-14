@@ -72,10 +72,15 @@ class SEBot(commands.AutoShardedBot):
             original = error.original
 
             if not isinstance(original, discord.HTTPException):
-                stack_summary = traceback.extract_tb(original.__traceback__, limit=20)
-                traceback_list = traceback.format_list(stack_summary)
+                if original.__class__ in self.expected_exception:
+                    logger.debug(f'ignore expected exception {original.__class__.__name__}, in {ctx.command.qualified_name}')
                 
-                logger.error(f'In command {ctx.command.qualified_name}:\n' + f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}")
+                else:
+                    stack_summary = traceback.extract_tb(original.__traceback__, limit=20)
+                    traceback_list = traceback.format_list(stack_summary)
+                    
+                    logger.error(f'In command {ctx.command.qualified_name}:\n' + f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}")
+                    
         elif isinstance(error, commands.ArgumentParsingError):
             await ctx.send(error)
             
@@ -100,7 +105,7 @@ class SEBot(commands.AutoShardedBot):
             return
         
         if ctx.channel.id not in self.config['commands_channels']:
-            if not await is_mod(self.config['moderators_roles']).predicate(ctx):
+            if not await is_mod().predicate(ctx):
                 return
 
         await self.invoke(ctx)

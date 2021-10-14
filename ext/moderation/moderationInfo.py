@@ -27,7 +27,7 @@ class ModerationInfo(commands.Cog):
     async def cog_check(self, ctx):
         if not ctx.guild:
             return False
-        return await is_mod(self.bot.config["moderators_roles"]).predicate(ctx)
+        return await is_mod().predicate(ctx)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):

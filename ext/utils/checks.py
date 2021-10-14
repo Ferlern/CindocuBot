@@ -44,13 +44,12 @@ def is_admin():
     return commands.check(pred)
 
 
-def is_mod(mod_roles):
+def is_mod():
     first = is_admin().predicate
-    second = commands.has_any_role(*mod_roles).predicate
-
+    
     async def pred(ctx):
         try:
-            return await first(ctx) or await second(ctx)
+            return await first(ctx) or await commands.has_any_role(*ctx.bot.config["moderators_roles"]).predicate(ctx)
         except NoPrivateMessage:
             return False
 

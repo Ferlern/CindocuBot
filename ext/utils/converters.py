@@ -62,6 +62,16 @@ class Reputation(commands.Converter):
                                 +'\n`-` — reduce reputation'\
                                 +"\n`?` — reset")
 
+
+class NotBotMember(commands.MemberConverter):
+    async def convert(self, ctx, argument) -> discord.Member:
+        member = await super().convert(ctx, argument)
+            
+        if member.bot:
+            raise commands.BadArgument('Specified user is a bot')
+        return member
+
+
 class Interacted_member(commands.MemberConverter):
     async def convert(self, ctx, argument) -> discord.Member:
         member = await super().convert(ctx, argument)
@@ -72,7 +82,7 @@ class Interacted_member(commands.MemberConverter):
             raise commands.BadArgument('Specified user is yourself')
         return member
 
-class Moderated_member(Interacted_member):
+class PunishedMember(Interacted_member):
     
     async def convert(self, ctx, argument) -> discord.Member:
         member = await super().convert(ctx, argument)
@@ -88,3 +98,15 @@ class Moderated_member(Interacted_member):
             raise BadArgument('Specified user is bot owner')
         
         return member
+    
+    
+class NaturalNumber(commands.Converter):
+    
+    async def convert(self, ctx, argument):
+        try:
+            argument = int(argument)
+            assert argument >= 0
+        except Exception:
+            raise BadArgument(f"{argument} is not a natural number")
+        
+        return argument

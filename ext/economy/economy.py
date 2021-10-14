@@ -13,12 +13,28 @@ from utils.utils import DefaultEmbed, TimeConstans, next_bitrate
 from ..utils import Interaction_inspect
 from ..utils.build import (build_page_components, get_last_page,
                            page_implementation, update_message)
+from ..utils.checks import is_mod
+from ..utils.converters import Interacted_member, NaturalNumber, NotBotMember
 
 
 class economyCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.economy_emoji = self.bot.config['additional_emoji']['economy']
+        
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
+            embed = DefaultEmbed(title="Failed to complete action",
+                                 description=f"**Error**: {error}")
+            await ctx.send(embed=embed)
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.message.delete()
+            embed = DefaultEmbed(
+                title="Failed to complete action",
+                description=f"**Error**: {error.param.name} not specified"
+            )
+            await ctx.send(embed=embed)
 
     def build_role_shop_embed(self, items, page):
         coin = self.bot.config["coin"]
@@ -305,7 +321,38 @@ class economyCog(commands.Cog):
         embed, components, values = self.shop_builder(values)
         components = Interaction_inspect.inject(components, values)
         await ctx.send(embed=embed, components=components)
-
+        
+    @commands.command(aliases=['ac'])
+    async def add_coins(self, ctx, member: NotBotMember, amount: int):
+        member_data = Member_data_controller(member.id)
+        
+        if -amount > member_data.balance:
+            amount = -member_data.balance
+        
+        member_data.change_balance(amount)
+        member_data.save()
+        await ctx.tick(True)
+        
+    @commands.command(aliases=['give'])
+    async def transfer(self, ctx, member: Interacted_member, amount: NaturalNumber):
+        coin = self.bot.config['coin']
+        author_data = Member_data_controller(ctx.author.id)
+        member_data = Member_data_controller(member.id)
+        
+        if amount > author_data.balance:
+            amount = member_data.balance
+            
+        author_data.change_balance(-amount)
+        member_data.change_balance(amount)
+        author_data.save()
+        member_data.save()
+        
+        embed = DefaultEmbed(
+            title=f'Transfered succesfuly',
+            description=f'{ctx.author.mention} -> {member.mention} {amount} {coin}'
+        )
+        await ctx.send(embed=embed)
+        
 
 def setup(bot):
     bot.add_cog(economyCog(bot))

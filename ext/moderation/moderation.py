@@ -13,7 +13,7 @@ from utils.custom_errors import NotСonfigured
 from utils.utils import DefaultEmbed, display_time
 
 from ..utils.checks import is_mod
-from ..utils.converters import Time_and_ReasonConverter, Moderated_member
+from ..utils.converters import Time_and_ReasonConverter, PunishedMember
 from ..utils.utils import to_string, to_string_with_ids
 from .components import mute_controller
 from .components.mail import mail
@@ -29,7 +29,7 @@ class moderationCog(commands.Cog):
     async def cog_check(self, ctx):
         if not ctx.guild:
             return False
-        return await is_mod(self.bot.config["moderators_roles"]).predicate(ctx)
+        return await is_mod().predicate(ctx)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
@@ -53,7 +53,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def mute(self,
                    ctx,
-                   members: commands.Greedy[Moderated_member],
+                   members: commands.Greedy[PunishedMember],
                    *,
                    reason_and_time: Time_and_ReasonConverter = ""):
         if len(members) == 0:
@@ -88,7 +88,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def unmute(self,
                      ctx,
-                     members: commands.Greedy[Moderated_member],
+                     members: commands.Greedy[PunishedMember],
                      *,
                      reason: typing.Optional[str] = "not specified."):
         if len(members) == 0:
@@ -117,7 +117,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def warn(self,
                    ctx,
-                   members: commands.Greedy[Moderated_member],
+                   members: commands.Greedy[PunishedMember],
                    *,
                    reason: typing.Optional[str] = "not specified."):
         if len(members) == 0:
@@ -178,7 +178,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def unwarn(self,
                      ctx,
-                     members: commands.Greedy[Moderated_member],
+                     members: commands.Greedy[PunishedMember],
                      *,
                      reason: typing.Optional[str] = "not specified."):
         if len(members) == 0:
@@ -205,7 +205,7 @@ class moderationCog(commands.Cog):
     @commands.command()
     async def ban(self,
                   ctx,
-                  members: commands.Greedy[Moderated_member],
+                  members: commands.Greedy[PunishedMember],
                   delete_days: typing.Optional[int] = 0,
                   *,
                   reason: typing.Optional[str]):

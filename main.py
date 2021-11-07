@@ -11,7 +11,7 @@ from discord_components import DiscordComponents
 
 from bot_components import translate
 from bot_components.configurator import configurator
-from ext.utils.checks import is_mod
+from ext.utils.checks import is_admin, is_mod
 from utils.custom_context import Context
 from utils.custom_errors import (ConfirmationError, NotСonfigured,
                                  OnlyAuthorError, WaitError)
@@ -139,3 +139,4 @@ class SEBot(commands.AutoShardedBot):
 
 bot = SEBot()
 bot.run(bot.system['token'])
+bot.help_command.add_check(is_admin)

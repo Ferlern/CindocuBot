@@ -17,11 +17,13 @@ async def check_guild_permissions(ctx, perms, *, check=all):
 
 def is_owner():
     async def pred(ctx):
+        if await ctx.bot.is_owner(ctx.author):
+            return True
+        
         if ctx.guild is None:
             return False
         
-        is_owner = await ctx.bot.is_owner(ctx.author)
-        return ctx.guild.owner_id == ctx.author.id or is_owner
+        return ctx.guild.owner_id == ctx.author.id
 
     return commands.check(pred)
 

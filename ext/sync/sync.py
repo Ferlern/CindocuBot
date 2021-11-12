@@ -1,7 +1,7 @@
 import logging
 
 import discord
-from core import Member_data_controller, Personal_voice, User_roles
+from core import MemberDataController, PersonalVoice, UserRoles
 from discord.ext import commands
 from discord.utils import get
 from main import SEBot
@@ -21,7 +21,7 @@ class Sync(commands.Cog):
 
     def get_roles_change(self,
                          target: discord.Member) -> tuple[outdated, added]:
-        member_info = Member_data_controller(target.id)
+        member_info = MemberDataController(target.id)
 
         user_roles_ids = [
             role.id for role in target.roles if role.name != '@everyone'
@@ -44,9 +44,9 @@ class Sync(commands.Cog):
         )
 
         for role in added:
-            User_roles.get_or_create(user=target.id, role_id=role)
+            UserRoles.get_or_create(user=target.id, role_id=role)
         for role in outdated:
-            role_in_db: User_roles = User_roles.get_or_none(user=target.id,
+            role_in_db: UserRoles = UserRoles.get_or_none(user=target.id,
                                                             role_id=role)
             if role_in_db: role_in_db.delete_instance()
 
@@ -68,9 +68,9 @@ class Sync(commands.Cog):
 
     async def recovery_member_voice(self, target: discord.Member):
         guild: discord.Guild = target.guild
-        member_info = Member_data_controller(target.id)
+        member_info = MemberDataController(target.id)
 
-        voice: Personal_voice = member_info.user_info.user_personal_voice
+        voice: PersonalVoice = member_info.user_info.user_personal_voice
         if len(voice) == 0: return
         voice = voice[0]
         if not guild.get_channel(voice.voice_id):
@@ -78,7 +78,13 @@ class Sync(commands.Cog):
             category = get(guild.categories,
                            id=self.bot.config['personal_voice']['categoty'])
             new_voice = await guild.create_voice_channel(
-                name=target.name, category=category, user_limit=voice.slots)
+                name=target.name, category=category, user_limit=voice.slots
+            )
+            await new_voice.set_permissions(
+                            target,
+                            manage_permissions = True,
+                            manage_channels = True
+                        )
             voice.voice_id = new_voice.id
             voice.save()
 

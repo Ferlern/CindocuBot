@@ -6,7 +6,7 @@ import core
 import discord
 from discord.ext import commands, tasks
 from main import SEBot
-from utils.custom_errors import NotСonfigured
+from utils.custom_errors import NotConfigured
 
 logger = logging.getLogger('Arctic')
 
@@ -25,7 +25,7 @@ class Mute_controller:
     async def mute_controller(self):
         logger.info('mute_controller called')
         try:
-            model = core.Member_data_controller.model
+            model = core.MemberDataController.model
             query = model.select().where(
                 model.mute_end_at <= time.time() + 3600)
             muted_members = query.dicts().execute()
@@ -57,7 +57,7 @@ class Mute_controller:
         """
         logger.debug(f'clean_mute ready for {member}. time: {mute_time}')
         await asyncio.sleep(mute_time + 1)
-        member_info = core.Member_data_controller(member.id)
+        member_info = core.MemberDataController(member.id)
         role = discord.utils.get(member.guild.roles,
                                  id=self.bot.config["mute_role"])
         if member_info.user_info.mute_end_at:
@@ -75,12 +75,12 @@ class Mute_controller:
         role = discord.utils.get(members[0].guild.roles,
                                  id=self.bot.config["mute_role"])
         if not role:
-            raise NotСonfigured("mute role not specified. Check config")
+            raise NotConfigured("mute role not specified. Check config")
         muted = []
         for member in members:
             try:
                 await member.add_roles(role, reason=reason)
-                member_info = core.Member_data_controller(member.id)
+                member_info = core.MemberDataController(member.id)
                 muted.append(member)
                 member_info.set_mute_time(time)
                 member_info.save()

@@ -46,5 +46,5 @@ class AlreadyLiked(Exception):
     pass
 
 
-class NotСonfigured(Exception):
+class NotConfigured(Exception):
     pass

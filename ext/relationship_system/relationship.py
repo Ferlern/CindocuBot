@@ -1,7 +1,7 @@
 import logging
 
 import discord
-from core import Member_data_controller
+from core import MemberDataController
 from discord.embeds import Embed
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
@@ -13,7 +13,7 @@ from utils.custom_errors import (MarriedWithAnother, NotEnoughMoney,
 from utils.utils import DefaultEmbed
 
 from ..utils import Interaction_inspect
-from ..utils.converters import Interacted_member
+from ..utils.converters import InteractedMember
 
 loger = logging.getLogger('Arctic')
 
@@ -38,7 +38,7 @@ class relationship(commands.Cog):
 
     async def divorce_handler(self, interaction: Interaction, author_id: int):
         await Interaction_inspect.only_author(interaction)
-        member = Member_data_controller(author_id)
+        member = MemberDataController(author_id)
         target_id = member.soul_mate
         try:
             member.divorce(confirmed=True)
@@ -56,19 +56,19 @@ class relationship(commands.Cog):
             await interaction.respond(type=7, embed=embed, components=[])
 
     @commands.command()
-    async def marry(self, ctx, target: Interacted_member):
+    async def marry(self, ctx, target: InteractedMember):
         
         loger.info(f'marry proposal from {ctx.author} to {target}')
         await ctx.message.delete()
 
-        member = Member_data_controller(id=ctx.author.id)
+        member = MemberDataController(id=ctx.author.id)
         coin = self.bot.config["coin"]
         prefix = self.bot.config["prefixes"][0]
         price = self.bot.config['marry_price']
         to_send = {}
         try:
             member.marry(target.id)
-            member = Member_data_controller(id=ctx.author.id)
+            member = MemberDataController(id=ctx.author.id)
             member.change_balance(-price)
             member.save()
         except NotEnoughMoney as e:
@@ -110,7 +110,7 @@ class relationship(commands.Cog):
     async def divorce(self, ctx):
         await ctx.message.delete()
         loger.debug(f'{ctx.author} call command divorce')
-        member = Member_data_controller(id=ctx.author.id)
+        member = MemberDataController(id=ctx.author.id)
         to_send = {}
         try:
             pair_id = member.soul_mate
@@ -150,7 +150,7 @@ class relationship(commands.Cog):
             return
 
         if component.label == 'Accept':
-            member = Member_data_controller(id=author_id)
+            member = MemberDataController(id=author_id)
             try:
                 member.marry(target_id)
             except UserAlreadyMarried:

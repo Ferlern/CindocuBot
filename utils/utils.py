@@ -9,9 +9,9 @@ class DefaultEmbed(discord.Embed):
 
 
 class DiscordTable:
-    """Cteate 40-max-length table-like code block"""
+    """Create 40-max-length table-like code block"""
     def __init__(self, **kwargs) -> None:
-        """Cteate 40-max-length table-like code block
+        """Create 40-max-length table-like code block
         
         kwargs
         --------
@@ -60,7 +60,7 @@ class DiscordTable:
         return string
 
 
-class TimeConstans:
+class TimeConstants:
     second = 1
     minute = second * 60
     hour = minute * 60
@@ -71,10 +71,10 @@ class TimeConstans:
 
 
 intervals = (
-    ('days', TimeConstans.day),
-    ('hours', TimeConstans.hour),
-    ('minutes', TimeConstans.minute),
-    ('seconds', TimeConstans.second),
+    ('days', TimeConstants.day),
+    ('hours', TimeConstants.hour),
+    ('minutes', TimeConstants.minute),
+    ('seconds', TimeConstants.second),
 )
 
 
@@ -95,6 +95,7 @@ def display_time(seconds, granularity=3, full=False):
                 result.append("**{}**{}".format(value, name[:1]))
     return ' '.join(result[:granularity])
 
+
 def experience_converting(current_exp: int):
     """Return tuple(level, gained_after_lvl_up, left_before_lvl_up)"""
     a1 = 100
@@ -110,5 +111,6 @@ def experience_converting(current_exp: int):
     need_for_lvl_up = Sn - prevSn
     gained_after_lvl_up = current_exp - prevSn
     return (current_lvl, gained_after_lvl_up, need_for_lvl_up)
+
 
 next_bitrate = {'64': 96, '96': 128, '128': 192, '192': 256, '256': 384}

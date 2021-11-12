@@ -1,6 +1,6 @@
 import logging
 
-from core import Personal_voice
+from core import PersonalVoice
 from discord import channel
 from discord.ext import commands
 from main import SEBot
@@ -16,7 +16,7 @@ class voice_customize(commands.Cog):
     async def on_guild_channel_update(self, before, after):
         if not isinstance(before, channel.VoiceChannel):
             return
-        voices = Personal_voice.select().dicts().execute()
+        voices = PersonalVoice.select().dicts().execute()
         voices_id_list = [voice['voice_id'] for voice in voices]
         if before.id not in voices_id_list:
             return

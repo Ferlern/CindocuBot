@@ -3,7 +3,6 @@ import sys
 import time
 import traceback
 from importlib import reload
-
 import discord
 from discord.ext import commands
 from discord.ext.commands.errors import MissingPermissions
@@ -13,7 +12,7 @@ from bot_components import translate
 from bot_components.configurator import configurator
 from ext.utils.checks import is_admin, is_mod
 from utils.custom_context import Context
-from utils.custom_errors import (ConfirmationError, NotСonfigured,
+from utils.custom_errors import (ConfirmationError, NotConfigured,
                                  OnlyAuthorError, WaitError)
 
 logger = logging.getLogger('Arctic')
@@ -32,7 +31,7 @@ class SEBot(commands.AutoShardedBot):
         self.config = configurator.config
         self.system = configurator.system
         self.controller = translate.MessageController(self)
-        self.expected_exception = (ConfirmationError, NotСonfigured,
+        self.expected_exception = (ConfirmationError, NotConfigured,
                                    OnlyAuthorError, WaitError)
         allowed_mentions = discord.AllowedMentions(roles=True,
                                                    everyone=True,
@@ -125,7 +124,7 @@ class SEBot(commands.AutoShardedBot):
     def get_guild_member(self, member_id):
         guild = self.get_guild(self.config['guild'])
         if not guild:
-            raise NotСonfigured('guild not specified. Check your config.')
+            raise NotConfigured('guild not specified. Check your config.')
         member = guild.get_member(member_id)
         return member
 

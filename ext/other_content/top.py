@@ -3,7 +3,7 @@ import logging
 from discord import emoji
 
 import core
-from core import Likes, User_info
+from core import Likes, UserInfo
 from discord.ext import commands
 from discord_components import Interaction
 from discord_components.component import Select, SelectOption
@@ -101,14 +101,14 @@ class Top(commands.Cog):
         selected = values['selected']
 
         if selected == 'likes':
-            items = (User_info.select(
-                User_info.id,
+            items = (UserInfo.select(
+                UserInfo.id,
                 fn.COALESCE(fn.SUM(Likes.type), 0).alias('likes')).join(
                     Likes,
-                    on=Likes.to_user == User_info.id,
+                    on=Likes.to_user == UserInfo.id,
                     join_type=JOIN.LEFT_OUTER).where(
-                        User_info.on_server == True).group_by(
-                            User_info.id).order_by(
+                        UserInfo.on_server == True).group_by(
+                            UserInfo.id).order_by(
                                 fn.COALESCE(
                                     fn.SUM(Likes.type),
                                     0).desc()).limit(10).dicts().execute())
@@ -116,10 +116,10 @@ class Top(commands.Cog):
             items = (core.Relationship.select().order_by(
                 core.Relationship.married_time).limit(10).dicts().execute())
         else:
-            op = getattr(User_info, selected)
+            op = getattr(UserInfo, selected)
 
-            items = (User_info.select(
-                User_info.id, op).where(User_info.on_server == True).order_by(
+            items = (UserInfo.select(
+                UserInfo.id, op).where(UserInfo.on_server == True).order_by(
                     op.desc()).limit(10).dicts().execute())
 
         embed = self.embed_builder(selected, items)

@@ -9,18 +9,18 @@ from utils.custom_errors import (AlreadyLiked, MaxBitrateReached,
                                  VoiceAlreadyCreated)
 from utils.utils import experience_converting, next_bitrate
 
-from .data_controller.models import (Likes, Personal_voice, Relationship,
-                                     User_info, User_roles)
+from .data_controller.models import (Likes, PersonalVoice, Relationship,
+                                     UserInfo, UserRoles)
 
 loger = logging.getLogger('Arctic')
 
 
-class Member_data_controller:
-    model = User_info
+class MemberDataController:
+    model = UserInfo
 
     def __init__(self, id):
-        self.user_info, created = User_info.get_or_create(id=id)
-        self.user_info: User_info
+        self.user_info, created = UserInfo.get_or_create(id=id)
+        self.user_info: UserInfo
         self.to_save = []
         if created:
             loger.debug(f'user {self.user_info.id} created')
@@ -55,13 +55,13 @@ class Member_data_controller:
     def create_private_voice(self, voice_id):
         if self.user_info.user_personal_voice:
             raise VoiceAlreadyCreated
-        Personal_voice.create(user=self.user_info.id,
+        PersonalVoice.create(user=self.user_info.id,
                               voice_id=voice_id,
                               slots=5,
                               max_bitrate=64)
 
     def buy_slot(self, price):
-        voice = Personal_voice.get(user=self.user_info.id)
+        voice = PersonalVoice.get(user=self.user_info.id)
         if voice.slots >= 25:
             raise MaxSlotsAmount
         price = voice.slots * price
@@ -72,7 +72,7 @@ class Member_data_controller:
         voice.save()
 
     def buy_bitrate(self, price):
-        voice = Personal_voice.get(user=self.user_info.id)
+        voice = PersonalVoice.get(user=self.user_info.id)
         try:
             add_bitrate = next_bitrate[str(
                 voice.max_bitrate)] - voice.max_bitrate
@@ -88,7 +88,7 @@ class Member_data_controller:
     def marry(self, pair_id):
         if self._get_relationship():
             raise UserAlreadyMarried
-        other = Member_data_controller(id=pair_id)
+        other = MemberDataController(id=pair_id)
         if other._get_relationship():
             raise TargetAlreadyMarried
         relationship = Relationship(soul_mate=other.user_info.id,
@@ -172,7 +172,7 @@ class Member_data_controller:
 
     def _change_like(self, to_member: discord.Member, type: bool):
         to_member_id = to_member.id
-        Member_data_controller(to_member_id)
+        MemberDataController(to_member_id)
         like, created = Likes.get_or_create(user=self.user_info.id,
                                             to_user=to_member_id)
         if like.type == type:

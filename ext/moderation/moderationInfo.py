@@ -4,12 +4,12 @@ import re
 import discord
 from peewee import DoesNotExist, Query
 from core import Logs
-from core_elements.data_controller.models import Mod_log
+from core_elements.data_controller.models import ModLog
 from discord.ext import commands
 from discord_components import Button, Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot
-from utils.utils import DefaultEmbed, DiscordTable, TimeConstans, display_time
+from utils.utils import DefaultEmbed, DiscordTable, TimeConstants, display_time
 
 from ..utils.checks import is_mod
 from ..utils.utils import wait_for_message
@@ -101,20 +101,20 @@ class ModerationInfo(commands.Cog):
                    options=[
                        SelectOption(label="any", value=0),
                        SelectOption(label="1 hour",
-                                    value=TimeConstans.hour,
-                                    default=period == TimeConstans.hour),
+                                    value=TimeConstants.hour,
+                                    default=period == TimeConstants.hour),
                        SelectOption(label="6 hour",
-                                    value=TimeConstans.six_hour,
-                                    default=period == TimeConstans.six_hour),
+                                    value=TimeConstants.six_hour,
+                                    default=period == TimeConstants.six_hour),
                        SelectOption(label="1 day",
-                                    value=TimeConstans.day,
-                                    default=period == TimeConstans.day),
+                                    value=TimeConstants.day,
+                                    default=period == TimeConstants.day),
                        SelectOption(label="1 week",
-                                    value=TimeConstans.week,
-                                    default=period == TimeConstans.week),
+                                    value=TimeConstants.week,
+                                    default=period == TimeConstants.week),
                        SelectOption(label="1 month",
-                                    value=TimeConstans.mounts,
-                                    default=period == TimeConstans.mounts),
+                                    value=TimeConstants.mounts,
+                                    default=period == TimeConstants.mounts),
                    ]),
             Select(id=f'moderationInfoSelectAction{str(action)}',
                    placeholder="select action for search",
@@ -216,7 +216,7 @@ class ModerationInfo(commands.Cog):
             await ctx.send(embed=embed, components=components)
             return
 
-        log: Mod_log = Logs.get_mod_log(id=int(log))
+        log: ModLog = Logs.get_mod_log(id=int(log))
         if not log:
             await ctx.send(embed = DefaultEmbed(description = 'Log not found'))
             return    

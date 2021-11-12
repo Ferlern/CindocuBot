@@ -1,0 +1,7 @@
+aiohttp==3.7.4.post0
+discord.py==1.7.3
+discord_components==2.0.4
+googletrans==4.0.0rc1
+langdetect==1.0.9
+peewee==3.14.4
+psutil==5.8.0

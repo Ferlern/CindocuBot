@@ -2,7 +2,7 @@ import logging
 import typing
 
 import discord
-from core import Member_data_controller
+from core import MemberDataController
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from main import SEBot
@@ -37,7 +37,7 @@ class profile(commands.Cog):
             member = ctx.author
         self.sync(member)
         
-        member_info = Member_data_controller(id=member.id)
+        member_info = MemberDataController(id=member.id)
         coin = self.bot.config["coin"]
         soul_mate = member_info.soul_mate
         married_time = member_info.married_time
@@ -90,7 +90,7 @@ class profile(commands.Cog):
 
     @commands.command(aliases=['bio'])
     async def biography(self, ctx, *, biography: str):
-        member = Member_data_controller(id=ctx.author.id)
+        member = MemberDataController(id=ctx.author.id)
         new_lines = biography.count('\n')
 
         if new_lines > 5:

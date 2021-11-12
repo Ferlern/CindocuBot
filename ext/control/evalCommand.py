@@ -1,19 +1,28 @@
+from collections import defaultdict
 import os
 import sys
 import time
 from inspect import getsource
-
 import discord
 from discord.ext import commands
 from ..utils.checks import is_owner
-from core_elements.data_controller import models 
+from utils.utils import DefaultEmbed
+from core_elements.data_controller import models
+from core_elements import code as saved_codes_controller
 
 codes = []
+
+
+def codes_to_string(codes) -> str:
+    return ' '.join([f'`{code["name"]}`' for code in codes])
 
 
 class EvalCommandCog(commands.Cog):
     def __init__(self):
         pass
+    
+    async def cog_check(self, ctx):
+        return await is_owner().predicate(ctx)
 
     def resolve_variable(self, variable):
         if hasattr(variable, "__iter__"):
@@ -25,7 +34,7 @@ class EvalCommandCog(commands.Cog):
 
         if (not variable) and (not isinstance(variable, bool)):
             return f"пустой {type(variable).__name__} объект"
-        return (variable if (len(f"{variable}") <= 1000) else
+        return (variable if (len(f"{variable}") <= 1024) else
                 f"{type(variable).__name__} длинны {len(f'{variable}')}")
 
     def prepare(self, string):
@@ -35,9 +44,7 @@ class EvalCommandCog(commands.Cog):
             arr[len(arr) - 1] = "return " + arr[::-1][0]
         return "".join(f"\n\t{i}" for i in arr)
 
-    @commands.command(aliases=['eval', 'exec', 'evaluate'])
-    @is_owner()
-    async def _eval(self, ctx, *, code: str):
+    async def evaluate(self, ctx, code):
         global codes
         codes.append(code)
         if len(codes) > 30:
@@ -85,9 +92,17 @@ class EvalCommandCog(commands.Cog):
             await ctx.send(embed=embed)
 
         del args, code, silent
-
-    @commands.command(pass_context=True, aliases=['code'])
-    @is_owner()
+    
+    @commands.command(aliases=['eval', 'exec', 'evaluate'])
+    async def _eval(self, ctx, *, code: str):
+        if saved_codes := saved_codes_controller.get_saved_codes(code):
+            for code in saved_codes:
+                await self.evaluate(ctx, code['code'])
+        else:
+            await self.evaluate(ctx, code)
+        
+        
+    @commands.command()
     async def _last_code(self, ctx, index=1):
         code: str
         try:
@@ -97,6 +112,46 @@ class EvalCommandCog(commands.Cog):
         else:
             code = f'```py\n{code}```' if not code.startswith("```") else code
             await ctx.send(code)
+            
+    @commands.command()
+    async def savecode(self, ctx, name: str, *, code: str):
+        saved_codes_controller.save_code(code, name)
+        await ctx.tick(True)
+        
+    @commands.command()
+    async def setgroup(self, ctx, name: str, group: str):
+        saved_codes_controller.change_group(name, group)
+        await ctx.tick(True)
+        
+    @commands.command()
+    async def rename(self, ctx, old_name: str, new_name: str):
+        saved_codes_controller.change_name(old_name, new_name)
+        await ctx.tick(True)
+        
+    @commands.command()
+    async def deletecode(self, ctx, name: str):
+        saved_codes_controller.delete_codes(name)
+        await ctx.tick(True)
+        
+    @commands.command()
+    async def showcode(self, ctx, name: str = "Show All"):
+        
+        codes = saved_codes_controller.get_saved_codes(name)
+        amount = len(codes)
+        
+        embed = DefaultEmbed()
+        if amount == 0:
+            embed.title = 'Nothing to show. Existing codes:'
+            embed.description = codes_to_string(saved_codes_controller.get_all())
+        elif amount == 1:
+            code = codes[0]
+            embed.title = f"Name: {code['name']}; Group: {code['group']}"
+            embed.description = code['code']
+        else:
+            embed.title = f"Group {name}"
+            embed.description = codes_to_string(codes)
+        
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

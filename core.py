@@ -1,10 +1,10 @@
 from core_elements import logger
 from core_elements.data_controller.db_clear import create_database
-from core_elements.data_controller.models import (Likes, Personal_voice,
-                                                  Relationship, Shop_roles,
-                                                  Suggestions, User_info,
-                                                  User_roles, Mod_log)
+from core_elements.data_controller.models import (Likes, PersonalVoice,
+                                                  Relationship, ShopRoles,
+                                                  Suggestions, UserInfo,
+                                                  UserRoles, ModLog)
 from core_elements.logs import Logs
-from core_elements.user import Member_data_controller
+from core_elements.user import MemberDataController
 
 logger.create_logger('ERROR')

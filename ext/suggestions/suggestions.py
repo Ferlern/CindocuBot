@@ -10,7 +10,7 @@ from discord.ext.commands.errors import BadArgument
 from discord_components.component import SelectOption
 from main import SEBot
 from peewee import Query
-from utils.custom_errors import NotСonfigured
+from utils.custom_errors import NotConfigured
 from utils.utils import DefaultEmbed
 
 from ..utils import Interaction_inspect
@@ -202,7 +202,7 @@ class suggestions(commands.Cog):
         channel = ctx.author.guild.get_channel(
             self.bot.config['suggestions_channel'])
         if not channel:
-            raise NotСonfigured('Channel for suggestions not specified')
+            raise NotConfigured('Channel for suggestions not specified')
         await ctx.send(embed=DefaultEmbed(
             description=f"{self.emoji['send']} Your suggestion has been sent successfully"))
 

@@ -29,7 +29,7 @@ def convert_time(argument):
     return time
 
 
-class Time_and_ReasonConverter(commands.Converter):
+class TimeAndReasonConverter(commands.Converter):
     async def convert(self, ctx, args):
         reason = re.findall(reason_regex, args)
         reason = ["not specified."] if len(reason) == 0 else reason
@@ -72,7 +72,7 @@ class NotBotMember(commands.MemberConverter):
         return member
 
 
-class Interacted_member(commands.MemberConverter):
+class InteractedMember(commands.MemberConverter):
     async def convert(self, ctx, argument) -> discord.Member:
         member = await super().convert(ctx, argument)
             
@@ -82,7 +82,7 @@ class Interacted_member(commands.MemberConverter):
             raise commands.BadArgument('Specified user is yourself')
         return member
 
-class PunishedMember(Interacted_member):
+class PunishedMember(InteractedMember):
     
     async def convert(self, ctx, argument) -> discord.Member:
         member = await super().convert(ctx, argument)

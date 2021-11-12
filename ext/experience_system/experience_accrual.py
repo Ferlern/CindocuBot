@@ -2,7 +2,7 @@ import asyncio
 import random
 
 import discord
-from core import Member_data_controller
+from core import MemberDataController
 from discord.ext import commands
 from main import SEBot
 from utils.utils import DefaultEmbed
@@ -14,7 +14,7 @@ class experience_accrual(commands.Cog):
         self.on_cooldown = []
 
     def add_exp(self, author, config):
-        member = Member_data_controller(id=author.id)
+        member = MemberDataController(id=author.id)
         old_level = member.level[0]
         member.user_info.experience += random.randint(
             config['experience_per_message'][0],
@@ -25,7 +25,7 @@ class experience_accrual(commands.Cog):
         return old_level, new_level
 
     def add_coins(self, new_level, author, config):
-        member = Member_data_controller(id=author.id)
+        member = MemberDataController(id=author.id)
         member.change_balance(new_level * config['coins_per_level_up'])
         member.save()
 

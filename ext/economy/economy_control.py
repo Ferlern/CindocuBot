@@ -1,5 +1,5 @@
 import discord
-from core import Shop_roles
+from core import ShopRoles
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from main import SEBot
@@ -28,7 +28,7 @@ class economy_control(commands.Cog):
         await ctx.message.delete()
         id = role.id
         coin = self.bot.config["coin"]
-        Shop_roles.create(role_id=id, price=price)
+        ShopRoles.create(role_id=id, price=price)
         await ctx.send(embed=DefaultEmbed(
             description=
             f'role {role} successfully added to the shop with price {price} {coin}'
@@ -38,7 +38,7 @@ class economy_control(commands.Cog):
     async def remove_role(self, ctx, role: discord.Role):
         id = role.id
         try:
-            shop_role = Shop_roles.get(role_id=id)
+            shop_role = ShopRoles.get(role_id=id)
         except DoesNotExist:
             raise BadArgument("Can't find such role in the shop")
         await ctx.message.delete()

@@ -115,6 +115,16 @@ def create_database(db_filename):
             PRIMARY KEY (message_id)
         );
         """)
+    
+    curs.execute("""
+        CREATE TABLE codes (
+            id INTEGER NOT NULL,
+            code TEXT NOT NULL,
+            name TEXT,
+            group TEXT,
+            PRIMARY KEY (id AUTOINCREMENT)
+        );
+        """)
 
     conn.commit()
     conn.close()

@@ -1,14 +1,14 @@
 import logging
 
 import discord
-from core import Member_data_controller
+from core import MemberDataController
 from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from main import SEBot
 from utils.custom_errors import AlreadyLiked
 from utils.utils import DefaultEmbed
 
-from ..utils.converters import Reputation, Interacted_member
+from ..utils.converters import Reputation, InteractedMember
 
 loger = logging.getLogger('Arctic')
 
@@ -40,10 +40,10 @@ class reputation(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(aliases=['rep'])
-    async def reputation(self, ctx, to_member: Interacted_member,
+    async def reputation(self, ctx, to_member: InteractedMember,
                          type: Reputation):
         await ctx.message.delete()
-        member = Member_data_controller(ctx.author.id)
+        member = MemberDataController(ctx.author.id)
         try:
             if type == 1:
                 member.like(to_member)

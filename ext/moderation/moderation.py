@@ -9,11 +9,11 @@ from discord.ext import commands
 from discord.ext.commands.errors import BadArgument
 from discord_components import Button
 from main import SEBot
-from utils.custom_errors import NotСonfigured
+from utils.custom_errors import NotConfigured
 from utils.utils import DefaultEmbed, display_time
 
 from ..utils.checks import is_mod
-from ..utils.converters import Time_and_ReasonConverter, PunishedMember
+from ..utils.converters import TimeAndReasonConverter, PunishedMember
 from ..utils.utils import to_string, to_string_with_ids
 from .components import mute_controller
 from .components.mail import mail
@@ -55,7 +55,7 @@ class moderationCog(commands.Cog):
                    ctx,
                    members: commands.Greedy[PunishedMember],
                    *,
-                   reason_and_time: Time_and_ReasonConverter = ""):
+                   reason_and_time: TimeAndReasonConverter = ""):
         if len(members) == 0:
             raise commands.BadArgument("user not specified")
         if len(reason_and_time) == 0:
@@ -96,7 +96,7 @@ class moderationCog(commands.Cog):
         await ctx.message.delete()
 
         for member in members:
-            member_info = core.Member_data_controller(member.id)
+            member_info = core.MemberDataController(member.id)
             member_info.end_mute()
             member_info.save()
 
@@ -125,7 +125,7 @@ class moderationCog(commands.Cog):
         await ctx.message.delete()
 
         for member in members:
-            member_info = core.Member_data_controller(member.id)
+            member_info = core.MemberDataController(member.id)
             member_info.warn()
             member_info.save()
 
@@ -138,10 +138,10 @@ class moderationCog(commands.Cog):
                 try:
                     actions = warn_system[-1]
                 except IndexError:
-                    raise NotСonfigured(
+                    raise NotConfigured(
                         "Set at least one warning in config")
             except TypeError:
-                raise NotСonfigured("Warn system created incorrectly")
+                raise NotConfigured("Warn system created incorrectly")
 
             if actions.get('ban'):
                 additional_description = actions[
@@ -186,7 +186,7 @@ class moderationCog(commands.Cog):
         await ctx.message.delete()
 
         for member in members:
-            member_info = core.Member_data_controller(member.id)
+            member_info = core.MemberDataController(member.id)
             member_info.unwarn()
             member_info.save()
 

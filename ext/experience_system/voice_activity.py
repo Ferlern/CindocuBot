@@ -2,7 +2,7 @@ import logging
 import time
 
 import discord
-from core import Member_data_controller
+from core import MemberDataController
 from discord.ext import commands
 from main import SEBot
 
@@ -22,7 +22,7 @@ class voice_activity(commands.Cog):
     def remove_from_count(self, user):
         if user.id in self.count_for.keys():
             logger.debug(f'<voice_activity> - stop voice activity for {user}')
-            member = Member_data_controller(id=user.id)
+            member = MemberDataController(id=user.id)
             member.user_info.voice_activity += time.time(
             ) - self.count_for.pop(user.id)
             member.save()

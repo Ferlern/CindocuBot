@@ -1,6 +1,6 @@
 import time
 
-from core import Member_data_controller, Shop_roles
+from core import MemberDataController, ShopRoles
 from discord.ext import commands
 from discord.utils import get
 from discord_components import Interaction
@@ -8,13 +8,13 @@ from discord_components.component import Select, SelectOption
 from main import SEBot
 from utils.custom_errors import (MaxBitrateReached, MaxSlotsAmount,
                                  NotEnoughMoney)
-from utils.utils import DefaultEmbed, TimeConstans, next_bitrate
+from utils.utils import DefaultEmbed, TimeConstants, next_bitrate
 
 from ..utils import Interaction_inspect
 from ..utils.build import (build_page_components, get_last_page,
                            page_implementation, update_message)
 from ..utils.checks import is_mod
-from ..utils.converters import Interacted_member, NaturalNumber, NotBotMember
+from ..utils.converters import InteractedMember, NaturalNumber, NotBotMember
 
 
 class economyCog(commands.Cog):
@@ -62,7 +62,7 @@ class economyCog(commands.Cog):
     def build_voice_shop_embed(self, values: dict):
         coin = self.bot.config["coin"]
         config = self.bot.config['personal_voice']
-        member = Member_data_controller(id=values['author'])
+        member = MemberDataController(id=values['author'])
         current_voice = member.user_info.user_personal_voice
         embed = DefaultEmbed(
             title=f'{self.economy_emoji["voice_shop"]} Private voice shop',
@@ -130,7 +130,7 @@ class economyCog(commands.Cog):
 
     def shop_builder(self, values: dict):
         if values['selected'] == 'role':
-            roles = Shop_roles.select().order_by(Shop_roles.price)
+            roles = ShopRoles.select().order_by(ShopRoles.price)
             last_page = get_last_page(roles)
             page, last_page, actual_roles = page_implementation(values, roles)
             page_components = build_page_components(page, last_page,
@@ -169,7 +169,7 @@ class economyCog(commands.Cog):
     async def buy_item(self, interaction: Interaction):
         await Interaction_inspect.only_author(interaction)
 
-        member = Member_data_controller(interaction.author.id)
+        member = MemberDataController(interaction.author.id)
 
         to_buy = interaction.values[0]
         coin = self.bot.config['coin']
@@ -177,8 +177,8 @@ class economyCog(commands.Cog):
             to_buy = int(to_buy)
             member_roles = member.roles
 
-            roles = Shop_roles.select().order_by(
-                Shop_roles.price)
+            roles = ShopRoles.select().order_by(
+                ShopRoles.price)
             roles = list(roles.dicts().execute())
             
             role_to_buy = roles[to_buy]
@@ -228,6 +228,11 @@ class economyCog(commands.Cog):
                             name=interaction.author.name,
                             category=category,
                             user_limit=5)
+                        await voice.set_permissions(
+                            interaction.author,
+                            manage_permissions = True,
+                            manage_channels = True
+                        )
                         member.create_private_voice(voice.id)
                         member.change_balance(-config['price'])
                         member.save()
@@ -282,18 +287,18 @@ class economyCog(commands.Cog):
             await ctx.message.edit(embed=embed, components=components)
 
     @commands.command()
-    @commands.cooldown(1, TimeConstans.day, commands.BucketType.user)
+    @commands.cooldown(1, TimeConstants.day, commands.BucketType.user)
     async def daily(self, ctx):
         await ctx.message.delete()
         daily = self.bot.config["daily"]
         coin = self.bot.config["coin"]
 
-        member = Member_data_controller(ctx.author.id)
+        member = MemberDataController(ctx.author.id)
         member.change_balance(daily)
         member.save()
 
         description = f"{daily} {coin} have been successfully transferred to your balance. Now you have {member.balance} {coin}"
-        description += f"\n\nYou can get the bonus again <t:{int(time.time() + TimeConstans.day)}:R>"
+        description += f"\n\nYou can get the bonus again <t:{int(time.time() + TimeConstants.day)}:R>"
 
         embed = DefaultEmbed(title=f"{self.economy_emoji['daily_recieved']} Daily bonus received!",
                              description=description)
@@ -324,7 +329,7 @@ class economyCog(commands.Cog):
         
     @commands.command(aliases=['ac'])
     async def add_coins(self, ctx, member: NotBotMember, amount: int):
-        member_data = Member_data_controller(member.id)
+        member_data = MemberDataController(member.id)
         
         if -amount > member_data.balance:
             amount = -member_data.balance
@@ -334,10 +339,10 @@ class economyCog(commands.Cog):
         await ctx.tick(True)
         
     @commands.command(aliases=['give'])
-    async def transfer(self, ctx, member: Interacted_member, amount: NaturalNumber):
+    async def transfer(self, ctx, member: InteractedMember, amount: NaturalNumber):
         coin = self.bot.config['coin']
-        author_data = Member_data_controller(ctx.author.id)
-        member_data = Member_data_controller(member.id)
+        author_data = MemberDataController(ctx.author.id)
+        member_data = MemberDataController(member.id)
         
         if amount > author_data.balance:
             amount = member_data.balance

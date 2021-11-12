@@ -8,7 +8,7 @@ class BaseModel(Model):
         database = conn
 
 
-class User_info(BaseModel):
+class UserInfo(BaseModel):
     id = AutoField(column_name='id')
     balance = IntegerField(column_name='balance', default=0)
     experience = IntegerField(column_name='experience', default=0)
@@ -22,9 +22,9 @@ class User_info(BaseModel):
         table_name = 'user'
 
 
-class Personal_voice(BaseModel):
+class PersonalVoice(BaseModel):
     id = AutoField(column_name='id')
-    user = ForeignKeyField(User_info,
+    user = ForeignKeyField(UserInfo,
                            column_name='user',
                            backref="user_personal_voice")
     voice_id = IntegerField(column_name='voice_id')
@@ -35,9 +35,9 @@ class Personal_voice(BaseModel):
         table_name = 'user_personal_voice'
 
 
-class User_roles(BaseModel):
+class UserRoles(BaseModel):
     id = AutoField(column_name='id')
-    user = ForeignKeyField(User_info, column_name='user', backref="user_roles")
+    user = ForeignKeyField(UserInfo, column_name='user', backref="user_roles")
     role_id = IntegerField(column_name='role_id')
 
     class Meta:
@@ -46,10 +46,10 @@ class User_roles(BaseModel):
 
 class Relationship(BaseModel):
     id = AutoField(column_name='id')
-    user = ForeignKeyField(User_info,
+    user = ForeignKeyField(UserInfo,
                            column_name='user',
                            backref="relationship")
-    soul_mate = ForeignKeyField(User_info,
+    soul_mate = ForeignKeyField(UserInfo,
                                 column_name='soul_mate',
                                 backref="relationship")
     married_time = IntegerField(column_name='married_time')
@@ -60,7 +60,7 @@ class Relationship(BaseModel):
 
 class Likes(BaseModel):
     id = AutoField(column_name='id')
-    user = ForeignKeyField(User_info, column_name='user', backref="likes")
+    user = ForeignKeyField(UserInfo, column_name='user', backref="likes")
     to_user = IntegerField(column_name='to_user')
     type = IntegerField(column_name='type', null=True)
 
@@ -68,7 +68,7 @@ class Likes(BaseModel):
         table_name = 'likes'
 
 
-class Mod_log(BaseModel):
+class ModLog(BaseModel):
     id = AutoField(column_name='id')
     moderator = IntegerField(column_name='moderator')
     action = TextField(column_name='action')
@@ -80,15 +80,15 @@ class Mod_log(BaseModel):
         table_name = 'mod_log'
 
 
-class Mod_log_target(BaseModel):
+class ModLogTarget(BaseModel):
     id = AutoField(column_name='id')
-    mod_log = ForeignKeyField(Mod_log,
+    mod_log = ForeignKeyField(ModLog,
                               column_name='mod_log',
                               backref="mod_log_target")
     target = IntegerField(column_name='target')
 
 
-class Shop_roles(BaseModel):
+class ShopRoles(BaseModel):
     id = AutoField(column_name='id')
     role_id = IntegerField(column_name='role_id')
     price = IntegerField(column_name='price')
@@ -105,6 +105,16 @@ class Suggestions(BaseModel):
 
     class Meta:
         table_name = 'suggestions'
+
+
+class Codes(BaseModel):
+    id = PrimaryKeyField(column_name='id')
+    code = TextField(column_name='code')
+    name = TextField(column_name='name', null=True)
+    group = IntegerField(column_name='group', null=True)
+
+    class Meta:
+        table_name = 'codes'
 
 
 def close_connection():

@@ -86,6 +86,9 @@ class ModLogTarget(BaseModel):
                               column_name='mod_log',
                               backref="mod_log_target")
     target = IntegerField(column_name='target')
+    
+    class Meta:
+        table_name = 'mod_log_target'
 
 
 class ShopRoles(BaseModel):

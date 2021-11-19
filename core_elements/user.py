@@ -160,8 +160,8 @@ class MemberDataController:
 
     def _get_relationship(self, raw=False) -> Union[dict, Relationship]:
         relationship = Relationship.select().where(
-            Relationship.user == self.user_info.id
-            or Relationship.soul_mate == self.user_info.id)
+            (Relationship.user == self.user_info.id)
+            | (Relationship.soul_mate == self.user_info.id))
         if not relationship:
             return None
 

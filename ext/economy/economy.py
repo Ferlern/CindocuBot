@@ -286,7 +286,7 @@ class economyCog(commands.Cog):
             components = Interaction_inspect.inject(components, values)
             await ctx.message.edit(embed=embed, components=components)
 
-    @commands.command()
+    @commands.command(aliases = ['bonus'])
     @commands.cooldown(1, TimeConstants.day, commands.BucketType.user)
     async def daily(self, ctx):
         await ctx.message.delete()

@@ -9,7 +9,7 @@ from discord_components import Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot
 from peewee import JOIN, fn
-from utils.utils import DefaultEmbed, experience_converting
+from utils.utils import DefaultEmbed, experience_converting, display_time
 
 from ..utils import Interaction_inspect
 from ..utils.build import update_message
@@ -69,6 +69,9 @@ class Top(commands.Cog):
             for item in items:
                 level, gained_after_lvl_up, left_before_lvl_up = experience_converting(item[selected])
                 item[selected] = f'**{level}** ({gained_after_lvl_up}/{left_before_lvl_up})'
+        elif selected == 'voice_activity':
+            for item in items:
+                item[selected] = display_time(item[selected])
                 
         embed.description = (
             "\n".join([

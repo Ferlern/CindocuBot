@@ -90,9 +90,9 @@ def display_time(seconds, granularity=3, full=False):
             if value == 1:
                 name = name.rstrip('s')
             if full:
-                result.append("**{}** {}".format(value, name))
+                result.append("{} {}".format(value, name))
             else:
-                result.append("**{}**{}".format(value, name[:1]))
+                result.append("{}{}".format(value, name[:1]))
     return ' '.join(result[:granularity])
 
 

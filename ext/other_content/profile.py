@@ -26,7 +26,7 @@ class profile(commands.Cog):
 
     def sync(self, member):
         cog = self.bot.get_cog('voice_activity')
-        cog.sync_user(member)
+        cog.external_sync(member)
 
     @commands.command()
     async def profile(self,

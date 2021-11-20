@@ -90,7 +90,10 @@ class Sync(commands.Cog):
 
     async def sync_user(self, target: discord.Member):
         logger.debug(f'sync {target.name}')
-
+        
+        cog = self.bot.get_cog('voice_activity')
+        cog.external_sync(target)
+        
         await self.recovery_member_roles(target)
         await self.recovery_member_voice(target)
 
@@ -101,9 +104,11 @@ class Sync(commands.Cog):
             self.update_saved_roles(member)
 
     @commands.command()
-    async def sync(self, ctx):
+    async def sync(self, ctx, target: discord.Member = None):
+        if not target: target = ctx.author
+        
         try:
-            await self.sync_user(ctx.author)
+            await self.sync_user(target)
         except Exception as e:
             logger.exception('Failed to sync user')
             await ctx.tick(False)

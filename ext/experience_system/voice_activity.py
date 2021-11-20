@@ -15,6 +15,11 @@ class voice_activity(commands.Cog):
         self.count_for = {}
         self.allowed_channels = []
 
+    def external_sync(self, user):
+        if voiceState := user.voice:
+            self.check_channel(voiceState.channel, user)
+        self.sync_user(user)
+
     def sync_user(self, user):
         self.remove_from_count(user)
         self.add_to_count(user)
@@ -42,10 +47,12 @@ class voice_activity(commands.Cog):
         members = channel.members
         members = list(
             filter(
-                lambda member: not member.bot and not (member.deaf or member.
-                                                       self_deaf), members))
+                lambda member: not member.bot and not (member.voice.deaf or
+                                                       member.voice.self_deaf),
+                members)
+        )
 
-        if len(members) >= 1:
+        if len(members) > 1:
             if channel not in self.allowed_channels:
                 logger.debug(
                     f'<voice_activity> - add {channel} to allowed_channels')

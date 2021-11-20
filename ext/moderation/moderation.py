@@ -26,6 +26,9 @@ class moderationCog(commands.Cog):
         self.mute_controller = mute_controller.Mute_controller(bot)
         self.mute_controller.start()
 
+    def cog_unload(self):
+        self.mute_controller.cancel()
+
     async def cog_check(self, ctx):
         if not ctx.guild:
             return False

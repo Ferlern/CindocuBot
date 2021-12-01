@@ -1,3 +1,4 @@
+import time
 import discord
 
 
@@ -77,6 +78,8 @@ intervals = (
     ('seconds', TimeConstants.second),
 )
 
+def get_seconds_until_new_day():
+    return int((time.time() // 86400 + 1) * 86400)
 
 def display_time(seconds, granularity=3, full=False):
     if seconds == 0:

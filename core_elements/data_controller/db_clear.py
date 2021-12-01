@@ -18,6 +18,7 @@ def create_database(db_filename):
             experience INTEGER,
             voice_activity INTEGER,
             biography TEXT,
+            bonus_taked_on_day INTEGER,
             mute_end_at INTEGER,
             warn INTEGER,
             on_server BOOLEAN NOT NULL,

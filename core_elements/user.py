@@ -6,7 +6,7 @@ import discord
 from utils.custom_errors import (AlreadyLiked, MaxBitrateReached,
                                  MaxSlotsAmount, NotEnoughMoney, NotMarried,
                                  TargetAlreadyMarried, UserAlreadyMarried,
-                                 VoiceAlreadyCreated)
+                                 VoiceAlreadyCreated, BonusAlreadyReceived)
 from utils.utils import experience_converting, next_bitrate
 
 from .data_controller.models import (Likes, PersonalVoice, Relationship,
@@ -27,6 +27,16 @@ class MemberDataController:
         else:
             loger.debug(f'user {self.user_info.id} getted')
 
+    def take_bonus(self, amount: int):
+        current_day = time.time() // 86400
+        
+        if self.user_info.bonus_taked_on_day < current_day:
+            self.user_info.bonus_taked_on_day = current_day
+            self.change_balance(amount)
+        else:
+            raise BonusAlreadyReceived
+        
+    
     def change_balance(self, amount: int):
         self.user_info.balance += amount
 

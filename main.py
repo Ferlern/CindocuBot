@@ -121,8 +121,8 @@ class SEBot(commands.AutoShardedBot):
             else:
                 return user
 
-    def get_guild_member(self, member_id):
-        guild = self.get_guild(self.config['guild'])
+    def get_guild_member(self, member_id) -> discord.Member:
+        guild: discord.Guild = self.get_guild(self.config['guild'])
         if not guild:
             raise NotConfigured('guild not specified. Check your config.')
         member = guild.get_member(member_id)

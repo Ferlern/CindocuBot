@@ -1,5 +1,3 @@
-import time
-
 from core import MemberDataController, ShopRoles
 from discord.ext import commands
 from discord.utils import get
@@ -7,8 +5,8 @@ from discord_components import Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot
 from utils.custom_errors import (MaxBitrateReached, MaxSlotsAmount,
-                                 NotEnoughMoney)
-from utils.utils import DefaultEmbed, TimeConstants, next_bitrate
+                                 NotEnoughMoney, BonusAlreadyReceived)
+from utils.utils import DefaultEmbed, TimeConstants, get_seconds_until_new_day, next_bitrate
 
 from ..utils import Interaction_inspect
 from ..utils.build import (build_page_components, get_last_page,
@@ -287,36 +285,36 @@ class economyCog(commands.Cog):
             await ctx.message.edit(embed=embed, components=components)
 
     @commands.command(aliases = ['bonus'])
-    @commands.cooldown(1, TimeConstants.day, commands.BucketType.user)
     async def daily(self, ctx):
         await ctx.message.delete()
         daily = self.bot.config["daily"]
         coin = self.bot.config["coin"]
 
         member = MemberDataController(ctx.author.id)
-        member.change_balance(daily)
+        
+        try:
+            member.take_bonus(daily)
+        except BonusAlreadyReceived:
+            embed = DefaultEmbed(
+                title=f"{self.economy_emoji['daily_cooldown']} Bonus not available yet",
+                description=
+                f"Your today's bonus has already been received.\n\nYou can get the bonus again <t:{get_seconds_until_new_day()}:R>"
+            )
+
+            embed.set_thumbnail(url=ctx.author.avatar_url)
+            await ctx.send(embed=embed)
+            return
+            
         member.save()
 
         description = f"{daily} {coin} have been successfully transferred to your balance. Now you have {member.balance} {coin}"
-        description += f"\n\nYou can get the bonus again <t:{int(time.time() + TimeConstants.day)}:R>"
+        description += f"\n\nYou can get the bonus again <t:{get_seconds_until_new_day()}:R>"
 
         embed = DefaultEmbed(title=f"{self.economy_emoji['daily_recieved']} Daily bonus received!",
                              description=description)
         embed.set_thumbnail(url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
-
-    @daily.error
-    async def daily_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            embed = DefaultEmbed(
-                title=f"{self.economy_emoji['daily_cooldown']} Bonus not available yet",
-                description=
-                f"Your today's bonus has already been received.\n\nYou can get the bonus again <t:{int(time.time() + error.retry_after)}:R>"
-            )
-
-            embed.set_thumbnail(url=ctx.author.avatar_url)
-            await ctx.send(embed=embed)
 
     @commands.command()
     async def shop(self, ctx, type='role'):

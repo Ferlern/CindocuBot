@@ -14,6 +14,7 @@ class UserInfo(BaseModel):
     experience = IntegerField(column_name='experience', default=0)
     voice_activity = IntegerField(column_name='voice_activity', default=0)
     biography = TextField(column_name='biography', null=True)
+    bonus_taked_on_day = IntegerField(column_name='bonus_taked_on_day', default=0)
     mute_end_at = IntegerField(column_name='mute_end_at', null=True)
     warn = IntegerField(column_name='warn', default=0)
     on_server = BooleanField(column_name='on_server', default=True)

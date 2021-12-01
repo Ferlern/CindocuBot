@@ -6,6 +6,10 @@ class WaitError(Exception):
     pass
 
 
+class BonusAlreadyReceived(Exception):
+    pass
+
+
 class NotEnoughMoney(Exception):
     pass
 

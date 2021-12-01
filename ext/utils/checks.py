@@ -1,5 +1,6 @@
 from discord.ext import commands
-from discord.ext.commands.errors import MissingPermissions, NoPrivateMessage
+from discord.ext.commands.errors import (MissingPermissions, NoPrivateMessage,
+                                         MissingAnyRole)
 
 
 async def check_guild_permissions(ctx, perms, *, check=all):
@@ -53,6 +54,8 @@ def is_mod():
         try:
             return await first(ctx) or await commands.has_any_role(*ctx.bot.config["moderators_roles"]).predicate(ctx)
         except NoPrivateMessage:
+            return False
+        except MissingAnyRole:
             return False
 
     return commands.check(pred)

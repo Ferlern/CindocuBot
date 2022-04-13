@@ -106,8 +106,8 @@ class profile(commands.Cog):
             
     @biography.error
     async def handle(self, ctx, error):
-        await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.message.delete()
             embed = DefaultEmbed(title="Сan't set biography",
                                     description=f"**Error**: specify bio")
             await ctx.send(embed=embed)

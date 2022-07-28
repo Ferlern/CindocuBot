@@ -10,7 +10,7 @@ from main import SEBot
 logger = logging.getLogger('Arctic-voice')
 
 
-class voice_activity(commands.Cog):
+class VoiceActivityCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.count_for = {}
@@ -57,7 +57,7 @@ class voice_activity(commands.Cog):
                 members)
         )
 
-        if len(members) >= 1:
+        if len(members) > 1:
             if channel not in self.allowed_channels:
                 logger.debug(
                     f'<voice_activity> - add {channel} to allowed_channels')
@@ -120,4 +120,4 @@ class voice_activity(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(voice_activity(bot))
+    bot.add_cog(VoiceActivityCog(bot))

@@ -1,4 +1,3 @@
-from collections import defaultdict
 import os
 import sys
 import time
@@ -135,20 +134,21 @@ class EvalCommandCog(commands.Cog):
         
     @commands.command()
     async def showcode(self, ctx, name: str = "Show All"):
+        _ = ctx.get_translator()
         
         codes = saved_codes_controller.get_saved_codes(name)
         amount = len(codes)
         
         embed = DefaultEmbed()
         if amount == 0:
-            embed.title = 'Nothing to show. Existing codes:'
+            embed.title = _('Nothing to show. Existing codes:')
             embed.description = codes_to_string(saved_codes_controller.get_all())
         elif amount == 1:
             code = codes[0]
-            embed.title = f"Name: {code['name']}; Group: {code['group']}"
+            embed.title = _("Name: {name}; Group: {group}").format(name=code['name'], group=code['group'])
             embed.description = code['code']
         else:
-            embed.title = f"Group {name}"
+            embed.title = _("Group {group}").format(group=name)
             embed.description = codes_to_string(codes)
         
         await ctx.send(embed=embed)

@@ -11,14 +11,14 @@ VALUES_PATTERN = r'values->(.+)'
 
 
 def inject(components: list[Component], values: dict) -> list[Component]:
-    """Distribute values ​​evenly between message components\n
-    The values ​​are placed at the end of the custom ids.
+    """Distribute values evenly between message components\n
+    The values are placed at the end of the custom ids.
     Better not to change it after using this method
 
     Args
     ------
         components (list[Component]): List of components that you are going to pass to the message
-        values (dict): Values ​​to be packed into components
+        values (dict): Values to be packed into components
         
     Return
     ------
@@ -52,13 +52,13 @@ def inject(components: list[Component], values: dict) -> list[Component]:
         component.id += f"->{item[0]}:{repr(item[1])}"
         assert len(
             component.id
-        ) <= 100, f'The maximum custom id length (100) has been reached. Try to pass values ​​in a list or tuple, so they take up less space\nID: {component.id}'
+        ) <= 100, f'The maximum custom id length (100) has been reached. Try to pass values in a list or tuple, so they take up less space\nID: {component.id}'
 
     return components
 
 
 def get_values(interaction: Interaction) -> dict:
-    """Returns the previously packed values ​​from interaction
+    """Returns the previously packed values from interaction
     
     Args:
     -------
@@ -132,12 +132,13 @@ def check_page_change(interaction: Interaction, page: int):
 
 
 async def only_author(interaction):
+    _ = interaction.client.bot.get_translator_by_interaction(interaction)
     values = get_values(interaction)
     author = values.get('author')
     if author and author != interaction.author.id:
         await interaction.respond(
             content=
-            f'Sorry, <@{author}> is the author of this message. Only he can use it'
+            _('Sorry, <@{author}> is the author of this message. Only he can use it').format(author=author),
         )
         raise OnlyAuthorError
 

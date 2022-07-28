@@ -24,14 +24,15 @@ logger = logging.getLogger('Arctic')
 from discord_components import Button, ButtonStyle
 
 
-class suggestions(commands.Cog):
+class SuggestionsCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.emoji = self.bot.config['additional_emoji']['suggestion']
 
-    async def suggestions_embed_builder(self, suggestion: dict):
+    async def suggestions_embed_builder(self, translator, suggestion: dict):
+        _ = translator
         author = await self.bot.get_or_fetch_user(suggestion['author'])
-        embed = DefaultEmbed(title=f'Suggestion',
+        embed = DefaultEmbed(title=_('Suggestion'),
                              description=suggestion['text'])
         embed.set_author(
             name=author.name,
@@ -43,21 +44,24 @@ class suggestions(commands.Cog):
             embed.set_image(url=suggestion['url'])
         return embed
 
-    def suggestions_control_embed_builder(self, actual_items: dict):
-        embed = DefaultEmbed(title=f"{self.emoji['list']} List of suggestions")
+    def suggestions_control_embed_builder(self, translator, actual_items: dict):
+        _ = translator
+        embed = DefaultEmbed(title=_("{emoji} List of suggestions").format(emoji=self.emoji['list']))
         if not actual_items:
-            embed.description = 'There are currently no suggestions'
+            embed.description = _('There are currently no suggestions')
         else:
             for index, item in enumerate(actual_items, 1):
                 embed.add_field(
                     name=f"{index}",
-                    value=
-                    f"From: <@{item['author']}>\n\nText (first 100): {item['text'][:100]}"
-                    + (" `...`" if len(item['text']) > 100 else ""),
+                    value=_("From: <@{author}>\n\nText (first 100): {text}").format(
+                        author=item['author'],
+                        text=item['text'][:100],
+                    ) + (" `...`" if len(item['text']) > 100 else ""),
                     inline=False)
         return embed
 
-    def suggestions_components_builder(self, actual_items: dict, values):
+    def suggestions_components_builder(self, translator, actual_items: dict, values):
+        _ = translator
         page = values.get('page', 0)
         try:
             current = int(values.get('selected'))
@@ -65,7 +69,7 @@ class suggestions(commands.Cog):
             current = None
         component = discord_components.Select(
             id='suggestions_select',
-            placeholder='Select an suggestion for details',
+            placeholder=_('Select an suggestion for details'),
             options=[
                 SelectOption(label=str(index + 1),
                              value=page * 10 + index,
@@ -77,45 +81,47 @@ class suggestions(commands.Cog):
             ]) if actual_items else None
         return component
 
-    def suggestions_control_builder(self, values):
+    def suggestions_control_builder(self, translator, values):
+        _ = translator
         items = Suggestions.select()
         page, last_page, actual_items = page_implementation(values, items)
         page_components = build_page_components(page, last_page, 'suggestions')
 
-        embed = self.suggestions_control_embed_builder(actual_items)
-        component = self.suggestions_components_builder(actual_items, values)
+        embed = self.suggestions_control_embed_builder(translator, actual_items)
+        component = self.suggestions_components_builder(translator, actual_items, values)
         components = [component] if component else []
         if page_components:
             components.insert(0, page_components)
 
         return embed, components, values
 
-    async def suggestion_builder(self, values):
+    async def suggestion_builder(self, translator, values):
+        _ = translator
         base_id = 'suggestions_'
         items: Query = Suggestions.select()
         page, last_page, actual_items = page_implementation(values, items)
         suggestion = items.offset(int(
             values['selected'])).limit(1).dicts().execute()[0]
 
-        embed = await self.suggestions_embed_builder(suggestion)
-        component = self.suggestions_components_builder(actual_items, values)
+        embed = await self.suggestions_embed_builder(translator, suggestion)
+        component = self.suggestions_components_builder(translator, actual_items, values)
         options = component.options
         options.insert(
             0,
-            SelectOption(label='Back',
+            SelectOption(label=_('Back'),
                          value='back',
-                         description='To suggestion list'))
+                         description=_('To suggestion list')))
         component.set_options(options)
         components = [
             component,
             [
-                Button(label='Approve',
+                Button(label=_('Approve'),
                        style=ButtonStyle.green,
                        id=base_id + 'Approve'),
-                Button(label='Deny',
+                Button(label=_('Deny'),
                        style=ButtonStyle.red,
                        id=base_id + 'Deny'),
-                Button(label='Delete',
+                Button(label=_('Delete'),
                        style=ButtonStyle.gray,
                        id=base_id + 'Delete')
             ]
@@ -124,6 +130,8 @@ class suggestions(commands.Cog):
 
     async def suggestion_respond(self, interaction):
         await Interaction_inspect.only_author(interaction)
+        translator = self.bot.get_translator_by_interaction(interaction)
+        _ = translator
         values = Interaction_inspect.get_values(interaction)
 
         items = Suggestions.select()
@@ -142,21 +150,21 @@ class suggestions(commands.Cog):
         action: str = interaction.component.label
 
         responded = False
-        if action in ["Approve", "Deny"] and message:
+        if action in [_("Approve"), _("Deny")] and message:
             embed: discord.Embed = message.embeds[0]
             responded = True
             await interaction.respond(
-                content='Write the reason, - if you have nothing to say')
+                content=_('Write the reason, - if you have nothing to say'))
             content = await wait_message_from_author(self.bot, interaction,
                                                      values['author'])
             if content in ['-', '_', "'-'", '"-"', '0']:
-                content = 'Not specified'
+                content = _('Not specified')
 
-            embed.add_field(name='suggestion' +
-                            (' denied' if action == 'Deny' else ' approved'),
+            embed.add_field(name=_('suggestion') +
+                            (_(' denied') if action == _('Deny') else _(' approved')),
                             value=f'{interaction.author.mention}: {content}')
             embed.color = discord.Colour.red(
-            ) if action == 'Deny' else discord.Colour.green()
+            ) if action == _('Deny') else discord.Colour.green()
             await message.edit(embed=embed)
 
         Suggestions.get(message_id=suggestion['message_id']).delete_instance()
@@ -171,10 +179,10 @@ class suggestions(commands.Cog):
         values['page'] = page
 
         if items_amount > 1:
-            embed, components, values = await self.suggestion_builder(values)
+            embed, components, values = await self.suggestion_builder(translator, values)
         else:
             embed, components, values = self.suggestions_control_builder(
-                values)
+                translator, values)
 
         components = Interaction_inspect.inject(components, values)
 
@@ -188,11 +196,12 @@ class suggestions(commands.Cog):
     @guild_only()
     @commands.command()
     async def suggest(self, ctx, *, suggestion):
+        _ = ctx.get_translator()
         new_lines = suggestion.count('\n')
         if new_lines > 50:
-            raise BadArgument('Too many line breaks')
+            raise BadArgument(_('Too many line breaks'))
         elif len(suggestion) > 4000:
-            raise BadArgument('Suggestion must be less than 4000 characters')
+            raise BadArgument(_('Suggestion must be less than 4000 characters'))
         
         await ctx.message.delete()
         try:
@@ -202,13 +211,15 @@ class suggestions(commands.Cog):
         channel = ctx.author.guild.get_channel(
             self.bot.config['suggestions_channel'])
         if not channel:
-            raise NotConfigured('Channel for suggestions not specified')
+            raise NotConfigured(_('Channel for suggestions not specified'))
         await ctx.send(embed=DefaultEmbed(
-            description=f"{self.emoji['send']} Your suggestion has been sent successfully"))
+            description=_("{emoji} Your suggestion has been sent successfully").format(
+                emoji=self.emoji['send'],
+            )))
 
         embed = DefaultEmbed(description=suggestion)
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-        embed.set_footer(text=f'Member id: {ctx.author.id}')
+        embed.set_footer(text=_('Member id: {author_id}').format(author_id=ctx.author.id))
         if url:
             embed.set_image(url=url)
         message = await channel.send(embed=embed)
@@ -220,24 +231,27 @@ class suggestions(commands.Cog):
 
     @suggest.error
     async def suggest_error(self, ctx, error):
-        embed = DefaultEmbed(title="Failed to make suggestion")
+        _ = ctx.get_translator()
+        embed = DefaultEmbed(title=_("Failed to make suggestion"))
         if isinstance(error, commands.BadArgument):
             await ctx.message.delete()
-            embed.description = f"**Error**: {error}"
+            embed.description = _("**Error**: {error}").format(error=error)
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.delete()
-            embed.description = "describe your suggestion"
+            embed.description = _("describe your suggestion")
         await ctx.send(embed=embed)
 
     @is_admin()
     @commands.command(aliases=['sc'])
     async def suggestions_control(self, ctx):
         await ctx.message.delete()
+        translator = ctx.get_translator()        
+
         values = {
             'author': ctx.author.id,
             'page': 0,
         }
-        embed, components, values = self.suggestions_control_builder(values)
+        embed, components, values = self.suggestions_control_builder(translator, values)
         components = Interaction_inspect.inject(components, values)
         await ctx.send(embed=embed, components=components)
 
@@ -258,7 +272,8 @@ class suggestions(commands.Cog):
         if not interaction.component.id.startswith('suggestions'):
             return
 
-        if interaction.component.label in ["Approve", "Deny", "Delete"]:
+        _ = self.bot.get_translator_by_interaction(interaction)
+        if interaction.component.label in [_("Approve"), _("Deny"), _("Delete")]:
             await self.suggestion_respond(interaction)
             return
 
@@ -267,4 +282,4 @@ class suggestions(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(suggestions(bot))
+    bot.add_cog(SuggestionsCog(bot))

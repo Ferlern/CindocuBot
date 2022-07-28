@@ -19,7 +19,7 @@ from ..utils.build import page_implementation, update_message, build_page_compon
 INT_PATTERN = r"\d+"
 
 
-class ModerationInfo(commands.Cog):
+class ModerationInfoCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.emoji = self.bot.config["additional_emoji"]["other"]
@@ -31,12 +31,14 @@ class ModerationInfo(commands.Cog):
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            embed = discord.Embed(title="Failed to complete action",
-                                  description=f"**Error**: {error}",
+            _ = ctx.get_translator()
+            embed = discord.Embed(title=_("Failed to complete action"),
+                                  description=_("**Error**: {error}").format(error=error),
                                   color=0x93a5cd)
             await ctx.send(embed=embed)
 
-    async def embed_builder(self, logs, filters):
+    async def embed_builder(self, translator, logs, filters):
+        _ = translator
         columns_names = ['#', 'moderator', 'action', 'target']
         columns_max_lengts = [6, 12, 6, 12]
         columns_values = []
@@ -56,7 +58,7 @@ class ModerationInfo(commands.Cog):
                     targets[0]['target'])
                 target = target.name
             else:
-                target = f"{targets_amount} members"
+                target = _("{targets_amount} members").format(targets_amount=targets_amount)
 
             columns_values.append(
                 [id, str(moderator),
@@ -67,12 +69,12 @@ class ModerationInfo(commands.Cog):
                                  max_columns_length=columns_max_lengts,
                                  values=columns_values)
         else:
-            table = 'No logs found, try changing filters'
+            table = _('No logs found, try changing filters')
 
-        embed = DefaultEmbed(title=f"{self.emoji['all_mod_log']} All found moderation logs",
+        embed = DefaultEmbed(title=_("{emoji} All found moderation logs").format(emoji=self.emoji['all_mod_log']),
                              description=f'```\n{str(table)}```')
         if filters:
-            embed.add_field(name='Sorted by:',
+            embed.add_field(name=_('Sorted by:'),
                             value='\n'.join([
                                 f"`{key}`: {value}"
                                 for key, value in filters.items()
@@ -80,7 +82,8 @@ class ModerationInfo(commands.Cog):
             
         return embed
 
-    def components_builder(self, filters):
+    def components_builder(self, translator, filters):
+        _ = translator
         period = filters.get('period')
         action = filters.get('action')
         moderator = filters.get('moderator')
@@ -97,27 +100,27 @@ class ModerationInfo(commands.Cog):
 
         components = [
             Select(id=f'moderationInfoSelectPeriod{str(period)}',
-                   placeholder="select time period for search",
+                   placeholder=_("select time period for search"),
                    options=[
-                       SelectOption(label="any", value=0),
-                       SelectOption(label="1 hour",
+                       SelectOption(label=_("any"), value=0),
+                       SelectOption(label=_("1 hour"),
                                     value=TimeConstants.hour,
                                     default=period == TimeConstants.hour),
-                       SelectOption(label="6 hour",
+                       SelectOption(label=_("6 hour"),
                                     value=TimeConstants.six_hour,
                                     default=period == TimeConstants.six_hour),
-                       SelectOption(label="1 day",
+                       SelectOption(label=_("1 day"),
                                     value=TimeConstants.day,
                                     default=period == TimeConstants.day),
-                       SelectOption(label="1 week",
+                       SelectOption(label=_("1 week"),
                                     value=TimeConstants.week,
                                     default=period == TimeConstants.week),
-                       SelectOption(label="1 month",
+                       SelectOption(label=_("1 month"),
                                     value=TimeConstants.mounts,
                                     default=period == TimeConstants.mounts),
                    ]),
             Select(id=f'moderationInfoSelectAction{str(action)}',
-                   placeholder="select action for search",
+                   placeholder=_("select action for search"),
                    options=[
                        SelectOption(label=opt,
                                     value=opt,
@@ -125,7 +128,7 @@ class ModerationInfo(commands.Cog):
                    ]),
             [
                 Button(style=3 if moderator else 4,
-                       label='moderator',
+                       label=_('moderator'),
                        id='moderationInfoModerator'),
                 Button(style=1,
                        label=str(moderator),
@@ -136,7 +139,7 @@ class ModerationInfo(commands.Cog):
 
         return components
 
-    async def moderation_logs_builder(self, values: dict):
+    async def moderation_logs_builder(self, translator, values: dict):
         if selected := values.get('selected'):
             try:
                 values["period"] = int(selected)
@@ -166,8 +169,8 @@ class ModerationInfo(commands.Cog):
         page, last_page, logs = page_implementation(values, logs_query)
         
         page_components = build_page_components(page, last_page, 'moderationInfo')
-        embed = await self.embed_builder(logs, filters)
-        components = self.components_builder(filters)
+        embed = await self.embed_builder(translator, logs, filters)
+        components = self.components_builder(translator, filters)
         
         if page_components:
             components.insert(0, page_components)
@@ -178,14 +181,16 @@ class ModerationInfo(commands.Cog):
         return embed, components, values
 
     async def select_moderator(self, interaction):
-        await interaction.respond(content='Write id / name / mention for search')
+        translator = self.bot.get_translator_by_interaction(interaction)
+        _ = translator
+        await interaction.respond(content=_('Write id / name / mention for search'))
         moderator = await wait_for_message(self.bot, interaction)
         
         values = Interaction_inspect.get_values(interaction)
         
         values['moderator'] = moderator
             
-        embed, components, values = await self.moderation_logs_builder(values)
+        embed, components, values = await self.moderation_logs_builder(translator, values)
         components = Interaction_inspect.inject(components, values)
         await interaction.message.edit(embed=embed, components=components)
     
@@ -193,8 +198,9 @@ class ModerationInfo(commands.Cog):
     async def on_button_click(self, interaction: Interaction):
         if not Interaction_inspect.check_prefix(interaction, 'moderationInfo'): return
 
+        _ = self.bot.get_translator_by_interaction(interaction)
         component = interaction.component
-        if component.label == 'moderator':
+        if component.label == _('moderator'):
             await self.select_moderator(interaction)
             return
             
@@ -209,33 +215,43 @@ class ModerationInfo(commands.Cog):
     @commands.command(aliases=['ml'])
     async def moderation_logs(self, ctx, log: int = None):
         await ctx.message.delete()
+        translator = ctx.get_translator()
+        _ = translator
+
         if not log:
             values = {'page': 0}
-            embed, components, values = await self.moderation_logs_builder(values)
+            embed, components, values = await self.moderation_logs_builder(translator, values)
             components = Interaction_inspect.inject(components, values)
             await ctx.send(embed=embed, components=components)
             return
 
         log: ModLog = Logs.get_mod_log(id=int(log))
         if not log:
-            await ctx.send(embed = DefaultEmbed(description = 'Log not found'))
+            await ctx.send(embed = DefaultEmbed(description = _('Log not found')))
             return    
         
         moderator = await self.bot.get_or_fetch_user(log.moderator)
 
         embed = DefaultEmbed(
-            title=f"Information about action {log.id}",
+            title=_("Information about action {id}").format(id=log.id),
             description=
-            f"Moderator\n{moderator.mention} / `{moderator.name}#{moderator.discriminator}` / `{moderator.id}`\nuse command `{log.action}`\n\n<t:{log.creation_time}:f>"
+            _("Moderator\n{mention} / `{name}#{discriminator}` / `{id}`\nuse command `{action}`\n\n<t:{creation_time}:f>").format(
+                mention=moderator.mention,
+                name=moderator.name,
+                discriminator=moderator.discriminator,
+                id=moderator.id,
+                action=log.action,
+                creation_time=log.creation_time,
+            )
         )
 
-        embed.add_field(name="Reason", value=log.reason)
+        embed.add_field(name=_("Reason"), value=log.reason)
 
         if log.duration:
             embed.add_field(
-                name="Duration",
+                name=_("Duration"),
                 value=
-                f"{display_time(log.duration, granularity=4, full=True)}\n <t:{log.creation_time}:f> -> <t:{log.creation_time+log.duration}:f>",
+                f"{display_time(translator, log.duration, granularity=4, full=True)}\n <t:{log.creation_time}:f> -> <t:{log.creation_time+log.duration}:f>",
                 inline=False)
 
         targets = Logs.get_mod_log_targets(log)
@@ -246,7 +262,7 @@ class ModerationInfo(commands.Cog):
 
         if targets:
             embed.add_field(
-                name="Targets",
+                name=_("Targets"),
                 value="\n".join([
                     f"{index}. {target.mention} / `{target.name}#{target.discriminator}` / `{target.id}`"
                     for index, target in enumerate(targets, 1)
@@ -259,4 +275,4 @@ class ModerationInfo(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ModerationInfo(bot))
+    bot.add_cog(ModerationInfoCog(bot))

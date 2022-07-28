@@ -14,7 +14,7 @@ added = set[int]
 outdated = set[int]
 
 
-class Sync(commands.Cog):
+class SyncCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.in_recovery = []
@@ -91,7 +91,7 @@ class Sync(commands.Cog):
     async def sync_user(self, target: discord.Member):
         logger.debug(f'sync {target.name}')
         
-        cog = self.bot.get_cog('voice_activity')
+        cog = self.bot.get_cog('VoiceActivityCog')
         cog.external_sync(target)
         
         await self.recovery_member_roles(target)
@@ -118,9 +118,10 @@ class Sync(commands.Cog):
     @is_owner()
     @commands.command()
     async def init(self, ctx):
+        _ = ctx.get_translator()
         embed = DefaultEmbed(description =
-            'This action will overwrite the data for this guild.'\
-            +'Do not use if you are not sure you know the result.'
+            _('This action will overwrite the data for this guild.')\
+            + _('Do not use if you are not sure you know the result.')
         )
         message = await ctx.confirm(embed=embed)
         await message.delete()
@@ -148,4 +149,4 @@ class Sync(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Sync(bot))
+    bot.add_cog(SyncCog(bot))

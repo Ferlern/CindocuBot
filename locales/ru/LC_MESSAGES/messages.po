@@ -1,0 +1,1103 @@
+# ALL BOT STRINGS.
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2022-04-15 20:43+0300\n"
+"PO-Revision-Date: 18.04.2022\n"
+"Last-Translator: Pepepr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: .\ext\control\evalCommand.py:144
+msgid "Nothing to show. Existing codes:"
+msgstr "Нечего показывать. Существующие коды:"
+
+#: .\ext\control\evalCommand.py:148
+msgid "Name: {name}; Group: {group}"
+msgstr "Имя: {name}; Группа: {group}"
+
+#: .\ext\control\evalCommand.py:151
+msgid "Group {group}"
+msgstr "Группа {group}"
+
+#: .\ext\economy\economy.py:28 .\ext\economy\economy.py:35
+#: .\ext\economy\economy_control.py:24 .\ext\moderation\moderation.py:43
+#: .\ext\moderation\moderation.py:373 .\ext\moderation\moderationInfo.py:35
+msgid "Failed to complete action"
+msgstr "Произошла ошибка при совершении действия"
+
+#: .\ext\economy\economy.py:29 .\ext\economy\economy_control.py:25
+#: .\ext\moderation\moderation.py:44 .\ext\moderation\moderationInfo.py:36
+#: .\ext\other_content\top.py:55 .\ext\relationship_system\relationship.py:31
+#: .\ext\reputation\reputation.py:26 .\ext\suggestions\suggestions.py:237
+#: .\ext\system\config.py:78
+msgid "**Error**: {error}"
+msgstr "**Ошибка**: {error}"
+
+#: .\ext\economy\economy.py:36
+msgid "**Error**: {error} not specified"
+msgstr "**Ошибка**: {error} не указан"
+
+#: .\ext\economy\economy.py:50 .\ext\economy\economy.py:129
+#: .\ext\economy\economy.py:143
+msgid "Choose an item to buy"
+msgstr "Выбери предмет для покупки"
+
+#: .\ext\economy\economy.py:55
+msgid "buy it for {price} coins"
+msgstr "Купить эту роль за {price} монет"
+
+#: .\ext\economy\economy.py:60
+msgid "There are no roles in the shop."
+msgstr "В магазине нет соответствующих ролей"
+
+#: .\ext\economy\economy.py:61
+msgid "{emoji} Roles shop"
+msgstr "{emoji} Магазин ролей"
+
+#: .\ext\economy\economy.py:71
+msgid "{emoji} Private voice shop"
+msgstr "{emoji} Магазин приватных войсов"
+
+#: .\ext\economy\economy.py:72
+msgid "Here you can buy a personal voice channel on the server and \"upgrade\" it"
+msgstr "Здесь ты можешь купить персональный войс-канал на этом сервере и \"улучшить\" его"
+
+#: .\ext\economy\economy.py:86
+msgid "**{slots}** -> **{next_slot}** for **{price}** {coin}"
+msgstr "**{slots}** -> **{next_slot}** за **{price}** {coin}"
+
+#: .\ext\economy\economy.py:91 .\ext\economy\economy.py:102
+msgid "MAX"
+msgstr "Макс."
+
+#: .\ext\economy\economy.py:93
+msgid "1. Increase the number of slots"
+msgstr "1. Увеличить количество слотов"
+
+#: .\ext\economy\economy.py:97
+msgid "**{max_bitrate}**kbps -> **{to_bitrate}**kbps for **{bitrate_price}** {coin}"
+msgstr "**{max_bitrate}**kbps -> **{to_bitrate}**kbps за **{bitrate_price}** {coin}"
+
+#: .\ext\economy\economy.py:103
+msgid "2. Increase max bitrate"
+msgstr "2. Увкличить макс. битрейт"
+
+#: .\ext\economy\economy.py:108
+msgid "Increase the number of slots"
+msgstr "Увеличить количество слотов"
+
+#: .\ext\economy\economy.py:110
+msgid ""
+"{slots} -> {next_slot} for {price} coins\n"
+"The price grows with each slot"
+msgstr "{slots} -> {next_slot} за {price} монет\n"
+"Цена увеличивается с каждым новым слотом"
+
+#: .\ext\economy\economy.py:119
+msgid "Increase max bitrate"
+msgstr "Увеличивает макс. битрейт"
+
+#: .\ext\economy\economy.py:121
+msgid "{max_bitrate}kbps -> {to_bitrate}kbps for {bitrate_price} coins"
+msgstr "{max_bitrate}kbps -> {to_bitrate}kbps за {bitrate_price} монет"
+
+#: .\ext\economy\economy.py:135
+msgid "1. Personal voice channel"
+msgstr "1. Персональный войс канал"
+
+#: .\ext\economy\economy.py:136
+msgid ""
+"Your channel will be placed in the category <#{cathegory}>\n"
+"{price} {coin}"
+msgstr ""
+"Твой персональный войс-канал будет расположен в категории <#{cathegory}>\n"
+"{price} {coin}"
+
+#: .\ext\economy\economy.py:146
+msgid "Personal voice channel"
+msgstr "Персональный войс канал"
+
+#: .\ext\economy\economy.py:168
+msgid "Select shop type"
+msgstr "Выбери тип магазина"
+
+#: .\ext\economy\economy.py:171
+msgid "roles shop"
+msgstr "Магазин ролей"
+
+#: .\ext\economy\economy.py:173
+msgid "Here you can purchase roles for coins"
+msgstr "Здесь ты можешь купить роли за монетки"
+
+#: .\ext\economy\economy.py:176
+msgid "voice shop"
+msgstr "Войс магазин"
+
+#: .\ext\economy\economy.py:178
+msgid "Here you can buy a personal voice channel for coins"
+msgstr "Здесь ты можешь купить персональный войс канал за монетки"
+
+#: .\ext\economy\economy.py:210
+msgid "It looks like you already have this role! If for some reason you don't have it, use {prefix}sync"
+msgstr "Хмм..Похоже, у тебя уже есть эта роль! Если по какой-то причине у тебя её нет, попробуй использовать {prefix}sync"
+
+#: .\ext\economy\economy.py:217
+msgid "You need {amount} more {coin} to buy this role"
+msgstr "Тебе нужно ещё {amount} {coin}, чтобы купить эту роль"
+
+#: .\ext\economy\economy.py:229
+msgid "I can't find this role. It may have been deleted"
+msgstr "Наша система не может найти эту роль. Возможно, она была удалена..."
+
+#: .\ext\economy\economy.py:235
+msgid "successful purchase in the shop"
+msgstr "Успешная покупка в магазине"
+
+#: .\ext\economy\economy.py:237
+msgid "Role <@&{role_id}> was successfully purchased for {price} {coin}. I hope you like it, because you can't sell it :)"
+msgstr "Роль <@&{role_id}> была успешло куплена за {price} {coin}. Надеюсь, что ты обдумал свое решение, ведь ты не сможешь её продать >w< "
+
+#: .\ext\economy\economy.py:251
+msgid "You already have voice channel"
+msgstr "Ой! У тебя уже есть этот войс-канал"
+
+#: .\ext\economy\economy.py:268
+msgid "Your personal voice channel has been created!"
+msgstr "Твой персональный войс-канал был успешно создан! UwU"
+
+#: .\ext\economy\economy.py:272 .\ext\economy\economy.py:284
+msgid "You don't have enough {coin} to make a purchase"
+msgstr "К сожалению, тебе не хватает {coin}, чтобы совершить покупку"
+
+#: .\ext\economy\economy.py:275
+msgid "New slot added"
+msgstr "Новый слот был успешно добавлен. Пора приглашать новых людей в войс! UwU"
+
+#: .\ext\economy\economy.py:279
+msgid "The maximum bitrate has been increased"
+msgstr "Максимальный битрейт был увеличен"
+
+#: .\ext\economy\economy.py:281
+msgid "Сan't find such item for buy: {item}"
+msgstr "Невозможно найти данный предмет для покупки: {item}"
+
+#: .\ext\economy\economy.py:286
+msgid "Maximum slots reached"
+msgstr "Ты достиг максимального количества слотов"
+
+#: .\ext\economy\economy.py:288
+msgid "Maximum bitrate reached"
+msgstr "Достигнут максимальный битрейт"
+
+#: .\ext\economy\economy.py:330
+msgid "{emoji} Bonus not available yet"
+msgstr "{emoji} Бонус пока что не доступен. Приходи позже"
+
+#: .\ext\economy\economy.py:332
+msgid ""
+"Your today's bonus has already been received.\n"
+"\n"
+"You can get the bonus again <t:{seconds}:R>"
+msgstr ""
+"Ты уже получил свой сегодняшний бонус \n"
+"\n"
+"Ты снова сможешь получить свой бонус <t:{seconds}:R>"
+
+#: .\ext\economy\economy.py:343
+msgid "{daily} {coin} have been successfully transferred to your balance. Now you have {balance} {coin}"
+msgstr "{daily} {coin} успешно переведены на твой баланс. Теперь у тебя есть {balance} {coin}"
+
+#: .\ext\economy\economy.py:348
+msgid ""
+"\n"
+"\n"
+"You can get the bonus again <t:{seconds}:R>"
+msgstr ""
+"\n"
+"\n"
+"Ты снова сможешь получить свой бонус <t:{seconds}:R>"
+
+#: .\ext\economy\economy.py:352
+msgid "{emoji} Daily bonus received!"
+msgstr "{emoji} Ежедневный бонус получен!"
+
+#: .\ext\economy\economy.py:396
+msgid "Transfered succesfuly"
+msgstr "Успешно отправлено"
+
+#: .\ext\economy\economy_control.py:37
+msgid "role {role} successfully added to the shop with price {price} {coin}"
+msgstr "Роль {role} была успешно добавлена в магазин с ценой в {price} {coin}"
+
+#: .\ext\economy\economy_control.py:49
+msgid "Can't find such role in the shop"
+msgstr "Невозможно найти данную роль в магазине"
+
+#: .\ext\economy\economy_control.py:54
+msgid "Role {role} successfully deleted from the shop"
+msgstr "Роль {role} была успешно удалена из магазина"
+
+#: .\ext\experience_system\experience_accrual.py:56
+msgid "{author} got a level up ({old_level} -> {new_level})"
+msgstr "{author} получил новый уровень ({old_level} -> {new_level})"
+
+#: .\ext\experience_system\experience_accrual.py:64
+msgid ""
+"\n"
+"Role <@&{role_id}>"
+msgstr ""
+"\n"
+"Роль <@&{role_id}>"
+
+#: .\ext\experience_system\experience_accrual.py:66
+msgid "Bonuses"
+msgstr "Бонусы:"
+
+#: .\ext\experience_system\experience_accrual.py:89
+msgid "Level {new_level} reached"
+msgstr "Уровень {new_level} получен"
+
+#: .\ext\experience_system\experience_accrual.py:93
+msgid "Level {new_level} reached, remove old role"
+msgstr "Уровень {new_level} получен, старая уровневая роль удалена"
+
+#: .\ext\moderation\components\mail.py:12
+msgid "Moderator `{author_name}` **{action}** you on `{guild_name}`"
+msgstr "Модератор `{author_name}` **{action}** тебя в `{guild_name}`"
+
+#: .\ext\moderation\components\mail.py:18
+msgid ""
+"\n"
+"\n"
+"Duration: {duration}"
+msgstr ""
+"\n"
+"\n"
+"Продолжительность: {duration}"
+
+#: .\ext\moderation\components\mail.py:23
+msgid ""
+"\n"
+"Reason: **{reason}**"
+msgstr ""
+"\n"
+"Причина: **{reason}**"
+
+#: .\ext\moderation\components\mail.py:27
+msgid "You was {action}"
+msgstr "Ты был {action}"
+
+#: .\ext\moderation\moderation.py:67 .\ext\moderation\moderation.py:104
+#: .\ext\moderation\moderation.py:135 .\ext\moderation\moderation.py:201
+#: .\ext\moderation\moderation.py:230 .\ext\moderation\moderation.py:256
+#: .\ext\moderation\moderation.py:308
+msgid "user not specified"
+msgstr "пользователь не указан"
+
+#: .\ext\moderation\moderation.py:69
+msgid "time and reason not specified"
+msgstr "время и причина не указаны"
+
+#: .\ext\moderation\moderation.py:78
+msgid "muted"
+msgstr "замутил"
+
+#: .\ext\moderation\moderation.py:83 .\ext\moderation\moderation.py:102
+#: .\ext\moderation\moderation.py:133 .\ext\moderation\moderation.py:199
+#: .\ext\moderation\moderation.py:238 .\ext\moderation\moderation.py:288
+#: .\ext\moderation\moderation.py:327 .\ext\utils\converters.py:38
+msgid "not specified."
+msgstr "не указана"
+
+#: .\ext\moderation\moderation.py:88
+msgid "User Muted!"
+msgstr "Пользователь больше не может говорить!"
+
+#: .\ext\moderation\moderation.py:89
+msgid ""
+"{0} was muted by {1} for {2}.\n"
+"\n"
+"**Reason**: {3}"
+msgstr ""
+"Пользователю {0} был выдан мут модератором {1} на {2}.\n"
+"\n"
+"**По причине**: {3}"
+
+#: .\ext\moderation\moderation.py:120
+msgid "Unmute"
+msgstr "Размут"
+
+#: .\ext\moderation\moderation.py:121
+msgid ""
+"{0} unmuted by {1}\n"
+"\n"
+"**Reason**: {2}"
+msgstr ""
+"{0} размучен модератором {1}\n"
+"\n"
+"**По причине**: {2}"
+
+#: .\ext\moderation\moderation.py:152
+msgid "Set at least one warning in config"
+msgstr "Установи хотя бы одно предупреждение в конфиге"
+
+#: .\ext\moderation\moderation.py:154
+msgid "Warn system created incorrectly"
+msgstr "Система предупреждений создана неправильно"
+
+#: .\ext\moderation\moderation.py:159
+msgid ""
+"\n"
+"Along with this warning, you are banned from the server"
+msgstr ""
+"\n"
+"Вместе с этим предупреждением ты будешь забанен на этом сервере"
+
+#: .\ext\moderation\moderation.py:162 .\ext\moderation\moderation.py:174
+msgid "warned"
+msgstr "предупредил"
+
+#: .\ext\moderation\moderation.py:169
+msgid ""
+"\n"
+"Along with this warning, you are muted for {mute_time}."
+msgstr ""
+"\n"
+"С этим варном твое наказание составляет {mute_time}."
+
+#: .\ext\moderation\moderation.py:186
+msgid "User Warned!"
+msgstr "Пользователь предупрежден!"
+
+#: .\ext\moderation\moderation.py:187
+msgid ""
+"{0} was warned by {1}\n"
+"\n"
+"**Reason**: {2}"
+msgstr ""
+"{0} был предупрежден пользователем {1}\n"
+"\n"
+"**Причина**: {2}"
+
+#: .\ext\moderation\moderation.py:215
+msgid "Unwarn"
+msgstr "Снятие варна"
+
+#: .\ext\moderation\moderation.py:216
+msgid ""
+"{0} unwarned by {1}\n"
+"\n"
+"**Reason**: {2}"
+msgstr ""
+"{0} лишился одного предупреждения модератором {1}\n"
+"\n"
+"**Причина**: {2}"
+
+#: .\ext\moderation\moderation.py:235
+msgid "banned"
+msgstr "забанен"
+
+#: .\ext\moderation\moderation.py:245
+msgid "User Banned!"
+msgstr "Пользователь забанен!"
+
+#: .\ext\moderation\moderation.py:246
+msgid ""
+"{0} was banned by {1}.\n"
+"\n"
+"**Reason**: {2}"
+msgstr ""
+"{0} был забанен пользователем {1}.\n"
+"\n"
+"**Причина**: {2}"
+
+#: .\ext\moderation\moderation.py:265 .\ext\moderation\moderation.py:322
+msgid "can't find users. Maybe you are giving wrong IDs?"
+msgstr "Не могу найти пользователей. Может быть ты указал неверный ID?"
+
+#: .\ext\moderation\moderation.py:269 .\ext\moderation\moderation.py:297
+msgid "Ban by ID"
+msgstr "Забанен по ID"
+
+#: .\ext\moderation\moderation.py:270
+msgid ""
+"Ready to ban:\n"
+"{to_ban_string}"
+msgstr ""
+"Готов к бану\n"
+"{to_ban_string}"
+
+#: .\ext\moderation\moderation.py:283
+msgid "can't ban users. Maybe you can't ban them"
+msgstr "Не могу забанить участников. Может быть у тебя недостаточно для этого прав?"
+
+#: .\ext\moderation\moderation.py:298
+msgid ""
+"{0} \n"
+"banned by {1}\n"
+"\n"
+"**Reason**: {2}"
+msgstr ""
+"{0} \n"
+"забанен пользователем {1}\n"
+"\n"
+"**Причина**: {2}"
+
+#: .\ext\moderation\moderation.py:335
+msgid "Unban"
+msgstr "Разбан"
+
+#: .\ext\moderation\moderation.py:336
+msgid ""
+"{0} \n"
+"unbaned by {1}\n"
+"\n"
+"**Reason**: {2}"
+msgstr ""
+"{0} \n"
+"забанен пользователем {1}\n"
+"\n"
+"**Причина**: {2}"
+
+#: .\ext\moderation\moderation.py:359
+msgid "Clear"
+msgstr "Вжух! Чат стал чище UwU"
+
+#: .\ext\moderation\moderation.py:361
+msgid "{author}, successfully deleted {deleted_amount} messages"
+msgstr "{author}, успешно удалил {deleted_amount} сообщения/ий"
+
+#: .\ext\moderation\moderation.py:375
+msgid "**Error**: Make sure the IDs you specified are correct"
+msgstr "**Ошибка**: Удостоверься, что указанный ID правильный"
+
+#: .\ext\moderation\moderationInfo.py:61
+msgid "{targets_amount} members"
+msgstr "{targets_amount} участников"
+
+#: .\ext\moderation\moderationInfo.py:72
+msgid "No logs found, try changing filters"
+msgstr "Логи не найдены, попробуй поменять фильтры"
+
+#: .\ext\moderation\moderationInfo.py:74
+msgid "{emoji} All found moderation logs"
+msgstr "{emoji} Все найденные модераторские логи"
+
+#: .\ext\moderation\moderationInfo.py:77
+msgid "Sorted by:"
+msgstr "Отсортировано по:"
+
+#: .\ext\moderation\moderationInfo.py:103
+msgid "select time period for search"
+msgstr "Выбери период времени для поиска"
+
+#: .\ext\moderation\moderationInfo.py:105
+msgid "any"
+msgstr "за все прекрасное время"
+
+#: .\ext\moderation\moderationInfo.py:106
+msgid "1 hour"
+msgstr "1 час"
+
+#: .\ext\moderation\moderationInfo.py:109
+msgid "6 hour"
+msgstr "6 часов"
+
+#: .\ext\moderation\moderationInfo.py:112
+msgid "1 day"
+msgstr "1 день"
+
+#: .\ext\moderation\moderationInfo.py:115
+msgid "1 week"
+msgstr "1 неделя"
+
+#: .\ext\moderation\moderationInfo.py:118
+msgid "1 month"
+msgstr "1 месяц"
+
+#: .\ext\moderation\moderationInfo.py:123
+msgid "select action for search"
+msgstr "выбери действие для поиска"
+
+#: .\ext\moderation\moderationInfo.py:131
+msgid "moderator"
+msgstr "модератор"
+
+#: .\ext\moderation\moderationInfo.py:186
+msgid "Write id / name / mention for search"
+msgstr "напиши ID / имя / упоминание для поиска"
+
+#: .\ext\moderation\moderationInfo.py:229
+msgid "Log not found"
+msgstr "Лог не найден"
+
+#: .\ext\moderation\moderationInfo.py:235
+msgid "Information about action {id}"
+msgstr "Информация о действии {id}"
+
+#: .\ext\moderation\moderationInfo.py:237
+msgid ""
+"Moderator\n"
+"{mention} / `{name}#{discriminator}` / `{id}`\n"
+"use command `{action}`\n"
+"\n"
+"<t:{creation_time}:f>"
+msgstr ""
+"Модератор\n"
+"{mention} / `{name}#{discriminator}` / `{id}`\n"
+"использовал команду `{action}`\n"
+"\n"
+"<t:{creation_time}:f>"
+
+#: .\ext\moderation\moderationInfo.py:247
+msgid "Reason"
+msgstr "Причина"
+
+#: .\ext\moderation\moderationInfo.py:251
+msgid "Duration"
+msgstr "Длительность"
+
+#: .\ext\moderation\moderationInfo.py:264
+msgid "Targets"
+msgstr "Цели"
+
+#: .\ext\other_content\profile.py:24 .\ext\other_content\profile.py:121
+msgid "Can't set biography"
+msgstr "Невозможно установить биографию :C"
+
+#: .\ext\other_content\profile.py:55
+msgid "Biography not specified"
+msgstr "Биография не указана"
+
+#: .\ext\other_content\profile.py:58
+msgid "Profile {member}"
+msgstr "Профиль {member}"
+
+#: .\ext\other_content\profile.py:62
+msgid "{emoji} Reputation"
+msgstr "{emoji} Репутация"
+
+#: .\ext\other_content\profile.py:68
+msgid "{emoji} Balance"
+msgstr "{emoji} Баланс"
+
+#: .\ext\other_content\profile.py:73
+msgid "{emoji} Level"
+msgstr "{emoji} Уровень"
+
+#: .\ext\other_content\profile.py:76
+msgid "{emoji} Voice time"
+msgstr "{emoji} Время в войсе"
+
+#: .\ext\other_content\profile.py:81
+msgid "{emoji} Soul mate"
+msgstr "{emoji} Вторая половинка"
+
+#: .\ext\other_content\profile.py:82
+msgid "<@{soul_mate}> since <t:{married_time}:F> {emoji}"
+msgstr "<@{soul_mate}> с <t:{married_time}:F> {emoji}"
+
+#: .\ext\other_content\profile.py:89
+msgid "joined at <t:{time}:F>"
+msgstr "Присоединился в <t:{time}:F>"
+
+#: .\ext\other_content\profile.py:91
+msgid ""
+"\n"
+"warned **{warn}** times"
+msgstr ""
+"\n"
+"предупрежден **{warn}** раз"
+
+#: .\ext\other_content\profile.py:92
+msgid "{emoji} Other"
+msgstr "{emoji} Другое"
+
+#: .\ext\other_content\profile.py:104 .\ext\suggestions\suggestions.py:201
+msgid "Too many line breaks"
+msgstr "Слишком много разрывов строк, не создавай хаос!"
+
+#: .\ext\other_content\profile.py:106
+msgid "Biography must be less than 200 characters"
+msgstr "Биография должна содержать меньше 200 знаков"
+
+#: .\ext\other_content\profile.py:112
+msgid "Biography has been successfully updated"
+msgstr "Биография была успешно изменена!"
+
+#: .\ext\other_content\profile.py:122
+msgid "**Error**: specify bio"
+msgstr "**Ошибка**: укажи своё био"
+
+#: .\ext\other_content\top.py:30
+msgid "balance"
+msgstr "балансу"
+
+#: .\ext\other_content\top.py:31
+msgid "reputation"
+msgstr "репутации"
+
+#: .\ext\other_content\top.py:32
+msgid "duration of relationship"
+msgstr "длительности отношений"
+
+#: .\ext\other_content\top.py:33
+msgid "level"
+msgstr "уровню"
+
+#: .\ext\other_content\top.py:34
+msgid "voice activity"
+msgstr "войс активности"
+
+#: .\ext\other_content\top.py:54
+msgid "Can't complate action"
+msgstr "Невозможно совершить данную операцию"
+
+#: .\ext\other_content\top.py:64
+msgid "{emoji} Top by {category}"
+msgstr "{emoji} Ты выбираешь топ участников по... {category}"
+
+#: .\ext\other_content\top.py:72
+msgid "{index}. <@{item_user}> & <@{item_soul_mate}> - from <t:{item_selected}:f> {emoji}"
+msgstr "{index}. <@{item_user}> & <@{item_soul_mate}> - с <t:{item_selected}:f> {emoji}"
+
+#: .\ext\other_content\top.py:93
+msgid "Empty :("
+msgstr "Тут пустo :("
+
+#: .\ext\other_content\voice_customize.py:30
+msgid "too many slots"
+msgstr "Слишком много слотов"
+
+#: .\ext\other_content\voice_customize.py:33
+msgid "bitrate higher than purchased"
+msgstr "битрейт выше купленного"
+
+#: .\ext\other_content\voice_customize.py:47
+msgid "forbidden opportunities"
+msgstr "эта возможность запрещена!"
+
+#: .\ext\relationship_system\relationship.py:28
+msgid "Can't send a marriage proposal"
+msgstr "Невозможно отправить предложение руки и сердца...мне очень жаль :("
+
+#: .\ext\relationship_system\relationship.py:34
+msgid "**Error**: specify member"
+msgstr "**Ошибка**: укажи участника"
+
+#: .\ext\relationship_system\relationship.py:36
+msgid "**Error**: unknown error"
+msgstr "**Ошибка**: неизвестная ошибка"
+
+#: .\ext\relationship_system\relationship.py:49
+msgid "{emoji} Divorce"
+msgstr "{emoji} Расторжение брака"
+
+#: .\ext\relationship_system\relationship.py:50
+msgid "couple <@{author_id}> & <@{target_id}> decides to end their relationship."
+msgstr "Пара <@{author_id}> & <@{target_id}> решила прекратить свои отношения. Наверное, это было к лучшему..."
+
+#: .\ext\relationship_system\relationship.py:56
+#: .\ext\relationship_system\relationship.py:134
+msgid "You are not in a relationship"
+msgstr "Ты не в отношениях. Изменим это?"
+
+#: .\ext\relationship_system\relationship.py:58
+#: .\ext\relationship_system\relationship.py:183
+msgid "This message is out of date"
+msgstr "Это сообщение устарело"
+
+#: .\ext\relationship_system\relationship.py:80
+msgid "You need {e} more {coin} to make suggestion"
+msgstr "Тебе нужно ещё {e} {coin} чтобы сделать предложение"
+
+#: .\ext\relationship_system\relationship.py:83
+msgid "It looks like you already have a soul mate. You can use `{prefix}divorce` at any time to fix this."
+msgstr "Похоже, у вас уже есть вторая половинка. Вы можете использовать `{prefix}divorce` в любое время, чтобы исправить это."
+
+#: .\ext\relationship_system\relationship.py:86
+msgid "The person you want to offer to is already in a relationship"
+msgstr "Нет, так не пойдет! Человек, которому вы хотите сделать предложение, уже состоит в отношениях."
+
+#: .\ext\relationship_system\relationship.py:89
+msgid "{emoji} Marriage proposal"
+msgstr "{emoji} Предложение руки и сердца"
+
+#: .\ext\relationship_system\relationship.py:90
+msgid "{target}, {author} offer to get married, do you agree?"
+msgstr "{target}, {author} предлагает тебе стать парой! Новый шаг в жизни..?"
+
+#: .\ext\relationship_system\relationship.py:96
+#: .\ext\relationship_system\relationship.py:155
+msgid "Accept"
+msgstr "Согласиться"
+
+#: .\ext\relationship_system\relationship.py:99
+#: .\ext\relationship_system\relationship.py:175
+msgid "Refuse"
+msgstr "Отказаться"
+
+#: .\ext\relationship_system\relationship.py:123
+msgid "{emoji} Divorce?.."
+msgstr "{emoji} Развод?.."
+
+#: .\ext\relationship_system\relationship.py:124
+msgid "Are you sure you want to end your relationship with <@{pair_id}>?"
+msgstr "Ты уверен, что хочешь разорвать отношения с <@{pair_id}>?"
+
+#: .\ext\relationship_system\relationship.py:127
+msgid "Divorce"
+msgstr "Развод"
+
+#: .\ext\relationship_system\relationship.py:152
+msgid "This offer is not for you."
+msgstr "Это предложение не для тебя"
+
+#: .\ext\relationship_system\relationship.py:161
+msgid "The user who sent this offer is already in a relationship"
+msgstr "Пользователь, отправивший это предложение, уже состоит в отношениях. Неловко вышло"
+
+#: .\ext\relationship_system\relationship.py:165
+msgid "You already have a soul mate"
+msgstr "У тебя уже есть вторая половинка. Или ты уже не помнишь?"
+
+#: .\ext\relationship_system\relationship.py:169
+msgid "{emoji} Offer accepted"
+msgstr "{emoji} Пользователь согласился!"
+
+#: .\ext\relationship_system\relationship.py:170
+msgid ""
+"There is a new couple on this server\n"
+"<@{author_id}> & <@{target_id}>"
+msgstr ""
+"Ура! На нашем сервере появилась новая пара - \n"
+"<@{author_id}> & <@{target_id}>"
+
+#: .\ext\relationship_system\relationship.py:177
+msgid "{emoji} Offer refused"
+msgstr "Предложение отклонено"
+
+#: .\ext\relationship_system\relationship.py:178
+msgid "<@{target_id}> refuse the offer. Perhaps it's time to realize your true feelings."
+msgstr "Пользователь <@{target_id}> отказался от предложения. Может, пора осознать свои истинные чувства и сделать другой выбор..?"
+
+#: .\ext\reputation\reputation.py:25 .\ext\reputation\reputation.py:32
+#: .\ext\reputation\reputation.py:39
+msgid "Reputation not changed"
+msgstr "Репутация не изменена"
+
+#: .\ext\reputation\reputation.py:33
+msgid "**Error**: user not specified"
+msgstr "**Ошибка**: Пользователь не указан"
+
+#: .\ext\reputation\reputation.py:35 .\ext\utils\converters.py:65
+msgid "Please enter the correct type"
+msgstr "Пожалуйста, введите правильный тип"
+
+#: .\ext\reputation\reputation.py:36 .\ext\utils\converters.py:66
+msgid ""
+"\n"
+"`+` - increase reputation"
+msgstr ""
+"\n"
+"`+` - повысить репутацию"
+
+#: .\ext\reputation\reputation.py:37 .\ext\utils\converters.py:67
+msgid ""
+"\n"
+"`-` - reduce reputation"
+msgstr ""
+"\n"
+"`-` - снизить репутацию"
+
+#: .\ext\reputation\reputation.py:38 .\ext\utils\converters.py:68
+msgid ""
+"\n"
+"`?` - reset"
+msgstr ""
+"\n"
+"`?` - сбросить репутацию"
+
+#: .\ext\reputation\reputation.py:40
+msgid "**Error**: {reason}"
+msgstr "**Ошибка**: {reason}"
+
+#: .\ext\reputation\reputation.py:54
+msgid "{emoji} Reputation increased"
+msgstr "{emoji} Репутация успешно повышена!"
+
+#: .\ext\reputation\reputation.py:55
+msgid "{author} increased {to_member}'s reputation"
+msgstr "{author} повысил репутацию участнику {to_member}"
+
+#: .\ext\reputation\reputation.py:63
+msgid "{emoji} Reputation decreased"
+msgstr "{emoji} Репутация понизилилась :C"
+
+#: .\ext\reputation\reputation.py:64
+msgid "{author} decreased {to_member}'s reputation"
+msgstr "{author} понизил репутацию участнику {to_member}"
+
+#: .\ext\reputation\reputation.py:72
+msgid "{emoji} Reset"
+msgstr "{emoji} Сброс"
+
+#: .\ext\reputation\reputation.py:73
+msgid "Reputation successfully reset"
+msgstr "Репутация успешно сброшена"
+
+#: .\ext\reputation\reputation.py:77
+msgid "You can't do it twice"
+msgstr "Ты не можешь сделать это действие дважды."
+
+#: .\ext\suggestions\suggestions.py:35
+msgid "Suggestion"
+msgstr "Предложения"
+
+#: .\ext\suggestions\suggestions.py:49
+msgid "{emoji} List of suggestions"
+msgstr "{emoji} Список предложений"
+
+#: .\ext\suggestions\suggestions.py:51
+msgid "There are currently no suggestions"
+msgstr "В настоящее время нет входящих предложений"
+
+#: .\ext\suggestions\suggestions.py:56
+msgid ""
+"From: <@{author}>\n"
+"\n"
+"Text (first 100): {text}"
+msgstr ""
+"От: <@{author}>\n"
+"\n"
+"Текст (first 100): {text}"
+
+#: .\ext\suggestions\suggestions.py:72
+msgid "Select an suggestion for details"
+msgstr "Выберите предложение, чтобы узнать подробности"
+
+#: .\ext\suggestions\suggestions.py:111
+msgid "Back"
+msgstr "Обратно"
+
+#: .\ext\suggestions\suggestions.py:113
+msgid "To suggestion list"
+msgstr "К списку предложений"
+
+#: .\ext\suggestions\suggestions.py:118 .\ext\suggestions\suggestions.py:275
+msgid "Approve"
+msgstr "Принять"
+
+#: .\ext\suggestions\suggestions.py:121 .\ext\suggestions\suggestions.py:163
+#: .\ext\suggestions\suggestions.py:166 .\ext\suggestions\suggestions.py:275
+msgid "Deny"
+msgstr "Отклонить"
+
+#: .\ext\suggestions\suggestions.py:124 .\ext\suggestions\suggestions.py:275
+msgid "Delete"
+msgstr "Удалить"
+
+#: .\ext\suggestions\suggestions.py:156
+msgid "Write the reason, - if you have nothing to say"
+msgstr "Напишите причину, - если вам нечего сказать"
+
+#: .\ext\suggestions\suggestions.py:160
+msgid "Not specified"
+msgstr "Не определено"
+
+#: .\ext\suggestions\suggestions.py:162
+msgid "suggestion"
+msgstr "Предложение"
+
+#: .\ext\suggestions\suggestions.py:163
+msgid " approved"
+msgstr " принято"
+
+#: .\ext\suggestions\suggestions.py:163
+msgid " denied"
+msgstr " отклонено"
+
+#: .\ext\suggestions\suggestions.py:203
+msgid "Suggestion must be less than 4000 characters"
+msgstr "Предложение должно быть меньше 4000 символов"
+
+#: .\ext\suggestions\suggestions.py:213
+msgid "Channel for suggestions not specified"
+msgstr "Канал для предложений не указан"
+
+#: .\ext\suggestions\suggestions.py:215
+msgid "{emoji} Your suggestion has been sent successfully"
+msgstr "{emoji} Ваше предложение было успешно отправлено"
+
+#: .\ext\suggestions\suggestions.py:221
+msgid "Member id: {author_id}"
+msgstr "ID участника: {author_id}"
+
+#: .\ext\suggestions\suggestions.py:234
+msgid "Failed to make suggestion"
+msgstr "Не удалось сделать предложение"
+
+#: .\ext\suggestions\suggestions.py:240
+msgid "describe your suggestion"
+msgstr "Опиши свое предложение!"
+
+#: .\ext\sync\sync.py:123
+msgid "This action will overwrite the data for this guild."
+msgstr "Это действие перезапишет данные для этой гильдии."
+
+#: .\ext\sync\sync.py:124
+msgid "Do not use if you are not sure you know the result."
+msgstr "Не используй это, если ты не уверен в результате"
+
+#: .\ext\system\config.py:35
+msgid "Config"
+msgstr "Конфиг"
+
+#: .\ext\system\config.py:45
+msgid "expected (current) type"
+msgstr "ожидаемый (текущий) тип"
+
+#: .\ext\system\config.py:48
+msgid "all"
+msgstr "все"
+
+#: .\ext\system\config.py:57
+msgid "Change"
+msgstr "Изменить"
+
+#: .\ext\system\config.py:66
+msgid "Write new value"
+msgstr "Напиши новое значение"
+
+#: .\ext\system\config.py:75
+msgid "type should not change"
+msgstr "тип не должен меняться"
+
+#: .\ext\system\config.py:78
+msgid "Wrong value type"
+msgstr "Неверный тип значения"
+
+#: .\ext\system\status.py:37
+msgid "**total**: {ram_usage}/{ram_total} ({ram_percent}% used)"
+msgstr "**всего**: {ram_usage}/{ram_total} ({ram_percent}% использовано)"
+
+#: .\ext\system\status.py:47
+msgid "**by bot**: {process_RAM_load} ({process_RAM_load_percent}%)"
+msgstr "**у Мираны**: {process_RAM_load} ({process_RAM_load_percent}%)"
+
+#: .\ext\system\status.py:61
+msgid "{memory_used}/{memory_total} ({percent}% used)"
+msgstr "{memory_used}/{memory_total} ({percent}% used)"
+
+#: .\ext\system\status.py:70
+msgid "{cpu_count} ({virtual_count} virtual) cores."
+msgstr "{cpu_count} ({virtual_count} virtual) ядер."
+
+#: .\ext\system\status.py:74
+msgid ""
+"\n"
+"Load per core: {load_per_core}\n"
+"Summury: {total}"
+msgstr ""
+"\n"
+"Загрузка на ядро: {load_per_core}\n"
+"Всего: {total}"
+
+#: .\ext\system\status.py:80
+msgid "Ping: {ping}ms"
+msgstr "Пинг: {ping}ms"
+
+#: .\ext\system\status.py:83
+msgid ""
+"\n"
+"Uptime: {uptime}"
+msgstr ""
+"\n"
+"Время безотказной работы: {uptime}"
+
+#: .\ext\system\status.py:87
+msgid "Status"
+msgstr "Статус"
+
+#: .\ext\system\status.py:89
+msgid "RAM usage"
+msgstr "Использование RAM"
+
+#: .\ext\system\status.py:94
+msgid "Memory usage"
+msgstr "Использование памяти"
+
+#: .\ext\system\status.py:99
+msgid "CPU usage"
+msgstr "использование процессора"
+
+#: .\ext\utils\Interaction_inspect.py:141 .\ext\utils\build.py:20
+msgid "Sorry, <@{author}> is the author of this message. Only he can use it"
+msgstr "Извини, <@{author}> автор этого сообщения. Только он может использовать его"
+
+#: .\ext\utils\build.py:28
+msgid "Enter page number"
+msgstr "Введи номер страницы"
+
+#: .\ext\utils\converters.py:20
+msgid "Time specified incorrectly."
+msgstr "Время указано неверно"
+
+#: .\ext\utils\converters.py:27
+msgid "{} is an invalid time-key! h/m/s/d are valid!"
+msgstr "{} является недопустимым временным ключом! h/m/s/d действительны!"
+
+#: .\ext\utils\converters.py:29
+msgid "{} is not a number!"
+msgstr "{} не является номером!"
+
+#: .\ext\utils\converters.py:51
+msgid "Prefixes should not contain bot mentions."
+msgstr "Префиксы не должны содержать упоминания ботов"
+
+#: .\ext\utils\converters.py:77 .\ext\utils\converters.py:87
+msgid "Specified user is a bot"
+msgstr "Указанный пользователь является ботом"
+
+#: .\ext\utils\converters.py:89
+msgid "Specified user is yourself"
+msgstr "Указанный пользователь - вы сами"
+
+#: .\ext\utils\converters.py:100
+msgid "Specified user is moderator"
+msgstr "Указанный пользователь является модератором"
+
+#: .\ext\utils\converters.py:104
+msgid "Specified user is administrator"
+msgstr "Указанный пользователь является администратором"
+
+#: .\ext\utils\converters.py:106
+msgid "Specified user is bot owner"
+msgstr "Указанный пользователь является владельцем бота"
+
+#: .\ext\utils\converters.py:119
+msgid "{argument} is not a natural number"
+msgstr "{argument} не является натуральным числом"
+
+#: .\main.py:68
+msgid "This command cannot be used in private messages."
+msgstr "Эту команду нельзя использовать в личных сообщениях."
+
+#: .\main.py:71
+msgid "This command is disabled and cannot be used."
+msgstr "Эта команда отключена и не может быть использована."
+
+#: time
+msgid "days"
+msgstr "дни"
+
+#: time
+msgid "hours"
+msgstr "часы"
+
+#: time
+msgid "minutes"
+msgstr "минуты"
+
+#: time
+msgid "seconds"
+msgstr "секунды"

@@ -10,12 +10,14 @@ from .utils import wait_for_message, wait_message_from_author
 
 async def update_message(bot: SEBot, builder,
                          interaction: Interaction) -> None:
+    translator = bot.get_translator_by_interaction(interaction)
+    _ = translator
     values = Interaction_inspect.get_values(interaction)
     author = values.get('author')
     if author and author != interaction.author.id:
         await interaction.respond(
             content=
-            f'Sorry, <@{author}> is the author of this message. Only he can use it'
+            _('Sorry, <@{author}> is the author of this message. Only he can use it').format(author=author)
         )
         return
 
@@ -23,7 +25,7 @@ async def update_message(bot: SEBot, builder,
     if page or page == 0:
         page = Interaction_inspect.check_page_change(interaction, page)
     if page == 'custom':
-        await interaction.respond(content="Enter page number")
+        await interaction.respond(content=_("Enter page number"))
 
         if author := values.get('author'):
             new_page = await wait_message_from_author(bot, interaction, author)
@@ -35,9 +37,9 @@ async def update_message(bot: SEBot, builder,
             pass
 
         if inspect.iscoroutinefunction(builder):
-            embed, components, values = await builder(values)
+            embed, components, values = await builder(translator, values)
         else:
-            embed, components, values = builder(values)
+            embed, components, values = builder(translator, values)
         components = Interaction_inspect.inject(components, values)
         await interaction.message.edit(embed=embed, components=components)
 
@@ -47,9 +49,9 @@ async def update_message(bot: SEBot, builder,
             values['selected'] = selected[0]
 
         if inspect.iscoroutinefunction(builder):
-            embed, components, values = await builder(values)
+            embed, components, values = await builder(translator, values)
         else:
-            embed, components, values = builder(values)
+            embed, components, values = builder(translator, values)
         components = Interaction_inspect.inject(components, values)
         await interaction.respond(type=7, embed=embed, components=components)
 

@@ -1,3 +1,5 @@
+from functools import cache
+import gettext
 import logging
 import sys
 import time
@@ -5,7 +7,6 @@ import traceback
 from importlib import reload
 import discord
 from discord.ext import commands
-from discord.ext.commands.errors import MissingPermissions
 from discord_components import DiscordComponents
 
 from bot_components import translate
@@ -36,7 +37,7 @@ class SEBot(commands.AutoShardedBot):
         allowed_mentions = discord.AllowedMentions(roles=True,
                                                    everyone=True,
                                                    users=True)
-        intents = discord.Intents.all() # It's OK. This bot is for one server
+        intents = discord.Intents.all()  # It's OK. This bot is for one server
         super().__init__(command_prefix=_prefix_callable,
                          description='temporary unknown',
                          allowed_mentions=allowed_mentions,
@@ -61,53 +62,87 @@ class SEBot(commands.AutoShardedBot):
         logger.info(f'Ready: {self.user} (ID: {self.user.id})')
 
     async def on_command_error(self, ctx, error):
+        _ = ctx.get_translator()
         if isinstance(error, commands.NoPrivateMessage):
             await ctx.author.send(
-                'This command cannot be used in private messages.')
+                _('This command cannot be used in private messages.'))
         elif isinstance(error, commands.DisabledCommand):
             await ctx.author.send(
-                'This command is disabled and cannot be used.')
+                _('This command is disabled and cannot be used.'))
         elif isinstance(error, commands.CommandInvokeError):
             original = error.original
 
             if not isinstance(original, discord.HTTPException):
                 if original.__class__ in self.expected_exception:
-                    logger.debug(f'ignore expected exception {original.__class__.__name__}, in {ctx.command.qualified_name}')
-                
+                    logger.debug(
+                        f'ignore expected exception {original.__class__.__name__}, in {ctx.command.qualified_name}'
+                    )
+
                 else:
-                    stack_summary = traceback.extract_tb(original.__traceback__, limit=20)
+                    stack_summary = traceback.extract_tb(
+                        original.__traceback__, limit=20)
                     traceback_list = traceback.format_list(stack_summary)
-                    
-                    logger.error(f'In command {ctx.command.qualified_name}:\n' + f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}")
-                    
+
+                    logger.error(
+                        f'In command {ctx.command.qualified_name}:\n' +
+                        f"{''.join(traceback_list)}\n{original.__class__.__name__}: {original}"
+                    )
+
         elif isinstance(error, commands.ArgumentParsingError):
             await ctx.send(error)
-            
+
     async def on_error(self, event_method, *args, **kwargs):
         exception_info = sys.exc_info()
         if exception_info[0] in self.expected_exception:
-            logger.debug(f'ignore expected exception {exception_info[0]}, in {event_method}')
+            logger.debug(
+                f'ignore expected exception {exception_info[0]}, in {event_method}'
+            )
         else:
             stack_summary = traceback.extract_tb(exception_info[2], limit=20)
             traceback_list = traceback.format_list(stack_summary)
-            
-            logger.error(f'Ignoring exception in {event_method}\n' + f"{''.join(traceback_list)}\n{exception_info[0].__name__}: {exception_info[1]}")
+
+            logger.error(
+                f'Ignoring exception in {event_method}\n' +
+                f"{''.join(traceback_list)}\n{exception_info[0].__name__}: {exception_info[1]}"
+            )
 
     async def process_commands(self, message):
         if message.author.bot:
             return
-        
+
         ctx = await self.get_context(message, cls=Context)
 
         if ctx.command is None:
             await self.controller.check(ctx)
             return
-        
+
         if ctx.channel.id not in self.config['commands_channels']:
             if not await is_mod().predicate(ctx):
                 return
 
         await self.invoke(ctx)
+
+    @cache
+    def get_translator(self, lang: str = "en"):
+        if lang == "en":
+
+            def empty_translator(message: str):
+                return message
+
+            return empty_translator
+
+        trans = gettext.translation("messages",
+                                    localedir="locales",
+                                    languages=(lang, ))
+        return trans.gettext
+    
+    def get_translator_by_interaction(self, interaction):
+        tranlstor = self.get_translator("ru")
+        return tranlstor
+    
+    def get_translator_by_guild(self, guild: discord.Guild):
+        tranlstor = self.get_translator("ru")
+        return tranlstor
 
     async def get_or_fetch_user(self, user_id) -> discord.User:
         user = self.get_user(user_id)

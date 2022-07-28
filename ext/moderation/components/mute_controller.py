@@ -11,7 +11,7 @@ from utils.custom_errors import NotConfigured
 logger = logging.getLogger('Arctic')
 
 
-class Mute_controller:
+class MuteController:
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 

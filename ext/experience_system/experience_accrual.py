@@ -8,7 +8,7 @@ from main import SEBot
 from utils.utils import DefaultEmbed
 
 
-class experience_accrual(commands.Cog):
+class ExperienceAccrualCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.on_cooldown = []
@@ -26,7 +26,7 @@ class experience_accrual(commands.Cog):
 
     def add_coins(self, new_level, author, config):
         member = MemberDataController(id=author.id)
-        member.change_balance(new_level * config['coins_per_level_up'])
+        member.change_balance(100 + new_level*config['coins_per_level_up'])
         member.save()
 
     def get_roles(self, author, new_level, config):
@@ -50,24 +50,30 @@ class experience_accrual(commands.Cog):
         else:
             return None, None
 
-    def embed_builder(self, author, new_role, old_level, new_level, config):
+    def embed_builder(self, author, new_role, old_level, new_level, config, translator):
+        _ = translator
         embed = DefaultEmbed(
-            description=
-            f'{author.mention} got a level up ({old_level} -> {new_level})')
+            description=_('{author} got a level up ({old_level} -> {new_level})').format(
+                author=author.mention,
+                old_level=old_level,
+                new_level=new_level,
+            ))
 
-        value = f"{new_level*config['coins_per_level_up']} {self.bot.config['coin']}"
+        value = f"{100 + new_level*config['coins_per_level_up']} {self.bot.config['coin']}"
         if new_role:
-            value += f"\nRole <@&{new_role.id}>"
+            value += _("\nRole <@&{role_id}>").format(role_id=new_role.id)
 
-        embed.add_field(name='Bonuses', value=value)
+        embed.add_field(name=_('Bonuses'), value=value)
         return embed
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        translator = self.bot.get_translator_by_guild(message.guild)
+        _ = translator
         config = self.bot.config['experience_system']
         author: discord.Member = message.author
 
-        checks = (config['experience_channel'] == message.channel.id, author
+        checks = (message.channel.id in config['experience_channels'], author
                   not in self.on_cooldown, not author.bot,
                   len(message.content) >= config['minimal_message_length'])
 
@@ -80,14 +86,14 @@ class experience_accrual(commands.Cog):
 
                 if new_role:
                     await author.add_roles(new_role,
-                                           reason=f'Level {new_level} reached')
+                                           reason=_('Level {new_level} reached').format(new_level=new_level))
                 if old_role:
                     await author.remove_roles(
                         old_role,
-                        reason=f'Level {new_level} reached, remove old role')
+                        reason=_('Level {new_level} reached, remove old role').format(new_level=new_level))
 
                 embed = self.embed_builder(author, new_role, old_level,
-                                           new_level, config)
+                                           new_level, config, translator)
                 await message.channel.send(embed=embed, delete_after=30)
 
             await asyncio.sleep(config['cooldown'])
@@ -95,4 +101,4 @@ class experience_accrual(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(experience_accrual(bot))
+    bot.add_cog(ExperienceAccrualCog(bot))

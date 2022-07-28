@@ -17,7 +17,7 @@ from ..utils.build import update_message
 loger = logging.getLogger('Arctic')
 
 
-class Top(commands.Cog):
+class TopCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.emoji = self.bot.config["additional_emoji"]["top"]
@@ -25,19 +25,20 @@ class Top(commands.Cog):
         config = self.bot.config
         add_emoji = config["additional_emoji"]["other"]
 
+        _ = lambda s: s
         self.rename_dict = {
-            "balance": "balance",
-            "likes": "reputation",
-            "married_time": "duration of relationship",
-            "experience": "level",
-            "voice_activity": "voice activity"
+            "balance": _("balance"),
+            "likes": _("reputation"),
+            "married_time": _("duration of relationship"),
+            "experience": _("level"),
+            "voice_activity": _("voice activity"),
         }
         self.end_emoji_dict = {
             "balance": config["coin"],
             "likes": add_emoji.get('heart', ''),
             "married_time": "",
             "experience": "",
-            "voice_activity": ""
+            "voice_activity": "",
         }
         self.start_emoji_dict = {
             "balance": self.emoji["balance"],
@@ -49,29 +50,33 @@ class Top(commands.Cog):
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
-            embed = DefaultEmbed(title="Сan't set biography",
-                                 description=f"**Error**: {error}")
+            _ = ctx.get_translator()
+            embed = DefaultEmbed(title=_("Can't complate action"),
+                                 description=_("**Error**: {error}").format(error=error))
             await ctx.send(embed=embed)
 
-    def embed_builder(self, selected, items):
+    def embed_builder(self, translator, selected, items):
+        _ = translator
         rename_dict = self.rename_dict
         end_emoji_dict = self.end_emoji_dict
 
         embed = DefaultEmbed(
-            title=
-            f"{self.start_emoji_dict[selected]} Top by {rename_dict[selected]}"
+            title=_("{emoji} Top by {category}").format(
+                emoji=self.start_emoji_dict[selected],
+                category=translator(rename_dict[selected]),
+            )
         )
         
         template = "{index}. <@{item_id}> — {item_selected} {emoji}"
         if selected == 'married_time':
-            template = "{index}. <@{item_user}> & <@{item_soul_mate}> — from <t:{item_selected}:f> {emoji}"
+            template = _("{index}. <@{item_user}> & <@{item_soul_mate}> - from <t:{item_selected}:f> {emoji}")
         elif selected == 'experience':
             for item in items:
                 level, gained_after_lvl_up, left_before_lvl_up = experience_converting(item[selected])
                 item[selected] = f'**{level}** ({gained_after_lvl_up}/{left_before_lvl_up})'
         elif selected == 'voice_activity':
             for item in items:
-                item[selected] = display_time(item[selected])
+                item[selected] = display_time(translator, item[selected])
                 
         embed.description = (
             "\n".join([
@@ -85,22 +90,23 @@ class Top(commands.Cog):
                 )
                 for index, item in enumerate(items, 1)
             ])
-            if items else 'Empty :('
+            if items else _('Empty :(')
         )
         return embed
 
-    def build_components(self, selected):
+    def build_components(self, translator, selected):
+        _ = translator
         rename_dict = self.rename_dict
 
         return Select(id="top_select",
                       options=[
-                          SelectOption(label=label,
+                          SelectOption(label=translator(label),
                                        value=value,
                                        default=value == selected)
                           for value, label in rename_dict.items()
                       ])
 
-    def top_builder(self, values):
+    def top_builder(self, translator, values):
         selected = values['selected']
 
         if selected == 'likes':
@@ -125,20 +131,22 @@ class Top(commands.Cog):
                 UserInfo.id, op).where(UserInfo.on_server == True).order_by(
                     op.desc()).limit(10).dicts().execute())
 
-        embed = self.embed_builder(selected, items)
-        components = [self.build_components(selected)]
+        embed = self.embed_builder(translator, selected, items)
+        components = [self.build_components(translator, selected)]
 
         return embed, components, values
 
     @commands.command()
     async def top(self, ctx):
         await ctx.message.delete()
+        translator = ctx.get_translator()
+
         values = {
             'selected': 'voice_activity',
             'author': ctx.author.id,
             'page': 0
         }
-        embed, components, values = self.top_builder(values)
+        embed, components, values = self.top_builder(translator, values)
         components = Interaction_inspect.inject(components, values)
         await ctx.send(embed=embed, components=components)
 
@@ -156,4 +164,4 @@ class Top(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Top(bot))
+    bot.add_cog(TopCog(bot))

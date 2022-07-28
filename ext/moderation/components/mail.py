@@ -8,16 +8,24 @@ async def mail(ctx,
                reason,
                time=None,
                additional_description=None):
-    description = f"Moderator `{ctx.author.name}` **{action}** you on `{ctx.guild.name}`"
+    translator = ctx.get_translator()
+    _ = translator
+    description = _("Moderator `{author_name}` **{action}** you on `{guild_name}`").format(
+        author_name=ctx.author.name,
+        action=action,
+        guild_name=ctx.guild.name,
+    )
     if time:
-        description += f"\n\nDuration: {display_time(time, granularity=4, full=True)}"
+        description += _("\n\nDuration: {duration}").format(
+            duration=display_time(translator, time, granularity=4, full=True)
+        )
     else:
         description += "\n"
-    description += f"\nReason: **{reason}**"
+    description += _("\nReason: **{reason}**").format(reason=reason)
     if additional_description:
         description += f"\n\n{additional_description}"
     embed = DefaultEmbed(
-        title=f"You was {action}",
+        title=_("You was {action}").format(action=action),
         description=description,
     )
     try:

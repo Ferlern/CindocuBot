@@ -22,7 +22,7 @@ class System(TypedDict):
 
 
 class ExperienceSystem(TypedDict):
-    experience_channel: int
+    experience_channels: list[int]
     cooldown: int
     minimal_message_length: int
     experience_per_message: list[int]

@@ -35,3 +35,10 @@ class Context(commands.Context):
         }
         emoji = lookup.get(opt, '❔')
         await self.message.add_reaction(emoji)
+    
+    def get_translator(self):
+        translator = self.bot.get_translator(lang=self.get_language())
+        return translator
+    
+    def get_language(self):
+        return "ru"

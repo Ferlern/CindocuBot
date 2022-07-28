@@ -17,7 +17,7 @@ logger = logging.getLogger('Arctic')
 from discord_components import Interaction
 
 
-class Config(commands.Cog):
+class ConfigCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
         self.data = bot.config
@@ -25,13 +25,14 @@ class Config(commands.Cog):
     async def cog_check(self, ctx):
         return await is_owner().predicate(ctx)
 
-    def config_builder(self, values):
+    def config_builder(self, translator, values):
+        _ = translator
         selected = values.get('selected', None)
         if selected == 'all':
             selected = None
 
         if not selected:
-            embed = DefaultEmbed(title='config',
+            embed = DefaultEmbed(title=_('Config'),
                                  description='\n'.join([
                                      f'{key} — `{value}`'
                                      for key, value in self.data.items()
@@ -40,11 +41,11 @@ class Config(commands.Cog):
             embed = DefaultEmbed(
                 title=selected,
                 description=
-                f'```json\n{json.dumps(self.data[selected], indent=4)}```')
-            embed.add_field(name='expected (current) type',
+                f'```json\n{json.dumps(self.data[selected], indent=4, ensure_ascii=False)}\n```')
+            embed.add_field(name=_('expected (current) type'),
                             value=str(type(self.data[selected])))
 
-        options = [SelectOption(label='all', value='all')]
+        options = [SelectOption(label=_('all'), value='all')]
         options.extend([
             SelectOption(label=key, value=key, default=selected == key)
             for key in self.data.keys()
@@ -53,15 +54,17 @@ class Config(commands.Cog):
         components = [Select(id='config_select', options=options)]
         if selected:
             components.append(
-                discord_components.Button(label='Change', id='config_change'))
+                discord_components.Button(label=_('Change'), id='config_change'))
 
         return embed, components, values
 
     async def change_value(self, interaction: Interaction):
+        translator = self.bot.get_translator_by_interaction(interaction)
+        _ = translator
         values = Interaction_inspect.get_values(interaction)
         selected = values['selected']
 
-        await interaction.respond(content='Write new value')
+        await interaction.respond(content=_('Write new value'))
         new_value: str = await wait_message_from_author(self.bot, interaction,
                                                    values['author'])
         
@@ -70,16 +73,17 @@ class Config(commands.Cog):
         expected = type(self.data[selected])
         try:
             new_value = json.loads(new_value)
-            assert type(new_value) == expected, 'type should not change'
+            assert type(new_value) == expected, _('type should not change')
         except Exception as e:
             await interaction.channel.send(embed=DefaultEmbed(
-                title='Wrong value type', description=f'**Error**: {e}'))
+                title=_('Wrong value type'), description=_('**Error**: {error}').format(error=e)))
             return
 
         self.data[selected] = new_value
         self.bot.reload_config()
+        self.data = self.bot.config
 
-        embed, components, values = self.config_builder(values)
+        embed, components, values = self.config_builder(translator, values)
         components = Interaction_inspect.inject(components, values)
 
         await interaction.message.edit(embed=embed, components=components)
@@ -87,9 +91,10 @@ class Config(commands.Cog):
     @commands.command()
     async def config(self, ctx):
         await ctx.message.delete()
+        translator = ctx.get_translator()
 
         values = {'author': ctx.message.author.id}
-        embed, components, values = self.config_builder(values)
+        embed, components, values = self.config_builder(translator, values)
 
         components = Interaction_inspect.inject(components, values)
         await ctx.send(embed=embed, components=components)
@@ -111,4 +116,4 @@ class Config(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Config(bot))
+    bot.add_cog(ConfigCog(bot))

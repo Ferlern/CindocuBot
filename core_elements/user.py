@@ -41,7 +41,7 @@ class MemberDataController:
         self.user_info.balance += amount
 
         if self.user_info.balance < 0:
-            raise NotEnoughMoney(f'{abs(self.user_info.balance + amount)}')
+            raise NotEnoughMoney(f'{abs(self.user_info.balance)}')
 
     def set_mute_time(self, mute_time: int):
         """Sets mute time relative to the current time

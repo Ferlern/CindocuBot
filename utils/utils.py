@@ -72,7 +72,6 @@ class TimeConstants:
 
 
 intervals = (
-    ('days', TimeConstants.day),
     ('hours', TimeConstants.hour),
     ('minutes', TimeConstants.minute),
     ('seconds', TimeConstants.second),
@@ -81,18 +80,19 @@ intervals = (
 def get_seconds_until_new_day():
     return int((time.time() // 86400 + 1) * 86400)
 
-def display_time(seconds, granularity=3, full=False):
+def display_time(translator, seconds, granularity=3, full=False):
     if seconds == 0:
         return '0'
     result = []
 
     for name, count in intervals:
+        name = translator(name)
         value = int(seconds // count)
         if value:
             seconds -= value * count
             if value == 1:
                 name = name.rstrip('s')
-            if full:
+            if full and False:
                 result.append("{} {}".format(value, name))
             else:
                 result.append("{}{}".format(value, name[:1]))

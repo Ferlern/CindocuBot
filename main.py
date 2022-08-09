@@ -5,8 +5,8 @@ import sys
 import time
 import traceback
 from importlib import reload
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from discord_components import DiscordComponents
 
 from bot_components import translate
@@ -34,10 +34,10 @@ class SEBot(commands.AutoShardedBot):
         self.controller = translate.MessageController(self)
         self.expected_exception = (ConfirmationError, NotConfigured,
                                    OnlyAuthorError, WaitError)
-        allowed_mentions = discord.AllowedMentions(roles=True,
+        allowed_mentions = disnake.AllowedMentions(roles=True,
                                                    everyone=True,
                                                    users=True)
-        intents = discord.Intents.all()  # It's OK. This bot is for one server
+        intents = disnake.Intents.all()  # It's OK. This bot is for one server
         super().__init__(command_prefix=_prefix_callable,
                          description='temporary unknown',
                          allowed_mentions=allowed_mentions,
@@ -72,7 +72,7 @@ class SEBot(commands.AutoShardedBot):
         elif isinstance(error, commands.CommandInvokeError):
             original = error.original
 
-            if not isinstance(original, discord.HTTPException):
+            if not isinstance(original, disnake.HTTPException):
                 if original.__class__ in self.expected_exception:
                     logger.debug(
                         f'ignore expected exception {original.__class__.__name__}, in {ctx.command.qualified_name}'
@@ -140,24 +140,24 @@ class SEBot(commands.AutoShardedBot):
         tranlstor = self.get_translator("ru")
         return tranlstor
     
-    def get_translator_by_guild(self, guild: discord.Guild):
+    def get_translator_by_guild(self, guild: disnake.Guild):
         tranlstor = self.get_translator("ru")
         return tranlstor
 
-    async def get_or_fetch_user(self, user_id) -> discord.User:
+    async def get_or_fetch_user(self, user_id) -> disnake.User:
         user = self.get_user(user_id)
         if user:
             return user
         else:
             try:
                 user = await self.fetch_user(user_id)
-            except discord.HTTPException:
+            except disnake.HTTPException:
                 return None
             else:
                 return user
 
-    def get_guild_member(self, member_id) -> discord.Member:
-        guild: discord.Guild = self.get_guild(self.config['guild'])
+    def get_guild_member(self, member_id) -> disnake.Member:
+        guild: disnake.Guild = self.get_guild(self.config['guild'])
         if not guild:
             raise NotConfigured('guild not specified. Check your config.')
         member = guild.get_member(member_id)

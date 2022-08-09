@@ -1,10 +1,10 @@
 import logging
 
-import discord
+import disnake
 from core import MemberDataController
-from discord.embeds import Embed
-from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
+from disnake.embeds import Embed
+from disnake.ext import commands
+from disnake.ext.commands.errors import BadArgument
 from discord_components import Button, ButtonStyle, Interaction
 from main import SEBot
 from utils.custom_errors import (MarriedWithAnother, NotEnoughMoney,
@@ -51,7 +51,7 @@ class RelationshipCog(commands.Cog):
                     author_id=author_id,
                     target_id=target_id,
                 ),
-                colour=discord.Colour.red())
+                colour=disnake.Colour.red())
         except NotMarried:
             await interaction.respond(content=_('You are not in a relationship'))
         except MarriedWithAnother:
@@ -178,7 +178,7 @@ class RelationshipCog(commands.Cog):
                 description=_("<@{target_id}> refuse the offer. Perhaps it's time to realize your true feelings.").format(
                     target_id=target_id,
                 ),
-                colour=discord.Colour.red())
+                colour=disnake.Colour.red())
         else:
             embed = DefaultEmbed(description=_('This message is out of date'))
 

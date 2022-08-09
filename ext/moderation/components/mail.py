@@ -1,9 +1,9 @@
-import discord
+import disnake
 from utils.utils import DefaultEmbed, display_time
 
 
 async def mail(ctx,
-               member: discord.Member,
+               member: disnake.Member,
                action: str,
                reason,
                time=None,

@@ -2,8 +2,8 @@ import os
 import sys
 import time
 from inspect import getsource
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from ..utils.checks import is_owner
 from utils.utils import DefaultEmbed
 from core_elements.data_controller import models
@@ -54,7 +54,7 @@ class EvalCommandCog(commands.Cog):
 
         code = self.prepare(code.replace("-s", ""))
         args = {
-            "discord": discord,
+            "disnake": disnake,
             "sauce": getsource,
             "sys": sys,
             "os": os,
@@ -69,25 +69,25 @@ class EvalCommandCog(commands.Cog):
             a = time.time()
             response = await eval("func()", args)
             if silent or (response is None) or isinstance(
-                    response, discord.Message):
+                    response, disnake.Message):
                 del args, code
                 return
-            embed = discord.Embed(
+            embed = disnake.Embed(
                 title="🔮 Выполнено успешно",
                 description=f"```py\n{self.resolve_variable(response)}```",
-                colour=discord.Colour.purple())
+                colour=disnake.Colour.purple())
             embed.set_footer(
                 text=
                 f"⏱️ {type(response).__name__} | {(time.time() - a) / 1000} ms"
             )
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
         except Exception as e:
-            embed = discord.Embed(
+            embed = disnake.Embed(
                 title="🪡 Ошибка",
                 description=f"```{type(e).__name__}: {str(e)}```",
-                colour=discord.Colour.purple())
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+                colour=disnake.Colour.purple())
+            embed.set_thumbnail(url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
 
         del args, code, silent

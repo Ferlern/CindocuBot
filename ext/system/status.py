@@ -3,7 +3,7 @@ import math
 import psutil
 import time
 
-from discord.ext import commands
+from disnake.ext import commands
 from main import SEBot
 from utils.utils import DefaultEmbed, display_time
 

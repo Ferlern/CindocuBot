@@ -1,9 +1,9 @@
 import asyncio
 import random
 
-import discord
+import disnake
 from core import MemberDataController
-from discord.ext import commands
+from disnake.ext import commands
 from main import SEBot
 from utils.utils import DefaultEmbed
 
@@ -39,7 +39,7 @@ class ExperienceAccrualCog(commands.Cog):
             old_role_lvl = levels_with_role[old_role_index]
             old_role_id = config['roles'][old_role_lvl]
 
-            guild: discord.Guild = author.guild
+            guild: disnake.Guild = author.guild
 
             new_role = guild.get_role(role_id)
             if old_role_index >= 0:
@@ -67,11 +67,11 @@ class ExperienceAccrualCog(commands.Cog):
         return embed
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: disnake.Message):
         translator = self.bot.get_translator_by_guild(message.guild)
         _ = translator
         config = self.bot.config['experience_system']
-        author: discord.Member = message.author
+        author: disnake.Member = message.author
 
         checks = (message.channel.id in config['experience_channels'], author
                   not in self.on_cooldown, not author.bot,

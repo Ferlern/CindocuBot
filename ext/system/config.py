@@ -2,7 +2,7 @@ import json
 import logging
 
 import discord_components
-from discord.ext import commands
+from disnake.ext import commands
 from discord_components.component import Select, SelectOption
 from main import SEBot
 from utils.utils import DefaultEmbed

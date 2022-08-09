@@ -1,8 +1,8 @@
 import logging
 
 from core import PersonalVoice
-from discord import channel
-from discord.ext import commands
+from disnake import channel
+from disnake.ext import commands
 from main import SEBot
 
 logger = logging.getLogger('Arctic')

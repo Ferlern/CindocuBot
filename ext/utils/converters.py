@@ -1,9 +1,9 @@
 import logging
 import re
-import discord
+import disnake
 
-from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
+from disnake.ext import commands
+from disnake.ext.commands.errors import BadArgument
 
 
 logger = logging.getLogger('Arctic')
@@ -69,7 +69,7 @@ class Reputation(commands.Converter):
 
 
 class NotBotMember(commands.MemberConverter):
-    async def convert(self, ctx, argument) -> discord.Member:
+    async def convert(self, ctx, argument) -> disnake.Member:
         member = await super().convert(ctx, argument)
             
         if member.bot:
@@ -79,7 +79,7 @@ class NotBotMember(commands.MemberConverter):
 
 
 class InteractedMember(commands.MemberConverter):
-    async def convert(self, ctx, argument) -> discord.Member:
+    async def convert(self, ctx, argument) -> disnake.Member:
         member = await super().convert(ctx, argument)
         _ = ctx.get_translator()
             
@@ -91,7 +91,7 @@ class InteractedMember(commands.MemberConverter):
 
 class PunishedMember(InteractedMember):
     
-    async def convert(self, ctx, argument) -> discord.Member:
+    async def convert(self, ctx, argument) -> disnake.Member:
         member = await super().convert(ctx, argument)
         _ = ctx.get_translator()
         mod_roles_ids = set(ctx.bot.config["moderators_roles"])

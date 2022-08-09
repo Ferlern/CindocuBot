@@ -1,10 +1,10 @@
 import logging
 
-from discord import emoji
+from disnake import emoji
 
 import core
 from core import Likes, UserInfo
-from discord.ext import commands
+from disnake.ext import commands
 from discord_components import Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot

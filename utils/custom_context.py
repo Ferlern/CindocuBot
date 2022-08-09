@@ -1,5 +1,5 @@
 import asyncio
-from discord.ext import commands
+from disnake.ext import commands
 
 from utils.checks import confirm_check
 from utils.custom_errors import ConfirmationError

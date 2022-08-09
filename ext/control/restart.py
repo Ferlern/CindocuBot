@@ -5,8 +5,8 @@ import traceback
 from bot_components.configurator import configurator
 from core import create_database
 from core_elements.data_controller.models import close_connection
-from discord.ext import commands
-from discord.ext.commands.errors import ExtensionNotLoaded
+from disnake.ext import commands
+from disnake.ext.commands.errors import ExtensionNotLoaded
 from main import SEBot
 
 from ..utils.checks import is_owner

@@ -1,6 +1,6 @@
 from core import MemberDataController, ShopRoles
-from discord.ext import commands
-from discord.utils import get
+from disnake.ext import commands
+from disnake.utils import get
 from discord_components import Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot
@@ -333,7 +333,7 @@ class EconomyCog(commands.Cog):
                 )
             )
 
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=ctx.author.avatar.url)
             await ctx.send(embed=embed)
             return
             
@@ -350,7 +350,7 @@ class EconomyCog(commands.Cog):
 
         embed = DefaultEmbed(title=_("{emoji} Daily bonus received!").format(emoji=self.economy_emoji['daily_recieved']),
                              description=description)
-        embed.set_thumbnail(url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=ctx.author.avatar.url)
 
         await ctx.send(embed=embed)
 

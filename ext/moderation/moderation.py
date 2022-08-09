@@ -3,10 +3,10 @@ import typing
 from importlib import reload
 
 import core
-import discord
+import disnake
 from core import Logs
-from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
+from disnake.ext import commands
+from disnake.ext.commands.errors import BadArgument
 from discord_components import Button
 from main import SEBot
 from utils.custom_errors import NotConfigured
@@ -40,7 +40,7 @@ class ModerationCog(commands.Cog):
             await ctx.message.delete()
             _ = ctx.get_translator()
 
-            embed = discord.Embed(title=_("Failed to complete action"),
+            embed = disnake.Embed(title=_("Failed to complete action"),
                                   description=_("**Error**: {error}").format(error=error),
                                   color=0x93a5cd)
             await ctx.send(embed=embed)     
@@ -85,7 +85,7 @@ class ModerationCog(commands.Cog):
 
         Logs.create_mod_log(ctx.message.author, "mute", reason, time, muted)
 
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("User Muted!"),
             description=_("{0} was muted by {1} for {2}.\n\n**Reason**: {3}").
             format(muted_string, ctx.message.author.mention,
@@ -117,7 +117,7 @@ class ModerationCog(commands.Cog):
                             "unmute",
                             reason=reason,
                             targets=members)
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("Unmute"),
             description=_("{0} unmuted by {1}\n\n**Reason**: {2}").format(
                 unmuted, ctx.message.author.mention, reason),
@@ -184,7 +184,7 @@ class ModerationCog(commands.Cog):
                                 "warn",
                                 reason=reason,
                                 targets=members)
-            embed = discord.Embed(
+            embed = disnake.Embed(
                 title=_("User Warned!"),
                 description=_("{0} was warned by {1}\n\n**Reason**: {2}").format(
                     warned, ctx.message.author.mention, reason),
@@ -213,7 +213,7 @@ class ModerationCog(commands.Cog):
                             "unwarn",
                             reason=reason,
                             targets=members)
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("Unwarn"),
             description=_("{0} unwarned by {1}\n\n**Reason**: {2}").format(
                 unwarned, ctx.message.author.mention, reason),
@@ -243,7 +243,7 @@ class ModerationCog(commands.Cog):
                             "ban",
                             reason=reason,
                             targets=banned)
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("User Banned!"),
             description=_("{0} was banned by {1}.\n\n**Reason**: {2}").format(
                 banned_string, ctx.message.author.mention, reason),
@@ -295,7 +295,7 @@ class ModerationCog(commands.Cog):
                             targets=banned)
         banned = to_string_with_ids(banned)
 
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("Ban by ID"),
             description=_("{0} \nbanned by {1}\n\n**Reason**: {2}").format(
                 banned, ctx.message.author.mention, reason),
@@ -333,7 +333,7 @@ class ModerationCog(commands.Cog):
                             targets=unbaned)
         unbaned = to_string_with_ids(unbaned)
 
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("Unban"),
             description=_("{0} \nunbaned by {1}\n\n**Reason**: {2}").format(
                 unbaned, ctx.message.author.mention, reason),
@@ -341,7 +341,7 @@ class ModerationCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(ignore_extra=False)
-    async def clear(self, ctx, members: commands.Greedy[discord.User],
+    async def clear(self, ctx, members: commands.Greedy[disnake.User],
                     amount: int):
         _ = ctx.get_translator()
         await ctx.message.delete()
@@ -357,7 +357,7 @@ class ModerationCog(commands.Cog):
 
         Logs.create_mod_log(ctx.message.author, "clear", targets=members)
 
-        embed = discord.Embed(
+        embed = disnake.Embed(
             title=_("Clear"),
             description=
             _("{author}, successfully deleted {deleted_amount} messages").format(
@@ -371,7 +371,7 @@ class ModerationCog(commands.Cog):
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.TooManyArguments):
             _ = ctx.get_translator()
-            embed = discord.Embed(
+            embed = disnake.Embed(
                 title=_("Failed to complete action"),
                 description=
                 _("**Error**: Make sure the IDs you specified are correct"),

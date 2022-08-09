@@ -1,9 +1,9 @@
 import logging
 
-import discord
+import disnake
 from core import MemberDataController
-from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
+from disnake.ext import commands
+from disnake.ext.commands.errors import BadArgument
 from main import SEBot
 from utils.custom_errors import AlreadyLiked
 from utils.utils import DefaultEmbed
@@ -50,29 +50,29 @@ class ReputationCog(commands.Cog):
         try:
             if type == 1:
                 member.like(to_member)
-                embed = discord.Embed(
+                embed = disnake.Embed(
                     title=_("{emoji} Reputation increased").format(emoji=self.emoji['increased']),
                     description=_("{author} increased {to_member}'s reputation").format(
                         to_member=to_member.mention,
                         author=ctx.author.mention,
                     ),
-                    color=discord.Colour.green())
+                    color=disnake.Colour.green())
             elif type == -1:
                 member.dislike(to_member)
-                embed = discord.Embed(
+                embed = disnake.Embed(
                     title=_("{emoji} Reputation decreased").format(emoji=self.emoji['decreased']),
                     description=_("{author} decreased {to_member}'s reputation").format(
                         to_member=to_member.mention,
                         author=ctx.author.mention,
                     ),
-                    color=discord.Colour.red())
+                    color=disnake.Colour.red())
             elif type == 0:
                 member.reset_like(to_member)
                 embed = DefaultEmbed(
                     title=_("{emoji} Reset").format(emoji=self.emoji['reset']),
                     description=_('Reputation successfully reset')
                 )
-            embed.set_thumbnail(url=ctx.author.avatar_url)
+            embed.set_thumbnail(url=ctx.author.avatar.url)
         except AlreadyLiked:
             embed = DefaultEmbed(description=_("You can't do it twice"))
 

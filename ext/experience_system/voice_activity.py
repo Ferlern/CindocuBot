@@ -2,9 +2,9 @@ import logging
 import time
 import copy
 
-import discord
+import disnake
 from core import MemberDataController
-from discord.ext import commands, tasks
+from disnake.ext import commands, tasks
 from main import SEBot
 
 logger = logging.getLogger('Arctic-voice')
@@ -38,7 +38,7 @@ class VoiceActivityCog(commands.Cog):
             member.save()
 
     def add_to_count(self, user):
-        voice_state: discord.VoiceState = user.voice
+        voice_state: disnake.VoiceState = user.voice
         if not voice_state:
             return
         if (not (voice_state.deaf or voice_state.self_deaf)
@@ -48,7 +48,7 @@ class VoiceActivityCog(commands.Cog):
                 f'<voice_activity> - start count voice activity for {user}')
             self.count_for[user.id] = time.time()
 
-    def check_channel(self, channel: discord.VoiceChannel):
+    def check_channel(self, channel: disnake.VoiceChannel):
         members = channel.members
         members = list(
             filter(
@@ -74,9 +74,9 @@ class VoiceActivityCog(commands.Cog):
                     self.remove_from_count(member)
 
     @commands.Cog.listener()
-    async def on_voice_state_update(self, user: discord.Member,
-                                    before: discord.VoiceState,
-                                    after: discord.VoiceState):
+    async def on_voice_state_update(self, user: disnake.Member,
+                                    before: disnake.VoiceState,
+                                    after: disnake.VoiceState):
         if user.bot:
             return
         if before.channel != after.channel:

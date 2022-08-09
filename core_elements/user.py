@@ -2,7 +2,7 @@ import logging
 import time
 from typing import Union
 
-import discord
+import disnake
 from utils.custom_errors import (AlreadyLiked, MaxBitrateReached,
                                  MaxSlotsAmount, NotEnoughMoney, NotMarried,
                                  TargetAlreadyMarried, UserAlreadyMarried,
@@ -112,13 +112,13 @@ class MemberDataController:
         if confirmed:
             relationsip.delete_instance()
 
-    def like(self, to_member: discord.Member):
+    def like(self, to_member: disnake.Member):
         self._change_like(to_member, 1)
 
-    def dislike(self, to_member: discord.Member):
+    def dislike(self, to_member: disnake.Member):
         self._change_like(to_member, -1)
 
-    def reset_like(self, to_member: discord.Member):
+    def reset_like(self, to_member: disnake.Member):
         self._change_like(to_member, 0)
 
     def save(self):
@@ -180,7 +180,7 @@ class MemberDataController:
         else:
             return relationship.dicts().execute()[0]
 
-    def _change_like(self, to_member: discord.Member, type: bool):
+    def _change_like(self, to_member: disnake.Member, type: bool):
         to_member_id = to_member.id
         MemberDataController(to_member_id)
         like, created = Likes.get_or_create(user=self.user_info.id,

@@ -1,10 +1,10 @@
 import logging
 import typing
 
-import discord
+import disnake
 from core import MemberDataController
-from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
+from disnake.ext import commands
+from disnake.ext.commands.errors import BadArgument
 from main import SEBot
 from utils.utils import DefaultEmbed, display_time
 
@@ -32,7 +32,7 @@ class ProfileCog(commands.Cog):
     @commands.command()
     async def profile(self,
                       ctx,
-                      member: typing.Optional[discord.Member] = None):
+                      member: typing.Optional[disnake.Member] = None):
         translator = ctx.get_translator()
         _ = translator
         await ctx.message.delete()
@@ -92,7 +92,7 @@ class ProfileCog(commands.Cog):
             value += _('\nwarned **{warn}** times').format(warn=warn)
         embed.add_field(name=_("{emoji} Other").format(emoji=self.emoji['other']), value=value, inline=False)
 
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=member.avatar.url)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['bio'])

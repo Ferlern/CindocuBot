@@ -4,7 +4,7 @@ import logging
 import re
 
 import aiohttp
-import discord
+import disnake
 import langdetect
 from googletrans import Translator
 from utils.custom_context import Context
@@ -142,9 +142,9 @@ class MessageController:
                         continue
                     data = io.BytesIO(await resp.read())
                     files.append(
-                        discord.File(data, filename=attachment.filename))
+                        disnake.File(data, filename=attachment.filename))
 
         await weebhok.send(content=translated,
                            files=files,
                            username=ctx.author.name,
-                           avatar_url=ctx.author.avatar_url)
+                           avatar_url=ctx.author.avatar.url)

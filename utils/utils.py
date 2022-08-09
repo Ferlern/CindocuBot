@@ -1,8 +1,8 @@
 import time
-import discord
+import disnake
 
 
-class DefaultEmbed(discord.Embed):
+class DefaultEmbed(disnake.Embed):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

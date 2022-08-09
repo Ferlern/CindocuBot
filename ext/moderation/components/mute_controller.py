@@ -3,8 +3,8 @@ import logging
 import time
 
 import core
-import discord
-from discord.ext import commands, tasks
+import disnake
+from disnake.ext import commands, tasks
 from main import SEBot
 from utils.custom_errors import NotConfigured
 
@@ -48,17 +48,17 @@ class MuteController:
     async def before_mute_controller(self):
         await self.bot.wait_until_ready()
 
-    async def clean_mute(self, member: discord.Member, mute_time: int = 0):
+    async def clean_mute(self, member: disnake.Member, mute_time: int = 0):
         """Checks if the mute time has expired, removes the role, removes the entry from the database
 
         Args:
-            member (discord.Member)
+            member (disnake.Member)
             mute_time (int, optional): mute duration (in seconds). Defaults to 0.
         """
         logger.debug(f'clean_mute ready for {member}. time: {mute_time}')
         await asyncio.sleep(mute_time + 1)
         member_info = core.MemberDataController(member.id)
-        role = discord.utils.get(member.guild.roles,
+        role = disnake.utils.get(member.guild.roles,
                                  id=self.bot.config["mute_role"])
         if member_info.user_info.mute_end_at:
             if not role or member_info.user_info.mute_end_at > time.time():
@@ -72,7 +72,7 @@ class MuteController:
             member_info.save()
 
     async def mute_members(self, ctx, members, time, reason):
-        role = discord.utils.get(members[0].guild.roles,
+        role = disnake.utils.get(members[0].guild.roles,
                                  id=self.bot.config["mute_role"])
         if not role:
             raise NotConfigured("mute role not specified. Check config")

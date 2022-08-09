@@ -1,7 +1,7 @@
-import discord
+import disnake
 from core import ShopRoles, MemberDataController
-from discord.ext import commands
-from discord.ext.commands.errors import BadArgument
+from disnake.ext import commands
+from disnake.ext.commands.errors import BadArgument
 from main import SEBot
 from peewee import DoesNotExist
 from utils.utils import DefaultEmbed
@@ -27,7 +27,7 @@ class EconomyControlCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command()
-    async def add_role(self, ctx, role: discord.Role, price: int):
+    async def add_role(self, ctx, role: disnake.Role, price: int):
         await ctx.message.delete()
         _ = ctx.get_translator()
 
@@ -39,7 +39,7 @@ class EconomyControlCog(commands.Cog):
         ))
 
     @commands.command()
-    async def remove_role(self, ctx, role: discord.Role):
+    async def remove_role(self, ctx, role: disnake.Role):
         await ctx.message.delete()
         _ = ctx.get_translator()
 

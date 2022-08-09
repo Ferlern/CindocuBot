@@ -1,11 +1,11 @@
 from functools import update_wrapper
 import re
 
-import discord
+import disnake
 from peewee import DoesNotExist, Query
 from core import Logs
 from core_elements.data_controller.models import ModLog
-from discord.ext import commands
+from disnake.ext import commands
 from discord_components import Button, Interaction
 from discord_components.component import Select, SelectOption
 from main import SEBot
@@ -32,7 +32,7 @@ class ModerationInfoCog(commands.Cog):
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             _ = ctx.get_translator()
-            embed = discord.Embed(title=_("Failed to complete action"),
+            embed = disnake.Embed(title=_("Failed to complete action"),
                                   description=_("**Error**: {error}").format(error=error),
                                   color=0x93a5cd)
             await ctx.send(embed=embed)
@@ -269,7 +269,7 @@ class ModerationInfoCog(commands.Cog):
                 ]),
                 inline=False)
 
-        embed.set_thumbnail(url=moderator.avatar_url)
+        embed.set_thumbnail(url=moderator.avatar.url)
 
         await ctx.send(embed=embed)
 

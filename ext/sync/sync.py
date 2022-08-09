@@ -1,9 +1,9 @@
 import logging
 
-import discord
+import disnake
 from core import MemberDataController, PersonalVoice, UserRoles
-from discord.ext import commands
-from discord.utils import get
+from disnake.ext import commands
+from disnake.utils import get
 from main import SEBot
 from utils.utils import DefaultEmbed
 
@@ -20,7 +20,7 @@ class SyncCog(commands.Cog):
         self.in_recovery = []
 
     def get_roles_change(self,
-                         target: discord.Member) -> tuple[outdated, added]:
+                         target: disnake.Member) -> tuple[outdated, added]:
         member_info = MemberDataController(target.id)
 
         user_roles_ids = [
@@ -34,7 +34,7 @@ class SyncCog(commands.Cog):
 
         return outdated, added
 
-    def update_saved_roles(self, target: discord.Member):
+    def update_saved_roles(self, target: disnake.Member):
         if target in self.in_recovery:
             return
 
@@ -50,7 +50,7 @@ class SyncCog(commands.Cog):
                                                             role_id=role)
             if role_in_db: role_in_db.delete_instance()
 
-    async def recovery_member_roles(self, target: discord.Member):
+    async def recovery_member_roles(self, target: disnake.Member):
         self.in_recovery.append(target)
 
         outdated, added = self.get_roles_change(target)
@@ -66,8 +66,8 @@ class SyncCog(commands.Cog):
 
         self.in_recovery.remove(target)
 
-    async def recovery_member_voice(self, target: discord.Member):
-        guild: discord.Guild = target.guild
+    async def recovery_member_voice(self, target: disnake.Member):
+        guild: disnake.Guild = target.guild
         member_info = MemberDataController(target.id)
 
         voice: PersonalVoice = member_info.user_info.user_personal_voice
@@ -88,7 +88,7 @@ class SyncCog(commands.Cog):
             voice.voice_id = new_voice.id
             voice.save()
 
-    async def sync_user(self, target: discord.Member):
+    async def sync_user(self, target: disnake.Member):
         logger.debug(f'sync {target.name}')
         
         cog = self.bot.get_cog('VoiceActivityCog')
@@ -97,14 +97,14 @@ class SyncCog(commands.Cog):
         await self.recovery_member_roles(target)
         await self.recovery_member_voice(target)
 
-    def save_guild_info(self, guild: discord.Guild):
+    def save_guild_info(self, guild: disnake.Guild):
         logger.debug(f'save_guild_info for guild {guild.name}')
         members = guild.members
         for member in members:
             self.update_saved_roles(member)
 
     @commands.command()
-    async def sync(self, ctx, target: discord.Member = None):
+    async def sync(self, ctx, target: disnake.Member = None):
         if not target: target = ctx.author
         
         try:
@@ -134,13 +134,13 @@ class SyncCog(commands.Cog):
             await ctx.tick(True)
 
     @commands.Cog.listener()
-    async def on_member_update(self, before: discord.Member,
-                               after: discord.Member):
+    async def on_member_update(self, before: disnake.Member,
+                               after: disnake.Member):
         if before.roles != after.roles and len(after.roles) > 0:
             self.update_saved_roles(after)
 
     @commands.Cog.listener()
-    async def on_member_join(self, member: discord.Member):
+    async def on_member_join(self, member: disnake.Member):
         await self.recovery_member_roles(member)
 
     @commands.Cog.listener()

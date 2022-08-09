@@ -1,7 +1,7 @@
 import asyncio
 
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 
 from utils.utils import DefaultEmbed
 from core import MemberDataController
@@ -18,7 +18,7 @@ class UpListenerCog(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: disnake.Message):
         check = UP_MESSAGES_CHECKS.get(message.author.id)
         if not check:
             return

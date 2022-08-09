@@ -1,12 +1,12 @@
 import logging
 
-import discord
+import disnake
 import discord_components
 from core import Suggestions
-from discord.errors import HTTPException
-from discord.ext import commands
-from discord.ext.commands.core import guild_only
-from discord.ext.commands.errors import BadArgument
+from disnake.errors import HTTPException
+from disnake.ext import commands
+from disnake.ext.commands.core import guild_only
+from disnake.ext.commands.errors import BadArgument
 from discord_components.component import SelectOption
 from main import SEBot
 from peewee import Query
@@ -36,9 +36,9 @@ class SuggestionsCog(commands.Cog):
                              description=suggestion['text'])
         embed.set_author(
             name=author.name,
-            icon_url=author.avatar_url,
+            icon_url=author.avatar.url,
             url=
-            f"https://discord.com/channels/{self.bot.config['guild']}/{self.bot.config['suggestions_channel']}/{suggestion['message_id']}"
+            f"https://disnake.com/channels/{self.bot.config['guild']}/{self.bot.config['suggestions_channel']}/{suggestion['message_id']}"
         )
         if suggestion['url']:
             embed.set_image(url=suggestion['url'])
@@ -151,7 +151,7 @@ class SuggestionsCog(commands.Cog):
 
         responded = False
         if action in [_("Approve"), _("Deny")] and message:
-            embed: discord.Embed = message.embeds[0]
+            embed: disnake.Embed = message.embeds[0]
             responded = True
             await interaction.respond(
                 content=_('Write the reason, - if you have nothing to say'))
@@ -163,8 +163,8 @@ class SuggestionsCog(commands.Cog):
             embed.add_field(name=_('suggestion') +
                             (_(' denied') if action == _('Deny') else _(' approved')),
                             value=f'{interaction.author.mention}: {content}')
-            embed.color = discord.Colour.red(
-            ) if action == _('Deny') else discord.Colour.green()
+            embed.color = disnake.Colour.red(
+            ) if action == _('Deny') else disnake.Colour.green()
             await message.edit(embed=embed)
 
         Suggestions.get(message_id=suggestion['message_id']).delete_instance()
@@ -218,7 +218,7 @@ class SuggestionsCog(commands.Cog):
             )))
 
         embed = DefaultEmbed(description=suggestion)
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
         embed.set_footer(text=_('Member id: {author_id}').format(author_id=ctx.author.id))
         if url:
             embed.set_image(url=url)

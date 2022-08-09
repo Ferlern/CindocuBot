@@ -18,11 +18,11 @@ class Logs:
         """Create log for mod. action
 
         Args:
-            moderator (discord.User)
+            moderator (disnake.User)
             action (str)
             reason (str, optional). Defaults to "not specified".
             duration (int, optional). Defaults to None.
-            targets (list[discord.User], optional). Defaults to [].
+            targets (list[disnake.User], optional). Defaults to [].
         """
         moderator_id = moderator.id
         assert action in [
@@ -47,7 +47,7 @@ class Logs:
         --------
             period: `int` (seconds)
             action: `str`
-            moderator: `discord.User`
+            moderator: `disnake.User`
         """
 
         period = filters.get('period')

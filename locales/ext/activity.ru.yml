@@ -1,0 +1,4 @@
+ru:
+  award_role: "Роль <@&%{role_id}>"
+  lvl_up: "<@%{user_id}> получил новый уровень (%{old_level} -> %{new_level})"
+  lvl_up_bonuses: "Бонусы"

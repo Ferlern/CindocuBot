@@ -1,12 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
-# data & config
-data.db
-config.json
-
 # vscode
 .vscode/
 
 # logs
-*.log
+logs/
+
+# TODO
+TODO

@@ -1,0 +1,11 @@
+ru:
+  history: "История действий"
+  table_inxed: '#'
+  table_action: "действие"
+  table_action_time: "дата"
+  table_action_user: "пользователь"
+  action: "Действие #%{number}"
+  user: "Пользователь"
+  time: "Время"
+  not_found_name: "не найден"
+  back: "Назад"

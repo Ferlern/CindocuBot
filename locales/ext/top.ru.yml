@@ -1,0 +1,12 @@
+ru:
+  top_balance: "Топ по балансу"
+  top_voice: "Топ по войс активности"
+  top_relationship: "Топ по длительности отношений"
+  top_reputation: "Топ по репутации"
+  top_experience: "Топ по уровню"
+  top_select_balance: "баланс"
+  top_select_voice: "войс активность"
+  top_select_relationship: "длительность отношений"
+  top_select_reputation: "репутация"
+  top_select_experience: "уровень"
+  relationship_repr: "%{first_user} & %{second_user} с %{timestamp}"

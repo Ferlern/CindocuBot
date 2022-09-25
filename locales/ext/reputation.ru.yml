@@ -1,0 +1,7 @@
+ru:
+  increase_title: ":leaves: Репутация успешно повышена!"
+  increase_desc: "<@%{author_id}> повысил репутацию участнику <@%{target_id}>"
+  decrease_title: ":fallen_leaf: Репутация понизилилась :C"
+  decrease_desc: "<@%{author_id}> понизил репутацию участнику <@%{target_id}>"
+  reset_title: ":cherry_blossom: Сброс"
+  reset_desc: "<@%{author_id}> больше не влияет на репутацию <@%{target_id}>"

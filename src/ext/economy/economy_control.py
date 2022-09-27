@@ -10,6 +10,7 @@ from src.custom_errors import UsedNotOnGuild
 from src.utils.slash_shortcuts import only_admin
 from src.ext.economy.services import (add_shop_role, change_balance,
                                       delete_shop_role, get_economy_settings)
+from src.ext.history.services import make_history
 
 
 t = get_translator(route="ext.economy")
@@ -126,6 +127,17 @@ class EconomyControlCog(commands.Cog):
         await inter.response.send_message(
             t('balance_changed'),
             ephemeral=True,
+        )
+        make_history(
+            guild.id,
+            member.id,
+            name='bal_change',
+            description=t(
+                'balance_changed_history_desc',
+                user_id=inter.author.id,
+                target_id=member.id,
+                amount=f'{amount:+}'
+            )
         )
 
 

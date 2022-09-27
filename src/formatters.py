@@ -1,4 +1,4 @@
-from typing import Union, Sequence, Callable, Any
+from typing import Literal, Union, Sequence, Callable, Any
 
 from disnake import Member, User
 
@@ -23,6 +23,13 @@ def from_user_to_user(user: Union[Member, User],
                       ) -> str:
     return (f'{formatter(user)} **->** '
             f'{formatter(another)}')
+
+
+def to_mention_and_id(
+    id_: int,
+    type_: Literal['@', '#', '@&'] = '@',
+) -> str:
+    return f'<{type_}{id_}> | `{id_}`'
 
 
 def ordered_list(

@@ -51,10 +51,16 @@ class SuggestionsCog(commands.Cog):
         if not channel or not isinstance(channel, disnake.TextChannel):
             raise BadConfigured(t('no_suggestion_channel'))
 
+        author = inter.author
+        logger.info(
+            'new suggestion on guild %d from user %d',
+            guild.id,
+            author.id,
+        )
+
         await inter.response.send_message(embed=DefaultEmbed(
             description=t('suggestion_sended'),
         ))
-        author = inter.author
         embed = DefaultEmbed(description=text)
         embed.set_author(
             name=author.name,
@@ -76,11 +82,9 @@ class SuggestionsCog(commands.Cog):
             text=text,
             url=attachment_url,  # type: ignore
         )
-        logger.info(
-            'new suggestion on guild %d from user %d',
-            guild.id,
-            author.id,
-        )
+
+        await message.add_reaction('👍')
+        await message.add_reaction('👎')
 
     @commands.slash_command(**only_admin)
     async def suggestions_control(

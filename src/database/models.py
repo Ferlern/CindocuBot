@@ -42,7 +42,7 @@ class Guilds(BaseModel):
     locale = CharField(max_length=10, constraints=[
                        SQL("DEFAULT 'ru'")], default='ru')
     prefixes = ArrayField(TextField, null=True)  # type: ignore #TODO <- idk
-    commands_channels = ArrayField(null=True)
+    commands_channels = ArrayField(BigIntegerField, null=True)
 
 
 class SuggestionSettings(BaseModel):
@@ -99,7 +99,7 @@ class ModerationSettings(BaseModel):
     """
     guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
     warns_system = JSONField(null=True)
-    moderators_roles = ArrayField(null=True)
+    moderators_roles = ArrayField(BigIntegerField, null=True)
     mute_role = BigIntegerField(null=True)
 
 
@@ -160,7 +160,7 @@ class ExperienceSettings(BaseModel):
         values coinaines id of the target role
     """
     guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    experience_channels = ArrayField(null=True)
+    experience_channels = ArrayField(BigIntegerField, null=True)
     cooldown = IntegerField(null=True)
     minimal_message_length = IntegerField(null=True)
     min_experience_per_message = IntegerField(

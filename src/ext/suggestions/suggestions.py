@@ -336,7 +336,8 @@ class SuggestionManager(BaseView):
             )
             embed.color = action_color
             self._suggestion.delete_instance()
-            await message.edit(embed=embed)
+            # attachments=[] really needed. But yeah idk why.
+            await message.edit(embed=embed, attachments=[])
             logger.info(
                 "suggestion on guild %d resolved by %d",
                 guild.id,

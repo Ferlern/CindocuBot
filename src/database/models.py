@@ -241,7 +241,7 @@ class UserRoles(BaseModel):
     """
     user_id = ForeignKeyField(Users, on_delete='CASCADE')
     guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    role_id = IntegerField(column_name='role_id')
+    role_id = BigIntegerField()
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = False

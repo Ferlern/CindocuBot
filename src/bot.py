@@ -48,15 +48,24 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
         url = await self.save_file(await user.display_avatar.to_file())
         return url or user.display_avatar.url
 
-    async def save_file(self, file: disnake.File) -> Optional[str]:
-        channel_id = next(self.image_channel_cycle)
-        if not channel_id:
-            return None
+    async def possible_embed_image(self, url: str) -> bool:
+        channel = self._next_image_channel()
+        if not channel:
+            return False
 
-        channel = self.get_channel(channel_id)
-        if not channel or not isinstance(channel, disnake.TextChannel):
-            self.image_channel_cycle.remove(channel_id)
-            return await self.save_file(file)
+        embed = disnake.Embed()
+        embed.set_image(url=url)
+        try:
+            await channel.send(embed=embed)
+        except disnake.HTTPException:
+            return False
+        else:
+            return True
+
+    async def save_file(self, file: disnake.File) -> Optional[str]:
+        channel = self._next_image_channel()
+        if not channel:
+            return None
 
         message = await channel.send(file=file)
         return message.attachments[0].url
@@ -188,6 +197,18 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
                 command_name, traceback_str
             )
             return await super().on_slash_command_error(interaction, exception)
+
+    def _next_image_channel(self) -> Optional[disnake.TextChannel]:
+        channel_id = next(self.image_channel_cycle)
+        if not channel_id:
+            return None
+
+        channel = self.get_channel(channel_id)
+        if not channel or not isinstance(channel, disnake.TextChannel):
+            self.image_channel_cycle.remove(channel_id)
+            return self._next_image_channel()
+
+        return channel
 
     def _load_exts(self):
         for ext_path in settings.INITIAL_EXTENSIONS:

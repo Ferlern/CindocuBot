@@ -8,7 +8,6 @@ TOKEN = ''
 DEFAULT_PREFIXES = ['.']
 INITIAL_EXTENSIONS = (
     'eval.eval',
-    'test.test',
     'economy.economy',
     'economy.economy_control',
     'activity.text_activity',

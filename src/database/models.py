@@ -410,6 +410,42 @@ class History(BaseModel):
     description = CharField(max_length=65535)
 
 
+class PremoderationItem(BaseModel):
+    """
+    Model for guild's suggestions
+
+    Attributes
+    ----------
+    guild_id: :class:`int`
+        ID of guild where content is sended
+    channel_id: :class:`int`
+        ID of channel where content should be posted
+    author: :class:`int`
+        ID of a user who send content
+    url: Optional[:class:`str`]
+        link to the attchment
+    """
+    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
+    channel_id = BigIntegerField()
+    author = ForeignKeyField(Users, on_delete='CASCADE')
+    url = CharField(max_length=255, null=True)
+
+
+class PremoderationSettings(BaseModel):
+    """
+    Settings for premoderation ext
+
+    Attributes
+    ----------
+    id: :class:`int`
+        Guild ID.
+    commands_channels: Optional[:class:`list[id]`]
+        IDs of channels where premoderation works.
+    """
+    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
+    premoderation_channels = ArrayField(BigIntegerField, null=True)
+
+
 # Depricated?
 class Codes(BaseModel):
     """

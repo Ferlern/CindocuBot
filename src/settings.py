@@ -17,6 +17,7 @@ INITIAL_EXTENSIONS = (
     'history.history',
     'members.profile',
     'members.top',
+    'members.role_controller',
     'suggestions.suggestions',
     'reputation.reputation',
     'premoderation.premoderation',

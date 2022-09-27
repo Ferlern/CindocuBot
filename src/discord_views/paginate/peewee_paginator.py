@@ -1,3 +1,4 @@
+import math
 from typing import Optional, Union, TypeVar, Generic, Sequence
 from functools import reduce
 from operator import and_
@@ -59,8 +60,8 @@ class PeeweePaginator(Generic[T], Paginator):
 
     def _count_max_page(self) -> int:
         query = self._build_query()
-        return (query.count() //  # type: ignore
-                self.items_per_page + 1)
+        return math.ceil(query.count() /  # type: ignore
+                         self.items_per_page) or 1
 
 
 class PeeweeItemSelect(disnake.ui.Select, PaginationItem, Generic[T]):

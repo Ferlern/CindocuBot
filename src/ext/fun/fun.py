@@ -29,6 +29,7 @@ class FunCog(commands.Cog):
         inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
     ) -> None:
+        """Обнять участника"""
         await self._send_gif(inter, member, Categories.HUG)
 
     @commands.slash_command()
@@ -37,6 +38,7 @@ class FunCog(commands.Cog):
         inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
     ) -> None:
+        """Поцеловать участника"""
         await self._send_gif(inter, member, Categories.KISS)
 
     @commands.slash_command()
@@ -45,6 +47,7 @@ class FunCog(commands.Cog):
         inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
     ) -> None:
+        """Погладить участника"""
         await self._send_gif(inter, member, Categories.PAT)
 
     async def _send_gif(

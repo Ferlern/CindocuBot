@@ -9,3 +9,6 @@ logs/
 
 # TODO
 TODO
+
+# Lint settings
+setup.cfg

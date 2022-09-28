@@ -437,9 +437,9 @@ class PremoderationSettings(BaseModel):
 
     Attributes
     ----------
-    id: :class:`int`
+    guild_id: :class:`int`
         Guild ID.
-    commands_channels: Optional[:class:`list[id]`]
+    premoderation_channels: Optional[:class:`list[id]`]
         IDs of channels where premoderation works.
     """
     guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')

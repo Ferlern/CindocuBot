@@ -2,11 +2,21 @@ from peewee import fn
 
 from src.logger import get_logger
 from src.database.models import (Guilds, Users, psql_db,
-                                 Likes, Members, UserRoles)
+                                 Likes, Members, UserRoles,
+                                 WelcomeSettings)
 from src.database.services import get_member, create_related
 
 
 logger = get_logger()
+
+
+@create_related(Guilds)
+@psql_db.atomic()
+def get_welcome_settings(guild_id: int, /) -> WelcomeSettings:
+    settings, _ = WelcomeSettings.get_or_create(
+        guild_id=guild_id,
+    )
+    return settings
 
 
 @psql_db.atomic()

@@ -5,7 +5,8 @@ tables = (UserRoles, Likes, Members,
           ShopRoles, Suggestions, Codes, SuggestionSettings,
           RelationshipsSettings, ModerationSettings, EconomySettings,
           ExperienceSettings, PersonalVoice, Users, Guilds,
-          History, PremoderationSettings, PremoderationItem)
+          History, PremoderationSettings, PremoderationItem,
+          WelcomeSettings)
 
 
 def create_tables() -> None:

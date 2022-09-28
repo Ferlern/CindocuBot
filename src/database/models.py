@@ -446,6 +446,27 @@ class PremoderationSettings(BaseModel):
     premoderation_channels = ArrayField(BigIntegerField, null=True)
 
 
+class WelcomeSettings(BaseModel):
+    """
+    Settings for welcome ext
+
+    Attributes
+    ----------
+    guild_id: :class:`int`
+        Guild ID.
+    channel_id: :class:`int`
+        ID of channel where welcome message will be sended.
+    title_text: Optional[:class:`str`]
+        Title for welcome message embed
+    text: Optional[:class:`str`]
+        Description for welcome message embed
+    """
+    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
+    channel_id = BigIntegerField(null=True)
+    title_text = CharField(null=True)
+    text = CharField(max_length=2000, null=True)
+
+
 # Depricated?
 class Codes(BaseModel):
     """

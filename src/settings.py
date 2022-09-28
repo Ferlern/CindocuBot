@@ -22,6 +22,7 @@ INITIAL_EXTENSIONS = (
     'suggestions.suggestions',
     'reputation.reputation',
     'premoderation.premoderation',
+    'fun.fun',
     # ? 'ext.system.status',
     # ? 'ext.sync.sync',
     'up_listener.up_listener',

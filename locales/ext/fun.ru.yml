@@ -1,0 +1,4 @@
+ru:
+  hug: <@%{user_id}> обнял <@%{target_id}>
+  kiss: <@%{user_id}> поцеловал <@%{target_id}>
+  pat: <@%{user_id}> погладил <@%{target_id}>

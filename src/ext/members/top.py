@@ -145,7 +145,7 @@ def _build_relations_top_query(guild_id: int):
             RelationshipParticipant.user_id,
         ).join(RelationshipParticipant).
         where(Relationships.guild_id == guild_id).  # type: ignore
-        order_by(-Relationships.creation_time).
+        order_by(Relationships.creation_time).
         limit(TOP_SIZE * 2)
     )
 

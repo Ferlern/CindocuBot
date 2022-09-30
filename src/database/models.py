@@ -81,7 +81,7 @@ class ModerationSettings(BaseModel):
 
     Attributes
     ----------
-    id: :class:`int`
+    guild_id: :class:`int`
         Guild ID.
     warns_system: Optional[:class:`dict`]
         settings for warn system. Each warn is an
@@ -154,6 +154,8 @@ class ExperienceSettings(BaseModel):
         experience will be randomly given started from this value
     max_experience_per_message: Optional[:class:`int`]
         experience will be randomly given but not more than this value
+    coins_per_level_up: :class:`int`
+        count reward = 100 + (this value) * (new_lvl)
     roles: Optional[:class:`dict[str, int]`]
         dict that containe roles for experience system.
         keys coinaines level that user should reach for get role

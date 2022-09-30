@@ -38,7 +38,7 @@ class ModerationCog(commands.Cog):
         reason: str = commands.Param(lambda _: t('default_reason')),
     ):
         """
-        Выдать мут учатнику
+        Выдать мут участнику
 
         Parameters
         ----------
@@ -68,7 +68,7 @@ class ModerationCog(commands.Cog):
         reason: str = commands.Param(lambda _: t('default_reason')),
     ):
         """
-        Снять мут с учатника
+        Снять мут с участника
 
         Parameters
         ----------
@@ -96,7 +96,7 @@ class ModerationCog(commands.Cog):
         reason: str = commands.Param(lambda _: t('default_reason')),
     ):
         """
-        Выдать варн учатнику
+        Выдать варн участнику
 
         Parameters
         ----------
@@ -123,7 +123,7 @@ class ModerationCog(commands.Cog):
         reason: str = commands.Param(lambda _: t('default_reason')),
     ):
         """
-        Снять варн с учатника
+        Снять варн с участника
 
         Parameters
         ----------
@@ -152,7 +152,7 @@ class ModerationCog(commands.Cog):
         delete_days: int = commands.Param(default=0, ge=0, le=7),
     ):
         """
-        Выдать бан учатнику
+        Выдать бан участнику
 
         Parameters
         ----------
@@ -183,7 +183,7 @@ class ModerationCog(commands.Cog):
         reason: str = commands.Param(lambda _: t('default_reason')),
     ):
         """
-        Снять бан с учатника
+        Снять бан с участника
 
         Parameters
         ----------

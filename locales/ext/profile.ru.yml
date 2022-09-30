@@ -9,6 +9,6 @@ ru:
   soulmate_value: "<@%{soul_mate_id}> с %{timestamp} :revolving_hearts:"
   other: ":dizzy: Другое"
   joined_at: "Присоединился в %{timestamp}"
-  warns: "\nпредупрежден **{count}** %{p(раз|раза|раз)}"
+  warns: "\nпредупрежден **%{count}** %{p(раз|раза|раз)}"
   too_long_bio: "Биография должна содержать меньше 200 знаков"
   bio_changed: "Биография успешно изменена!"

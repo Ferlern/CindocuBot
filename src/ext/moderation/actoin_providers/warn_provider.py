@@ -30,9 +30,9 @@ class WarnProvider(ActionProvider):
         warn_info = settings.warns_system.get(  # type: ignore
             str(member_data.warns)
         )
-        self._additional_text = warn_info['text'] if warn_info else None
-        mute_time = warn_info['mute_time'] if warn_info else None
-        ban = warn_info['ban'] if warn_info else None
+        self._additional_text = warn_info.get('text') if warn_info else None
+        mute_time = warn_info.get('mute_time') if warn_info else None
+        ban = warn_info.get('ban') if warn_info else None
 
         discord_action_provider = None
         additional_action_reason = t(

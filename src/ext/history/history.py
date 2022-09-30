@@ -8,6 +8,7 @@ from src.database.models import History
 from src.translation import get_translator
 from src.utils.table import DiscordTable
 from src.discord_views.embeds import DefaultEmbed
+from src.utils.slash_shortcuts import only_admin
 from src.bot import SEBot
 
 
@@ -18,7 +19,7 @@ class HistoryCog(commands.Cog):
     def __init__(self, bot: SEBot):
         self.bot = bot
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def history(
         self,
         inter: disnake.GuildCommandInteraction,

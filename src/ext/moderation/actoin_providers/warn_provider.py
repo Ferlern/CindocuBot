@@ -28,7 +28,7 @@ class WarnProvider(ActionProvider):
         member_data = get_member(guild_id, target.id)
 
         warn_info = settings.warns_system.get(  # type: ignore
-            str(member_data.warns)
+            str(member_data.warns + 1)
         )
         self._additional_text = warn_info.get('text') if warn_info else None
         mute_time = warn_info.get('mute_time') if warn_info else None

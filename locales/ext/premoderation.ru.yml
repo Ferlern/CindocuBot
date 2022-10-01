@@ -2,6 +2,7 @@ ru:
   no_premoderation_items: "Нет новых постов"
   from_user: "От пользователя"
   to_channel: "В канал"
+  url: Ссылка
   post_button_label: "Отправить"
   reject_button_label: "Удалить"
   reject_all_button_label: "Удалить всё от автора"

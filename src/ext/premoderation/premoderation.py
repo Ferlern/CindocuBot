@@ -152,6 +152,10 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
             name=t('to_channel'),
             value=to_mention_and_id(item.channel_id, '#'),  # type: ignore
         )
+        embed.add_field(
+            name=t('url'),
+            value=str(item.url),
+        )
         embed.set_image(item.url)
         embed.set_footer(text=t('premoderation_embed_footer'))
         return embed

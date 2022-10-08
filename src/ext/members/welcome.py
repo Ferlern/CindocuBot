@@ -24,6 +24,36 @@ class WelcomeCog(commands.Cog):
     ) -> None:
         await self.check_and_send_welcome(member)
 
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(
+        self,
+        payload: disnake.RawReactionActionEvent,
+    ) -> None:
+        # hardcoded for Cindocu guild
+        guild_id = 968223733858828298
+        channel_id = 968239920521052241
+        message_id = 972854517215399966
+        emoji = '❤️'
+
+        if payload.message_id != message_id:
+            return
+
+        if payload.emoji.name != emoji:
+            return
+
+        guild = self.bot.get_guild(guild_id)
+        member = guild.get_member(payload.user_id)  # type: ignore
+        channel = guild.get_channel(channel_id)  # type: ignore
+
+        await self._send_welcome(
+            channel=channel,  # type: ignore
+            member=member,  # type: ignore
+            text=("Добро пожаловать на сервер, %{member}!\n\n"
+                  "Советуем тебе ознакомиться с каналами <#968240466615234600> и <#968275291124424714>. Если останутся вопросы, то напиши одному из наших Администраторов или участников :з\n\n"
+                  "А пока, не будем тебя больше отвлекать и пожелаем удачи на Циндоку ^^"),
+            title_text=":dizzy: **На наш сервер попала новая яркая звезда**"
+        )
+
     async def check_and_send_welcome(self, member: disnake.Member) -> None:
         settings = get_welcome_settings(member.guild.id)
         channel = member.guild.get_channel(settings.channel_id)  # type: ignore

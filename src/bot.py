@@ -67,7 +67,11 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
         if not channel:
             return None
 
-        message = await channel.send(file=file)
+        try:
+            message = await channel.send(file=file)
+        except (disnake.HTTPException, disnake.Forbidden):
+            return None
+
         return message.attachments[0].url
 
     def sync_user(self, user: Union[disnake.User, disnake.Member]) -> None:

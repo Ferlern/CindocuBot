@@ -113,6 +113,7 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
                 embed=None,
                 view=None,
             )
+            self.stop()
             return
 
         await interaction.response.edit_message(

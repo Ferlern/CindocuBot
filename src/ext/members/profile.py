@@ -128,9 +128,10 @@ class ProfileCog(commands.Cog):
             user_id=inter.author.id,
             bio=biography,
         )
-        await inter.response.send_message(embed=DefaultEmbed(
-            description=t('bio_changed'),
-        ))
+        await inter.response.send_message(
+            embed=DefaultEmbed(description=t('bio_changed')),
+            ephemeral=True,
+        )
 
 
 def setup(bot):

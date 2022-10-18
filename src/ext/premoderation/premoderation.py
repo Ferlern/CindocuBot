@@ -194,7 +194,7 @@ class PostButton(disnake.ui.Button, PaginationItem):
 
         if is_exist:
             channel = self.view.channel
-            embed = DefaultEmbed()
+            embed = DefaultEmbed(description=f'{t("from_user")} <@{item.author.id}>')
             embed.set_image(item.url)
             message = await channel.send(  # type: ignore
                 embed=embed,

@@ -37,7 +37,7 @@ class WarnProvider(ActionProvider):
         discord_action_provider = None
         additional_action_reason = t(
             'warn_additional_action_rason',
-            count=member_data.warns
+            count=member_data.warns + 1
         )
         if ban:
             discord_action_provider = BanProvider(

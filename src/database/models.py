@@ -5,7 +5,7 @@ from peewee import (Model, BigAutoField,
 from playhouse.postgres_ext import (PostgresqlExtDatabase, BigIntegerField,
                                     IntegerField, AutoField, ArrayField,
                                     JSONField, TextField, CompositeKey,
-                                    DateTimeField)
+                                    DateTimeField, DateTimeTZField)
 
 from src.settings import DATABASE
 
@@ -467,6 +467,48 @@ class WelcomeSettings(BaseModel):
     channel_id = BigIntegerField(null=True)
     title_text = CharField(null=True)
     text = CharField(max_length=2000, null=True)
+
+
+class ReminderSettings(BaseModel):
+    """
+    Settings for each monitoring
+
+    Attributes
+    ----------
+    guild_id: :class:`int`
+        Guild ID.
+    monitoring_bot_id: :class:`int`
+        ID of bot that registers ups for monitoring
+    channel_id: Optional[:class:`int`]
+        ID of channel where remind message will be sended.
+    text: Optional[:class:`str`]
+        Reminder message text
+    """
+    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
+    monitoring_bot_id = BigIntegerField()
+    channel_id = BigIntegerField(null=True)
+    text = CharField(max_length=2000, null=True)
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        primary_key = CompositeKey('guild_id', 'monitoring_bot_id')
+
+
+class Reminders(BaseModel):
+    """
+    Current active reminders
+
+    Attributes
+    ----------
+    guild_id: :class:`int`
+        Guild ID.
+    monitoring_bot_id: :class:`int`
+        ID of bot that registers ups for monitoring
+    send_time: :class:`datetime`
+        Date when reminder should send message
+    """
+    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
+    monitoring_bot_id = BigIntegerField()
+    send_time = DateTimeTZField()
 
 
 # Depricated?

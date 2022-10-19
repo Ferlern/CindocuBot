@@ -7,6 +7,7 @@ from src.discord_views.embeds import DefaultEmbed
 from src.ext.economy.services import change_balance
 from src.translation import get_translator
 from src.bot import SEBot
+from src.utils import custom_events
 
 
 t = get_translator(route='ext.up_listener')
@@ -40,6 +41,11 @@ class UpListenerCog(commands.Cog):
             guild_id=message.guild.id,
             user_id=message.interaction.author.id,
             amount=25,
+        )
+        self.bot.dispatch(
+            custom_events.EventName.MONITORING_GUILD_PROMOTED,
+            message.guild,
+            message.author,
         )
 
         await message.channel.send(reference=message, embed=DefaultEmbed(

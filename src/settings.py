@@ -26,6 +26,7 @@ INITIAL_EXTENSIONS = (
     # ? 'ext.system.status',
     # ? 'ext.sync.sync',
     'up_listener.up_listener',
+    'up_listener.up_reminder',
 )
 
 DATABASE = {

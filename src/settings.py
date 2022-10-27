@@ -1,10 +1,15 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 APP_NAME = 'CindocuBot'
 
 DEBUG = False
 TEST_GUILD_IDS = []
 IMAGE_CHANNELS = []
 
-TOKEN = ''
+TOKEN = os.getenv('TOKEN')
 DEFAULT_PREFIXES = ['.']
 INITIAL_EXTENSIONS = (
     'eval.eval',
@@ -30,11 +35,11 @@ INITIAL_EXTENSIONS = (
 )
 
 DATABASE = {
-    'dbname': 'cindocu',
-    'host': 'localhost',
-    'port': 5432,
-    'user': 'postgres',
-    'password': 'postgres',
+    'dbname': os.getenv('POSTGRES_NAME'),
+    'host': os.getenv('POSTGRES_HOST'),
+    'port': os.getenv('POSTGRES_PORT'),
+    'user': os.getenv('POSTGRES_USER'),
+    'password': os.getenv('POSTGRES_PASS'),
 }
 
 LOGS_PATH = 'logs'

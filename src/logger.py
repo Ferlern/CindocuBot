@@ -28,11 +28,19 @@ def _create_logger():
                                    encoding='UTF-8')
     handler2.setLevel(logging.ERROR)
 
+    handler3 = RotatingFileHandler(f'{PATH}/info.log',
+                                   mode='a',
+                                   maxBytes=1024 * 1024, backupCount=3,
+                                   encoding='UTF-8', delay=False)
+    handler3.setLevel(logging.INFO)
+
     logger.addHandler(handler)
     logger.addHandler(handler2)
+    logger.addHandler(handler3)
 
     handler.setFormatter(_formatter)
     handler2.setFormatter(_formatter)
+    handler3.setFormatter(_formatter)
 
 
 def _create_voice_logger():

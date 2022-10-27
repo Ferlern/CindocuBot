@@ -59,7 +59,7 @@ class UpReminderCog(commands.Cog):
                     guild.id, monitoring_bot.id)
         current_time = datetime.datetime.now().astimezone()
         if not is_close_to_reset(info):
-            send_time = current_time + datetime.timedelta(hours=info.cooldown, seconds=-15)
+            send_time = current_time + datetime.timedelta(hours=info.cooldown, seconds=-30)
         else:
             send_time = datetime.datetime(
                 datetime.datetime.now().year,

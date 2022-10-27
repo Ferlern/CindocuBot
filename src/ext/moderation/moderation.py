@@ -57,8 +57,8 @@ class ModerationCog(commands.Cog):
             reason=reason,
             time=int(time),
         )
-        await action_provider.full_action()
         await action_provider.resolve_interaction(inter)
+        await action_provider.full_action()
 
     @commands.slash_command(**only_admin)
     async def unmute(
@@ -85,8 +85,8 @@ class ModerationCog(commands.Cog):
             target=target,
             reason=reason,
         )
-        await action_provider.full_action()
         await action_provider.resolve_interaction(inter)
+        await action_provider.full_action()
 
     @commands.slash_command(**only_admin)
     async def warn(
@@ -112,8 +112,8 @@ class ModerationCog(commands.Cog):
             target=target,
             reason=reason,
         )
-        await action_provider.full_action()
         await action_provider.resolve_interaction(inter)
+        await action_provider.full_action()
 
     @commands.slash_command(**only_admin)
     async def unwarn(
@@ -140,8 +140,8 @@ class ModerationCog(commands.Cog):
             target=target,
             reason=reason,
         )
-        await action_provider.full_action()
         await action_provider.resolve_interaction(inter)
+        await action_provider.full_action()
 
     @commands.slash_command(**only_admin)
     async def ban(
@@ -172,8 +172,8 @@ class ModerationCog(commands.Cog):
             reason=reason,
             delete_days=delete_days,  # type: ignore
         )
-        await action_provider.full_action()
         await action_provider.resolve_interaction(inter)
+        await action_provider.full_action()
 
     @commands.slash_command(**only_admin)
     async def unban(
@@ -201,8 +201,8 @@ class ModerationCog(commands.Cog):
             target=target,
             reason=reason,
         )
-        await action_provider.full_action()
         await action_provider.resolve_interaction(inter)
+        await action_provider.full_action()
 
     @commands.slash_command(**only_admin)
     async def clear(

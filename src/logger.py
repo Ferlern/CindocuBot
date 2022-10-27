@@ -1,7 +1,9 @@
 import logging
+from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
 from src import settings
+
 
 _formatter = logging.Formatter(u'[%(asctime)s:%(name)s] - %(levelname)s in %(module)s#%(lineno)d: %(message)s')  # noqa: E501
 PATH = settings.LOGS_PATH
@@ -68,5 +70,6 @@ def _create_voice_logger():
 
 
 def setup_logger():
+    Path(PATH).mkdir(exist_ok=True, parents=True)
     _create_logger()
     _create_voice_logger()

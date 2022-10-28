@@ -12,3 +12,5 @@ TODO
 
 # Lint settings
 setup.cfg
+.idea
+data

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "cindocubot"
+version = "0.1.0"
+description = ""
+authors = ["Fennr <fenrir1121@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+disnake = "^2.6.1"
+psycopg2 = "^2.9.5"
+PyYAML = "^6.0"
+peewee = "^3.15.3"
+aiohttp = "^3.8.3"
+python-i18n = {git = "https://github.com/Krutyi-4el/python-i18n.git", branch="master"}
+pytz = "^2022.5"
+python-dotenv = "^0.21.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

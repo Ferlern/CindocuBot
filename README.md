@@ -1,6 +1,6 @@
 # CindocuBot
 
-Simple bot for discord server
+Дискорд бот для сервера [Cindocu](https://discord.gg/4ZVhkXxnUK)
 
 ## Описание
 
@@ -25,4 +25,12 @@ TODO: дополнить раздел
 
 ## Настройки
 
-TODO: дополнить раздел
+### Глобальные
+
+- [settings.py](https://github.com/Ferlern/CindocuBot/blob/main/src/settings.py) содержит настройки бота. Желательно установить хотя бы один IMAGE_CHANNEL, иначе некоторые функции не будут работать.
+- [translation.py](https://github.com/Ferlern/CindocuBot/blob/main/src/translation.py) содержит настройки локализации. Локаль по умолчанию изменяется там.
+- [logger.py](https://github.com/Ferlern/CindocuBot/blob/main/src/logger.py) содержит настройки логгера.
+
+### Для гильдий
+
+Многие системы бота могут быть настроены для каждой гильдии отдельно. На данный момент настройка возможна только с помощью SQL. Подробнее о возможных настройках можно почитать в документации к моделям в [models.py](https://github.com/Ferlern/CindocuBot/blob/main/src/database/models.py)

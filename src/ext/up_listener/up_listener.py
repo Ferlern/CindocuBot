@@ -28,7 +28,7 @@ class UpListenerCog(commands.Cog):
             return
 
         if message.author.id == 464272403766444044:
-            await asyncio.sleep(2)
+            await asyncio.sleep(3)
             message = await message.channel.fetch_message(message.id)
 
         if not message.embeds or not message.guild or not message.interaction:

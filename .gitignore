@@ -14,3 +14,6 @@ TODO
 setup.cfg
 .idea
 data
+
+# env
+.env

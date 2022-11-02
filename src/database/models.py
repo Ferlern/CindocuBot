@@ -432,7 +432,7 @@ class PremoderationItem(BaseModel):
     guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
     channel_id = BigIntegerField()
     author = ForeignKeyField(Users, on_delete='CASCADE')
-    content = CharField(max_length=65535)
+    content = CharField(max_length=65535, null=True)
     urls = ArrayField(TextField, null=True)  # type: ignore
 
 

@@ -18,24 +18,21 @@ def get_premoderation_settings(guild_id: int, /) -> PremoderationSettings:
 
 @create_related(Guilds, Users)
 @psql_db.atomic()
-def create_premoderation_items(
+def create_premoderation_item(
     guild_id: int,
     user_id: int,
     /,
+    content: str,
     channel_id: int,
     urls: list[str],
 ) -> None:
-    data = [(guild_id, user_id, channel_id, url)
-            for url in urls]
-    PremoderationItem.insert_many(  # noqa
-        data,
-        fields=[
-            PremoderationItem.guild_id,
-            PremoderationItem.author,
-            PremoderationItem.channel_id,
-            PremoderationItem.url,
-        ]
-    ).execute()  # type: ignore
+    PremoderationItem.create(
+        guild_id=guild_id,
+        author=user_id,
+        content=content,
+        channel_id=channel_id,
+        urls=urls,
+    )
 
 
 @psql_db.atomic()

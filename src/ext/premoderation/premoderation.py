@@ -1,18 +1,16 @@
 from typing import Optional, Union
-import re
 
 import disnake
 from disnake.ext import commands
 
 from src.database.models import PremoderationItem
-from src.discord_views.embeds import DefaultEmbed
 from src.utils.slash_shortcuts import only_admin
 from src.translation import get_translator
 from src.logger import get_logger
 from src.discord_views.paginate.peewee_paginator import (PeeweePaginator)
 from src.discord_views.paginate.paginators import PaginationItem
 from src.ext.premoderation.services import (get_premoderation_settings,
-                                            create_premoderation_items,
+                                            create_premoderation_item,
                                             delete_items_by_author)
 from src.formatters import to_mention_and_id
 from src.bot import SEBot
@@ -56,22 +54,18 @@ class PremoderationCog(commands.Cog):
                                'no channels to save images')
                 return
             urls.append(saved_url)
-
-        content_urls = re.findall(r'https?:\/\/\S*', message.content)
-        checked_content_urls = [url for url in content_urls
-                                if await self.bot.possible_embed_image(url)]
-        urls.extend(checked_content_urls)
+        content = message.clean_content
 
         await message.delete()
 
-        if not urls:
+        if not urls and not content:
             await channel.send(t('no_content'), delete_after=5)
             return
 
-        await channel.send(t('content_found', count=len(urls)),
-                           delete_after=5)
-        create_premoderation_items(
+        await channel.send(t('content_found'), delete_after=5)
+        create_premoderation_item(
             guild.id, message.author.id,
+            content=content,
             channel_id=channel.id,
             urls=urls,
         )
@@ -117,7 +111,7 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
             return
 
         await interaction.response.edit_message(
-            embed=self.create_embed(),
+            content=self.create_message(),
             view=self,
         )
 
@@ -141,25 +135,17 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
             user_id=self.item.author,  # type: ignore
         )
 
-    def create_embed(self) -> disnake.Embed:
-        embed = DefaultEmbed()
+    def create_message(self) -> str:
+        message = str()
+        backslash = '\n'
         item = self.item
-        embed.add_field(
-            name=t('from_user'),
-            value=to_mention_and_id(item.author),  # type: ignore
-            inline=False,
-        )
-        embed.add_field(
-            name=t('to_channel'),
-            value=to_mention_and_id(item.channel_id, '#'),  # type: ignore
-        )
-        embed.add_field(
-            name=t('url'),
-            value=str(item.url),
-        )
-        embed.set_image(item.url)
-        embed.set_footer(text=t('premoderation_embed_footer'))
-        return embed
+        message += f"{t('from_user')}: {to_mention_and_id(item.author.id)}"  # type: ignore
+        message += f"\n{t('to_channel')}: {to_mention_and_id(item.channel_id, '#')}"  # type: ignore
+        if item.content:
+            message += f"\n{(t('content'))}: {item.content}"
+        if item.urls:
+            message += f"\n\n{(t('files'))}: {backslash.join([str(url) for url in item.urls])}"
+        return message
 
     async def _response(self, inter: disnake.ApplicationCommandInteraction):
         if self.is_empty():
@@ -168,8 +154,9 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
             return
 
         await inter.response.send_message(
-            embed=self.create_embed(),
+            content=self.create_message(),
             view=self,
+            allowed_mentions=disnake.AllowedMentions(users=False),
         )
 
 
@@ -192,21 +179,27 @@ class PostButton(disnake.ui.Button, PaginationItem):
     ) -> None:
         item = self.view.item
         is_exist = item.delete_instance()
-
-        if is_exist:
-            channel = self.view.channel
-            embed = DefaultEmbed(description=f'{t("from_user")} <@{item.author.id}>')
-            embed.set_image(item.url)
-            message = await channel.send(  # type: ignore
-                embed=embed,
-            )
-            await message.add_reaction('❤️')
-            await message.add_reaction('💔')
+        channel = self.view.channel
 
         self.view.update_page()
         self.view.update()
 
         await self.view.resolve_interaction(interaction)
+
+        if is_exist:
+            content = f"**{t('from_user')}**: <@{item.author.id}>"
+            if item.content:
+                content += f"\n\n{item.content}"
+            message = await channel.send(  # type: ignore
+                content=content,
+                allowed_mentions=disnake.AllowedMentions(users=False),
+            )
+            for url in item.urls:
+                message = await channel.send(  # type: ignore
+                    content=url,
+                )
+            await message.add_reaction('❤️')
+            await message.add_reaction('💔')
 
 
 class RejectButton(disnake.ui.Button):

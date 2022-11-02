@@ -424,13 +424,16 @@ class PremoderationItem(BaseModel):
         ID of channel where content should be posted
     author: :class:`int`
         ID of a user who send content
-    url: Optional[:class:`str`]
-        link to the attchment
+    content: :class:`str`
+        Item content
+    urls: list[:class:`str`]
+        Link to the attchment
     """
     guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
     channel_id = BigIntegerField()
     author = ForeignKeyField(Users, on_delete='CASCADE')
-    url = CharField(max_length=255, null=True)
+    content = CharField(max_length=65535)
+    urls = ArrayField(TextField, null=True)  # type: ignore
 
 
 class PremoderationSettings(BaseModel):

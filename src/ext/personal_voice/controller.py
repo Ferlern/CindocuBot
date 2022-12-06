@@ -9,7 +9,7 @@ from src.bot import SEBot
 
 
 t = get_translator(route="ext.personal_voice")
-logger = get_logger
+logger = get_logger()
 
 
 class VoiceCustomizeCog(commands.Cog):

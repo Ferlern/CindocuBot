@@ -37,6 +37,7 @@ class ProfileCog(commands.Cog):
         ----------
         member: Пользователь, профиль которого будет показан вместо вашего
         """
+        await inter.response.defer()
         guild = inter.guild
         if not member:
             member = inter.author
@@ -102,7 +103,7 @@ class ProfileCog(commands.Cog):
             value += t("warns", count=warns_amount)
         embed.add_field(name=t("other"), value=value, inline=False)
         embed.set_thumbnail(url=await self.bot.save_avatar(member))
-        await inter.response.send_message(embed=embed)
+        await inter.followup.send(embed=embed)
 
     @commands.slash_command(**only_guild)
     async def biography(

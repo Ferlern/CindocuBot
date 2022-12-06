@@ -19,6 +19,7 @@ INITIAL_EXTENSIONS = (
     'activity.voice_activity',
     'relationship.relationship',
     'moderation.moderation',
+    'personal_voice.controller',
     'history.history',
     'members.profile',
     'members.top',

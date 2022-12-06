@@ -89,7 +89,7 @@ class ProfileCog(commands.Cog):
                     soul_mate_id=soulmate.user_id,
                     timestamp=disnake.utils.format_dt(
                         relationships.creation_time,  # type: ignore
-                        'F',
+                        'f',
                     ),
                 ),
                 inline=False,

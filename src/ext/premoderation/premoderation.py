@@ -113,6 +113,7 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         await interaction.response.edit_message(
             content=self.create_message(),
             view=self,
+            allowed_mentions=disnake.AllowedMentions(users=False),
         )
 
     @property

@@ -1,3 +1,5 @@
+from typing import Union
+
 import disnake
 from disnake.ext import commands
 
@@ -74,6 +76,15 @@ class HistoryPaginator(PeeweePaginator[History]):
         return DefaultEmbed(
             title=t('history'),
             description=str(table),
+        )
+
+    async def page_callback(self,
+                            interaction: Union[disnake.ModalInteraction,
+                                               disnake.MessageInteraction]
+                            ) -> None:
+        await interaction.response.edit_message(
+            embed=self.create_embed(),
+            view=self,
         )
 
     async def _response(

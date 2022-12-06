@@ -19,6 +19,6 @@ ru:
   balance_changed: "Баланс изменён успешно"
   balance_changed_history_desc: "<@%{user_id}> изменил баланс <@%{target_id}> на %{amount}"
   daily_already_recieved: ":sunny: Бонус пока что не доступен. Приходи позже"
-  daily_already_recieved_desc: "Ты уже получал свой сегодняшний бонус \n\nТы сможешь получить бонус снова через %{timestamp}"
+  daily_already_recieved_desc: "Ты уже получал свой сегодняшний бонус \n\nТы сможешь получить бонус снова %{timestamp}"
   daily_recieved: ":blossom: Ежедневный бонус получен!"
   daily_recieved_desc: "%{daily} %{coin} успешно переведены на твой баланс. Теперь у тебя %{balance} %{coin}\n\nТы сможешь получить свой бонус снова через %{timestamp}"

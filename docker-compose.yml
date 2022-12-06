@@ -9,11 +9,11 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
   bot:
-      build: .
-      command: ["python3", "-O", "run.py"]
-      volumes:
-        - .:/project
-      env_file:
-        - .env
-      depends_on:
-        - db
+    build: .
+    command: ["python3", "-O", "run.py"]
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    depends_on:
+      - db

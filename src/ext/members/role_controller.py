@@ -15,7 +15,7 @@ Added = set[int]
 
 
 class RoleControllerCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
         self.in_recovery = []
 
@@ -36,7 +36,7 @@ class RoleControllerCog(commands.Cog):
 
         return outdated, added
 
-    def update_saved_roles(self, target: disnake.Member):
+    def update_saved_roles(self, target: disnake.Member) -> None:
         if target in self.in_recovery:
             return
 
@@ -46,7 +46,7 @@ class RoleControllerCog(commands.Cog):
         create_member_roles(guild_id, user_id, list(added))
         delete_member_roles(guild_id, user_id, list(outdated))
 
-    async def recovery_member_roles(self, target: disnake.Member):
+    async def recovery_member_roles(self, target: disnake.Member) -> None:
         self.in_recovery.append(target)
 
         outdated, added = self.get_roles_changes(target)
@@ -76,5 +76,5 @@ class RoleControllerCog(commands.Cog):
         await self.recovery_member_roles(member)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(RoleControllerCog(bot))

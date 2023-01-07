@@ -91,7 +91,7 @@ class EconomyCog(commands.Cog):
                        amount: commands.Range[1, ...] = commands.Param(),
                        ) -> None:
         """
-        Перевести валюту сервера другому учатнику
+        Перевести валюту сервера другому участнику
 
         Parameters
         ----------

@@ -35,7 +35,7 @@ class RelationshipCog(commands.Cog):
         member=commands.Param(converter=interacted_member),
     ):
         """
-        Предложить другому учатнику стать парой
+        Предложить другому участнику стать парой
 
         Parameters
         ----------

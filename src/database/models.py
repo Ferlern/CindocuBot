@@ -1,5 +1,8 @@
+# type: ignore
+# types are ignored because of bad Peewee type system
+
 import datetime
-from typing import Sequence
+from typing import Optional, Sequence
 from peewee import (Model, BigAutoField,
                     ForeignKeyField, CharField, SQL)
 from playhouse.postgres_ext import (PostgresqlExtDatabase, BigIntegerField,
@@ -38,11 +41,11 @@ class Guilds(BaseModel):
     commands_channels: Optional[:class:`list[id]`]
         IDs of channels where `@everyone` can run prefix commands.
     """
-    id = BigAutoField(primary_key=True)
-    locale = CharField(max_length=10, constraints=[
-                       SQL("DEFAULT 'ru'")], default='ru')
-    prefixes = ArrayField(TextField, null=True)  # type: ignore #TODO <- idk
-    commands_channels = ArrayField(BigIntegerField, null=True)
+    id: int = BigAutoField(primary_key=True)
+    locale: str = CharField(max_length=10, constraints=[
+        SQL("DEFAULT 'ru'")], default='ru')
+    prefixes: Optional[list[str]] = ArrayField(TextField, null=True)
+    commands_channels: Optional[list[int]] = ArrayField(BigIntegerField, null=True)
 
 
 class SuggestionSettings(BaseModel):
@@ -56,8 +59,8 @@ class SuggestionSettings(BaseModel):
     suggestions_channel: Optional[:class:`int`]
         ID of the channel where suggestions will be posted.
     """
-    guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    suggestions_channel = BigIntegerField(null=True)
+    guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
+    suggestions_channel: Optional[int] = BigIntegerField(null=True)
 
 
 class RelationshipsSettings(BaseModel):
@@ -71,8 +74,8 @@ class RelationshipsSettings(BaseModel):
     marry_price: :class:`int`
         Price for create new realtionship.
     """
-    guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    marry_price = IntegerField(constraints=[SQL("DEFAULT 1000")], default=1000)
+    guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
+    marry_price: int = IntegerField(constraints=[SQL("DEFAULT 1000")], default=1000)
 
 
 class ModerationSettings(BaseModel):
@@ -97,10 +100,10 @@ class ModerationSettings(BaseModel):
         ID of the role that will be
         assigned to a muted member
     """
-    guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    warns_system = JSONField(null=True)
-    moderators_roles = ArrayField(BigIntegerField, null=True)
-    mute_role = BigIntegerField(null=True)
+    guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
+    warns_system: Optional[dict] = JSONField(null=True)
+    moderators_roles: Optional[list[int]] = ArrayField(BigIntegerField, null=True)
+    mute_role: Optional[int] = BigIntegerField(null=True)
 
 
 class EconomySettings(BaseModel):
@@ -117,6 +120,9 @@ class EconomySettings(BaseModel):
         Amount of coins in the daily command.
     voice_category_id: :class:`int`
         Category where personal voices will be created
+    main_voice_id: :class:`int`
+        Voice channel in the personal voice category
+        used to create another voices
     voice_price: :class:`int`
         Personal voice price
     slot_price: :class:`int`
@@ -124,16 +130,17 @@ class EconomySettings(BaseModel):
     bitrate_price: :class:`int`
         Personal voice bitrate price
     """
-    guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    coin = CharField(max_length=30, constraints=[
-                     SQL("DEFAULT ':coin:'")], default=':coin:')
-    daily = IntegerField(constraints=[SQL("DEFAULT 35")], default=35)
-    voice_category_id = BigIntegerField(null=True)
-    voice_price = IntegerField(constraints=[SQL("DEFAULT 2000")],
-                               default=2000)
-    slot_price = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
-    bitrate_price = IntegerField(constraints=[SQL("DEFAULT 100")],
-                                 default=100)
+    guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
+    coin: str = CharField(max_length=30, constraints=[
+        SQL("DEFAULT ':coin:'")], default=':coin:')
+    daily: int = IntegerField(constraints=[SQL("DEFAULT 35")], default=35)
+    voice_category_id: Optional[int] = BigIntegerField(null=True)
+    main_voice_id: Optional[int] = BigIntegerField(null=True)
+    voice_price: int = IntegerField(constraints=[SQL("DEFAULT 2000")],
+                                    default=2000)
+    slot_price: int = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
+    bitrate_price: int = IntegerField(constraints=[SQL("DEFAULT 100")],
+                                      default=100)
 
 
 class ExperienceSettings(BaseModel):
@@ -161,23 +168,23 @@ class ExperienceSettings(BaseModel):
         keys coinaines level that user should reach for get role
         values coinaines id of the target role
     """
-    guild_id = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    experience_channels = ArrayField(BigIntegerField, null=True)
-    cooldown = IntegerField(null=True)
-    minimal_message_length = IntegerField(null=True)
-    min_experience_per_message = IntegerField(
+    guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
+    experience_channels: Optional[list[int]] = ArrayField(BigIntegerField, null=True)
+    cooldown: Optional[int] = IntegerField(null=True)
+    minimal_message_length: Optional[int] = IntegerField(null=True)
+    min_experience_per_message: int = IntegerField(
         constraints=[SQL('DEFAULT 1')],
         default=1,
     )
-    max_experience_per_message = IntegerField(
+    max_experience_per_message: int = IntegerField(
         constraints=[SQL('DEFAULT 1')],
         default=1,
     )
-    coins_per_level_up = IntegerField(
+    coins_per_level_up: int = IntegerField(
         constraints=[SQL('DEFAULT 10')],
         default=10,
     )
-    roles = JSONField(null=True)
+    roles: Optional[dict[str, int]] = JSONField(null=True)
 
 
 class Users(BaseModel):
@@ -189,7 +196,7 @@ class Users(BaseModel):
     id: :class:`int`
         User ID.
     """
-    id = BigAutoField(primary_key=True)
+    id: int = BigAutoField(primary_key=True)
 
 
 class Members(BaseModel):
@@ -213,16 +220,16 @@ class Members(BaseModel):
     warns: :class:`int`
         Amount of member warns on guild.
     """
-    user_id = ForeignKeyField(Users, on_delete='CASCADE')
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    balance = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
-    experience = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
-    voice_activity = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
-    biography = CharField(column_name='biography', max_length=300, null=True)
-    bonus_taked_on_day = IntegerField(
+    user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    balance: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    experience: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    voice_activity: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    biography: Optional[str] = CharField(column_name='biography', max_length=300, null=True)
+    bonus_taked_on_day: int = IntegerField(
         constraints=[SQL('DEFAULT 0')], default=0)
-    mute_end_at = IntegerField(null=True)
-    warns = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    mute_end_at: Optional[int] = IntegerField(null=True)
+    warns: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('user_id', 'guild_id')
@@ -241,9 +248,9 @@ class UserRoles(BaseModel):
     role_id: :class:`int`
         Role ID.
     """
-    user_id = ForeignKeyField(Users, on_delete='CASCADE')
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    role_id = BigIntegerField()
+    user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    role_id: int = BigIntegerField()
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = False
@@ -260,18 +267,31 @@ class PersonalVoice(BaseModel):
         User ID.
     guild_id: :class:`int`
         Guild ID.
-    voice_id: :class:`int`
-        Voice guild channel ID.
     slots: :class:`int`
         Max amount of slots in the voice channel.
     max_bitrate: :class:`int`
         Max bitrate of the voice channel.
+    voice_id: :class:`int`
+        Last voice channel ID. Null if it has never been created
+    current_name: :class:`str`
+        Last voice name. Null if it has never been created
+    current_slots: :class:`int`
+        Current amount of slots in the voice channel.
+    current_bitrate: :class:`int`
+        Current bitrate of the voice channel.
+    current_overwrites: :class:`dict`
+        Current permission overwrites of the voice channel.
     """
-    user_id = ForeignKeyField(Users, on_delete='CASCADE')
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    voice_id = BigIntegerField()
-    slots = IntegerField(constraints=[SQL('DEFAULT 5')], default=5)
-    max_bitrate = IntegerField(constraints=[SQL('DEFAULT 64')], default=64)
+    user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    slots: int = IntegerField(constraints=[SQL('DEFAULT 5')], default=5)
+    max_bitrate: int = IntegerField(constraints=[SQL('DEFAULT 64')], default=64)
+
+    voice_id: Optional[int] = BigIntegerField(null=True)
+    current_name: Optional[str] = CharField(max_length=255, null=True)
+    current_slots: int = IntegerField(constraints=[SQL('DEFAULT 5')], default=5)
+    current_bitrate: int = IntegerField(constraints=[SQL('DEFAULT 64')], default=5)
+    current_overwrites: Optional[dict[str, list[int]]] = JSONField(null=True)
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('user_id', 'guild_id')
@@ -292,10 +312,10 @@ class Likes(BaseModel):
     type: `Literal[-1, 0, 1]`
         Like / dislake.
     """
-    user_id = ForeignKeyField(Users, on_delete='CASCADE')
-    to_user_id = ForeignKeyField(Users, on_delete='CASCADE')
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    type = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    to_user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    type: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('user_id', 'guild_id', 'to_user_id')
@@ -312,9 +332,9 @@ class Relationships(BaseModel):
     creation_time: :class:`int`
         UNIX seconds when group is created.
     """
-    id = AutoField()
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    creation_time = IntegerField()
+    id: int = AutoField()
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    creation_time: int = IntegerField()
     participants: Sequence['RelationshipParticipant']
 
 
@@ -327,12 +347,12 @@ class RelationshipParticipant(BaseModel):
     user_id: :class:`int`
         User ID.
     """
-    relationship_id = ForeignKeyField(
+    relationship_id: Relationships = ForeignKeyField(
         Relationships,
         backref='participants',
         on_delete='CASCADE',
     )
-    user_id = ForeignKeyField(Users, on_delete='CASCADE')
+    user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('relationship_id', 'user_id')
@@ -351,9 +371,9 @@ class ShopRoles(BaseModel):
     price: :class:`int`
         price of a role.
     """
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    role_id = BigIntegerField()
-    price = IntegerField()
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    role_id: int = BigIntegerField()
+    price: int = IntegerField()
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('guild_id', 'role_id')
@@ -378,12 +398,12 @@ class Suggestions(BaseModel):
     url: Optional[:class:`str`]
         link to the first attchment in suggestion message
     """
-    message_id = BigAutoField()
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    channel_id = BigIntegerField()
-    author = ForeignKeyField(Users, on_delete='CASCADE')
-    text = CharField(max_length=4000)
-    url = CharField(max_length=255, null=True)
+    message_id: int = BigAutoField()
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    channel_id: int = BigIntegerField()
+    author: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    text: str = CharField(max_length=4000)
+    url: Optional[str] = CharField(max_length=255, null=True)
 
 
 class History(BaseModel):
@@ -404,12 +424,12 @@ class History(BaseModel):
     description: :class:`str`
         Long action description, should store all important information
     """
-    id = AutoField(column_name='id')
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    user_id = ForeignKeyField(Users, on_delete='CASCADE')
-    creation_time = DateTimeField(default=datetime.datetime.now)
-    action_name = CharField()
-    description = CharField(max_length=65535)
+    id: int = AutoField(column_name='id')
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    creation_time: datetime.datetime = DateTimeField(default=datetime.datetime.now)
+    action_name: str = CharField()
+    description: str = CharField(max_length=65535)
 
 
 class PremoderationItem(BaseModel):
@@ -429,11 +449,11 @@ class PremoderationItem(BaseModel):
     urls: list[:class:`str`]
         Link to the attchment
     """
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    channel_id = BigIntegerField()
-    author = ForeignKeyField(Users, on_delete='CASCADE')
-    content = CharField(max_length=65535, null=True)
-    urls = ArrayField(TextField, null=True)  # type: ignore
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    channel_id: int = BigIntegerField()
+    author: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    content: Optional[str] = CharField(max_length=65535, null=True)
+    urls: Optional[list[str]] = ArrayField(TextField, null=True)
 
 
 class PremoderationSettings(BaseModel):
@@ -447,8 +467,8 @@ class PremoderationSettings(BaseModel):
     premoderation_channels: Optional[:class:`list[id]`]
         IDs of channels where premoderation works.
     """
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    premoderation_channels = ArrayField(BigIntegerField, null=True)
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    premoderation_channels: Optional[list[int]] = ArrayField(BigIntegerField, null=True)
 
 
 class WelcomeSettings(BaseModel):
@@ -466,10 +486,10 @@ class WelcomeSettings(BaseModel):
     text: Optional[:class:`str`]
         Description for welcome message embed
     """
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    channel_id = BigIntegerField(null=True)
-    title_text = CharField(null=True)
-    text = CharField(max_length=2000, null=True)
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    channel_id: Optional[int] = BigIntegerField(null=True)
+    title_text: Optional[str] = CharField(null=True)
+    text: Optional[str] = CharField(max_length=2000, null=True)
 
 
 class ReminderSettings(BaseModel):
@@ -487,10 +507,10 @@ class ReminderSettings(BaseModel):
     text: Optional[:class:`str`]
         Reminder message text
     """
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    monitoring_bot_id = BigIntegerField()
-    channel_id = BigIntegerField(null=True)
-    text = CharField(max_length=2000, null=True)
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    monitoring_bot_id: int = BigIntegerField()
+    channel_id: Optional[int] = BigIntegerField(null=True)
+    text: Optional[int] = CharField(max_length=2000, null=True)
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('guild_id', 'monitoring_bot_id')
@@ -509,9 +529,9 @@ class Reminders(BaseModel):
     send_time: :class:`datetime`
         Date when reminder should send message
     """
-    guild_id = ForeignKeyField(Guilds, on_delete='CASCADE')
-    monitoring_bot_id = BigIntegerField()
-    send_time = DateTimeTZField()
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    monitoring_bot_id: int = BigIntegerField()
+    send_time: datetime.datetime = DateTimeTZField()
 
 
 # Depricated?
@@ -528,9 +548,9 @@ class Codes(BaseModel):
     group: :class:`str`
         code groups; group can be executed atomary? TODO
     """
-    name = CharField(max_length=50, primary_key=True)  # TODO that doesn't work
-    code = CharField(max_length=65535)
-    group = IntegerField(null=True)
+    name: str = CharField(max_length=50, primary_key=True)  # TODO that doesn't work
+    code: str = CharField(max_length=65535)
+    group: Optional[int] = IntegerField(null=True)
 
 
 psql_db.connect()

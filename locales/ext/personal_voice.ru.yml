@@ -18,4 +18,5 @@ ru:
   voice_too_hight_bitrate: "Битрейт выше купленного"
   voice_max_bitrate_reached: "Достигнут максимальный битрейт"
   voice_max_slot_reached: "Ты достиг максимального количества слотов"
-  forbidden_opportunities: "Запрещённые права"
+  main_voice_default_name: "Создать канал"
+  forbidden_opportunities: "Автоматическое исправление личных голосовых каналов"

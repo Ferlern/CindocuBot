@@ -7,7 +7,7 @@ from disnake.ext import commands
 from src.bot import SEBot
 from src.logger import get_logger
 from src.translation import get_translator
-from src.database.models import ExperienceSettings, Members
+from src.database.models import ChannelExperienceSettings, ExperienceSettings, Members
 from src.database.services import get_member
 from src.ext.activity.services import get_experience_settings
 from src.ext.activity.lvl_reward.coin_rewarder import coin_rewarder
@@ -24,36 +24,48 @@ _rewarders = [coin_rewarder, role_rewarder]
 
 
 class TextActivityCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
         self.on_cooldown: set[tuple[int, int]] = set()
 
     @commands.Cog.listener()
-    async def on_message(self, message: disnake.Message):
+    async def on_message(self, message: disnake.Message) -> None:
         author = message.author
+        channel = message.channel
         if author.bot or not isinstance(author, disnake.Member):
             return
 
         settings = get_experience_settings(author.guild.id)
-        checks = (_is_message_in_allowed_channel(message, settings),
-                  not self._is_on_cooldown(author),
-                  _is_message_long_enough(message, settings))
+        channels_settings = settings.experience_channels
+        if not channels_settings:
+            return
+
+        channel_setting = channels_settings.get(str(channel.id))
+        if not channel_setting:
+            return
+
+        checks = (
+            not self._is_on_cooldown(author),
+            _is_message_long_enough(message, channel_setting),
+        )
 
         if all(checks):
-            await _give_prize_for_activity(author, settings, message)
-            await self._set_cooldown(author, settings)
+            await _give_prize_for_activity(author, settings, channel_setting, message)
+            await self._set_cooldown(author, channel_setting)
 
-    async def _set_cooldown(self,
-                            author: disnake.Member,
-                            settings: ExperienceSettings):
-        cooldown = settings.cooldown
-        if cooldown is None:
+    async def _set_cooldown(
+        self,
+        author: disnake.Member,
+        channel_settings: ChannelExperienceSettings,
+    ) -> None:
+        cooldown = channel_settings.get("cooldown")
+        if not cooldown:
             return
 
         guild_id = author.guild.id
         author_id = author.id
         self.on_cooldown.add((guild_id, author_id))
-        await asyncio.sleep(settings.cooldown)  # type: ignore
+        await asyncio.sleep(cooldown)
         self.on_cooldown.remove((guild_id, author_id))
 
     def _is_on_cooldown(self, author: disnake.Member) -> bool:
@@ -62,40 +74,39 @@ class TextActivityCog(commands.Cog):
         return (guild_id, author_id) in self.on_cooldown
 
 
-def _is_message_long_enough(message: disnake.Message,
-                            settings: ExperienceSettings) -> bool:
-    min_lenght = settings.minimal_message_length
+def _is_message_long_enough(
+    message: disnake.Message,
+    channel_settings: ChannelExperienceSettings,
+) -> bool:
+    min_lenght = channel_settings.get("minimal_message_length")
     if min_lenght is None:
         return True
     return (len(message.content) >=
-            min_lenght)  # type: ignore
-
-
-def _is_message_in_allowed_channel(
-    message: disnake.Message,
-    settings: ExperienceSettings,
-) -> bool:
-    channels = settings.experience_channels
-    return channels is None or message.channel.id in channels  # type: ignore
+            min_lenght)
 
 
 async def _give_prize_for_activity(
     member: disnake.Member,
     settings: ExperienceSettings,
+    channel_settings: ChannelExperienceSettings,
     message: disnake.Message,
 ) -> None:
+    min_exp = channel_settings.get("min_experience_per_message", 1)
+    max_exp = channel_settings.get("max_experience_per_message", 1)
+    min_exp, max_exp = min(min_exp, max_exp), max(min_exp, max_exp)
+
     member_data = get_member(
         member.guild.id,
         member.id,
     )
     logger.info("count text activity for %s on guild %s",
                 member, member.guild)
-    prev_lvl = exp_to_lvl(member_data.experience)  # type: ignore
-    member_data.experience += randint(  # type: ignore
-        settings.min_experience_per_message,  # type: ignore
-        settings.max_experience_per_message,  # type: ignore
+    prev_lvl = exp_to_lvl(member_data.experience)
+    member_data.experience += randint(
+        channel_settings["min_experience_per_message"],
+        channel_settings["max_experience_per_message"],
     )
-    lvl = exp_to_lvl(member_data.experience)  # type: ignore
+    lvl = exp_to_lvl(member_data.experience)
     if lvl > prev_lvl:
         await _give_new_lvl_award(member, member_data, settings, lvl, message)
     member_data.save()
@@ -135,5 +146,5 @@ async def _give_new_lvl_award(
     )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(TextActivityCog(bot))

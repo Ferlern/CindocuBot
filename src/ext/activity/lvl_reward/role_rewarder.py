@@ -17,7 +17,7 @@ async def role_rewarder(
     settings: ExperienceSettings,
     lvl: int,
 ) -> Optional[str]:
-    roles: Optional[dict[str, int]] = settings.roles  # type: ignore
+    roles = settings.roles
     if not roles:
         return
 

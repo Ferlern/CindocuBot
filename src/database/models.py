@@ -2,7 +2,7 @@
 # types are ignored because of bad Peewee type system
 
 import datetime
-from typing import Optional, Sequence
+from typing import Optional, Sequence, TypedDict
 from peewee import (Model, BigAutoField,
                     ForeignKeyField, CharField, SQL)
 from playhouse.postgres_ext import (PostgresqlExtDatabase, BigIntegerField,
@@ -17,6 +17,25 @@ psql_db = PostgresqlExtDatabase(DATABASE['dbname'],
                                 port=DATABASE['port'],
                                 user=DATABASE['user'],
                                 password=DATABASE['password'])
+
+
+class ChannelExperienceSettings(TypedDict):
+    """
+    Settings for channel where experience counts
+
+    cooldown: Optional[:class:`int`]
+        minimal time in seconds between two counted message
+    minimal_message_length: Optional[:class:`int`]
+        minimal length of the counted messages
+    min_experience_per_message: Optional[:class:`int`]
+        experience will be randomly given started from this value
+    max_experience_per_message: Optional[:class:`int`]
+        experience will be randomly given but not more than this value
+    """
+    min_experience_per_message: int
+    max_experience_per_message: int
+    cooldown: Optional[int] = None
+    minimal_message_length: Optional[int] = None
 
 
 class BaseModel(Model):
@@ -151,16 +170,8 @@ class ExperienceSettings(BaseModel):
     ----------
     id: :class:`int`
         Guild ID.
-    experience_channels: Optional[:class:`list[int]`]
-        IDs of the channels where experience will be availible
-    cooldown: Optional[:class:`int`]
-        minimal time in seconds between two counted message
-    minimal_message_length: Optional[:class:`int`]
-        minimal length of the counted messages
-    min_experience_per_message: Optional[:class:`int`]
-        experience will be randomly given started from this value
-    max_experience_per_message: Optional[:class:`int`]
-        experience will be randomly given but not more than this value
+    experience_channels: Optional[:class:`Optional[dict[str, ChannelExperienceSettings]]`]
+        Mapping channel ID to its experience settings
     coins_per_level_up: :class:`int`
         count reward = 100 + (this value) * (new_lvl)
     roles: Optional[:class:`dict[str, int]`]
@@ -169,17 +180,7 @@ class ExperienceSettings(BaseModel):
         values coinaines id of the target role
     """
     guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    experience_channels: Optional[list[int]] = ArrayField(BigIntegerField, null=True)
-    cooldown: Optional[int] = IntegerField(null=True)
-    minimal_message_length: Optional[int] = IntegerField(null=True)
-    min_experience_per_message: int = IntegerField(
-        constraints=[SQL('DEFAULT 1')],
-        default=1,
-    )
-    max_experience_per_message: int = IntegerField(
-        constraints=[SQL('DEFAULT 1')],
-        default=1,
-    )
+    experience_channels: Optional[dict[str, ChannelExperienceSettings]] = JSONField(null=True)
     coins_per_level_up: int = IntegerField(
         constraints=[SQL('DEFAULT 10')],
         default=10,

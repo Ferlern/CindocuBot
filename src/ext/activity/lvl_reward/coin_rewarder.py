@@ -16,7 +16,7 @@ async def coin_rewarder(
     lvl: int,
 ) -> Optional[str]:
     award_amount = settings.coins_per_level_up * lvl + 100
-    member_data.balance += award_amount  # type: ignore
+    member_data.balance += award_amount
     economy_settings = get_economy_settings(member.guild.id)
 
     logger.info(

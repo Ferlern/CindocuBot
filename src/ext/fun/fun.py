@@ -2,10 +2,13 @@ import aiohttp
 import disnake
 from disnake.ext import commands
 
+from src.ext.members.services import get_member
 from src.discord_views.embeds import DefaultEmbed
 from src.converters import interacted_member
 from src.bot import SEBot
+from src.custom_errors import ActionRestricted
 from src.ext.fun.categories import Categories
+from src.ext.actions.actions import is_action_restricted
 
 
 class FunCog(commands.Cog):
@@ -30,7 +33,12 @@ class FunCog(commands.Cog):
         member: Участник, с которым вы хотите сделать действие
         action: Действие, которое вы хотите сделать
         """
-        await self._send_gif(inter, member, Categories[action])
+        member_data = get_member(inter.guild.id, member.id)
+        action = Categories[action]
+        if isinstance(inter.author, disnake.Member):
+            if is_action_restricted(action.value, inter.author, member_data.restrictions):
+                raise ActionRestricted
+            await self._send_gif(inter, member, action)
 
     async def _send_gif(
         self,

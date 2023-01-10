@@ -220,6 +220,9 @@ class Members(BaseModel):
         UNIX second when mute role should be removed.
     warns: :class:`int`
         Amount of member warns on guild.
+    restrictions: :class:`Optional[dict[str, list[str]]]`
+        Mapping discord user's id to restricted actions
+        If action is restricred it cannot be used on this member
     """
     user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
@@ -231,6 +234,10 @@ class Members(BaseModel):
         constraints=[SQL('DEFAULT 0')], default=0)
     mute_end_at: Optional[int] = IntegerField(null=True)
     warns: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    restrictions: dict[str, list[str]] = JSONField(
+        default=dict,
+        constraints=[SQL("DEFAULT '{}'::jsonb")],
+    )
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('user_id', 'guild_id')

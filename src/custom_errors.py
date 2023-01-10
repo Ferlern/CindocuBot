@@ -70,3 +70,11 @@ class BadConfigured(RegularException):
             message = t('bad_configured')
         self.message = message
         super().__init__(self.message)
+
+
+class ActionRestricted(RegularException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        if message is None:
+            message = t('action_restricted')
+        self.message = message
+        super().__init__(self.message)

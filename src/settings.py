@@ -12,6 +12,7 @@ IMAGE_CHANNELS = []
 TOKEN = os.getenv('TOKEN')
 DEFAULT_PREFIXES = ['.']
 INITIAL_EXTENSIONS = (
+    'actions.restriction_cog',
     'eval.eval',
     'economy.economy',
     'economy.economy_control',

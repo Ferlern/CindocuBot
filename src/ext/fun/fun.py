@@ -5,7 +5,7 @@ from disnake.ext import commands
 from src.discord_views.embeds import DefaultEmbed
 from src.converters import interacted_member
 from src.bot import SEBot
-from src.ext.fun.actions import Categories
+from src.ext.fun.categories import Categories
 
 
 class FunCog(commands.Cog):

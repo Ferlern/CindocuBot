@@ -17,8 +17,8 @@ i18n.set("enable_memoization", True)
 def get_translator(*, route="general"):
     def translator(key: str, **kwargs: Any) -> str:
         key = f"{route}.{key}" if route else key
-        logger.debug('translator called with route "%s" and kwargs: %s',
-                     route, kwargs)
+        logger.debug('translator called with key "%s" and kwargs: %s',
+                     key, kwargs)
         return i18n.t(key, **kwargs)
     return translator
 

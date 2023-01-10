@@ -1,35 +1,11 @@
-from enum import Enum
-
 import aiohttp
 import disnake
 from disnake.ext import commands
 
 from src.discord_views.embeds import DefaultEmbed
-from src.translation import get_translator
 from src.converters import interacted_member
 from src.bot import SEBot
-
-
-t = get_translator(route='ext.fun')
-
-
-class Categories(str, Enum):
-    PAT = 'pat'
-    KISS = 'kiss'
-    HUG = 'hug'
-    LICK = 'lick'
-    BITE = 'bite'
-    SLAP = 'slap'
-
-    def get_embed_text(
-        self,
-        author: disnake.Member,
-        target: disnake.Member,
-    ) -> str:
-        return t(self.value, user_id=author.id, target_id=target.id)
-
-    def get_translated_name(self) -> str:
-        return t(self.value + '_name')
+from src.ext.fun.actions import Categories
 
 
 class FunCog(commands.Cog):
@@ -54,7 +30,6 @@ class FunCog(commands.Cog):
         member: Участник, с которым вы хотите сделать действие
         action: Действие, которое вы хотите сделать
         """
-        print(action)
         await self._send_gif(inter, member, Categories[action])
 
     async def _send_gif(

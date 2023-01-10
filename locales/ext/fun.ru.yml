@@ -2,3 +2,13 @@ ru:
   hug: <@%{user_id}> обнял <@%{target_id}>
   kiss: <@%{user_id}> поцеловал <@%{target_id}>
   pat: <@%{user_id}> погладил <@%{target_id}>
+  lick: <@%{user_id}> лизнул <@%{target_id}>
+  bite: <@%{user_id}> укусил <@%{target_id}>
+  slap: <@%{user_id}> ударил <@%{target_id}>
+  hug_name: Обнять
+  kiss_name: Поцеловать
+  pat_name: Погладить
+  lick_name: Лизнуть
+  bite_name: Укусить
+  slap_name: Ударить
+  

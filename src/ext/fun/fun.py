@@ -17,70 +17,53 @@ class Categories(str, Enum):
     PAT = 'pat'
     KISS = 'kiss'
     HUG = 'hug'
+    LICK = 'lick'
+    BITE = 'bite'
+    SLAP = 'slap'
+
+    def get_embed_text(
+        self,
+        author: disnake.Member,
+        target: disnake.Member,
+    ) -> str:
+        return t(self.value, user_id=author.id, target_id=target.id)
+
+    def get_translated_name(self) -> str:
+        return t(self.value + '_name')
 
 
 class FunCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command()
-    async def hug(
+    async def action(
         self,
         inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
+        action=commands.Param(
+            choices={entry.get_translated_name(): entry.name for entry in Categories}
+        ),
     ) -> None:
         """
-        Обнять участника
+        Выполнить дейстие
 
         Parameters
         ----------
-        member: Участник, которого вы хотите обнять
+        member: Участник, с которым вы хотите сделать действие
+        action: Действие, которое вы хотите сделать
         """
-        await self._send_gif(inter, member, Categories.HUG)
-
-    @commands.slash_command()
-    async def kiss(
-        self,
-        inter: disnake.GuildCommandInteraction,
-        member=commands.Param(converter=interacted_member),
-    ) -> None:
-        """
-        Поцеловать участника
-
-        Parameters
-        ----------
-        member: Участник, которого вы хотите поцеловать
-        """
-        await self._send_gif(inter, member, Categories.KISS)
-
-    @commands.slash_command()
-    async def pat(
-        self,
-        inter: disnake.GuildCommandInteraction,
-        member=commands.Param(converter=interacted_member),
-    ) -> None:
-        """
-        Погладить участника
-
-
-        Parameters
-        ----------
-        member: Участник, которого вы хотите погладить
-        """
-        await self._send_gif(inter, member, Categories.PAT)
+        print(action)
+        await self._send_gif(inter, member, Categories[action])
 
     async def _send_gif(
         self,
         inter: disnake.GuildCommandInteraction,
         target: disnake.Member,
         category: Categories,
-    ):
+    ) -> None:
         embed = DefaultEmbed(
-            description=t(
-                category,
-                user_id=inter.author.id,
-                target_id=target.id
-            )
+            description=category.get_embed_text(inter.author, target)  # type: ignore
         )
         embed.set_image(url=await get_random_url(category))
         await inter.response.send_message(embed=embed)
@@ -93,5 +76,5 @@ async def get_random_url(category: Categories) -> str:
             return json_resp['url']
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(FunCog(bot))

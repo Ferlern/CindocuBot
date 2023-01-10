@@ -37,6 +37,7 @@ class FunCog(commands.Cog):
         self.bot = bot
 
     @commands.slash_command()
+    @commands.cooldown(3, 30, commands.BucketType.user)
     async def action(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -66,7 +67,7 @@ class FunCog(commands.Cog):
             description=category.get_embed_text(inter.author, target)  # type: ignore
         )
         embed.set_image(url=await get_random_url(category))
-        await inter.response.send_message(embed=embed)
+        await inter.response.send_message(target.mention, embed=embed)
 
 
 async def get_random_url(category: Categories) -> str:

@@ -1,10 +1,14 @@
 from abc import abstractmethod
-from typing import Optional, Union
+from math import ceil
+from typing import Optional, Union, TypeVar, Generic
 
 import disnake
 from disnake.ui import Button
 
 from src.discord_views.base_view import BaseView
+
+
+T = TypeVar('T')
 
 
 class PaginationItem(disnake.ui.Item):
@@ -164,6 +168,34 @@ class Paginator(BaseView):
             page = min(page, self.max_page)
         page = max(1, page)
         return page
+
+
+class ItemsPaginator(Generic[T], Paginator):
+    def __init__(
+        self,
+        items: list[T],
+        items_per_page: int,
+        *,
+        timeout: float = 180,
+    ) -> None:
+        max_page = ceil(len(items) / items_per_page) or 1
+        self._all_items = items
+        self.items: list[T] = []
+        super().__init__(timeout=timeout, max_page=max_page)
+
+    def is_empty(self) -> bool:
+        return not self._all_items
+
+    def update(self) -> None:
+        page = self.page
+        self.items = self._all_items[(page-1)*10:page*10]
+        return super().update()
+
+    async def page_callback(
+        self,
+        interaction: Union[disnake.ModalInteraction, disnake.MessageInteraction],
+    ) -> None:
+        return await super().page_callback(interaction)
 
 
 class ChangePageModal(disnake.ui.Modal):

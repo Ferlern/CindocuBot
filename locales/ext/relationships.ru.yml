@@ -13,7 +13,7 @@ ru:
   timeout_desc: "<@%{target_id}> никак не ответил на предложение"
   no_relationship: "Вы не в отношениях"
   divorce_confirm_title: ":broken_heart: Развод?.."
-  divorce_confirm_desc: "Ты уверен, что хочешь закончить свои отношения"
+  divorce_confirm_desc: "Ты уверен, что хочешь закончить свои отношения?"
   divorce_button_label: "Развод"
   divorce_succes_title: ":broken_heart: Расторжение брака"
   divorce_succes_desc: "<@%{author_id}> решает прекратить свои отношения. Наверное, это к лучшему..."

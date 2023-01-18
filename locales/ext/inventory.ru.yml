@@ -1,0 +1,7 @@
+ru:
+  roles_inventory: ":sparkles: Инвертарь ролей"
+  select_role: "Взять роль"
+  delete_role: "Удалить роль"
+  role_selected: "Роль успешно выбрана. Все другие покупные роли будут сняты"
+  roles_inventory_empty: "У вас пока нет ролей в инвентаре"
+  role_not_found: "Роль не найдена. Вы можете удалить её из инвертаря"

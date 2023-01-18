@@ -1,7 +1,8 @@
+import asyncio
 import time
 
 import disnake
-from disnake.ext import commands
+from disnake.ext import commands, tasks
 
 from src.bot import SEBot
 from src.translation import get_translator
@@ -11,18 +12,50 @@ from src.formatters import from_user_to_user
 from src.custom_errors import DailyAlreadyReceived
 from src.utils.slash_shortcuts import only_guild
 from src.ext.economy.services import (change_balance, get_economy_settings,
-                                      take_bonus)
+                                      take_bonus, take_tax_for_roles)
 from src.ext.economy.shops.shops import get_not_empty_shops, Shop
 from src.discord_views.switch import ViewSwitcher
 from src.utils.time_ import second_until_end_of_day
+from src.logger import get_logger
 
 
 t = get_translator(route="ext.economy")
+logger = get_logger()
 
 
 class EconomyCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
+        self.taxing.start()
+
+    def cog_unload(self) -> None:
+        self.taxing.cancel()
+
+    @tasks.loop(hours=24)
+    async def taxing(self) -> None:
+        to_delete = take_tax_for_roles()
+        for item in to_delete:
+            guild = self.bot.get_guild(item.guild.id)
+            if not guild:
+                logger.info("taxing want to delete role with id %d but can't find guild %d",
+                            item.role_id, item.guild.id)
+                continue
+
+            role = guild.get_role(item.role_id)  # type: ignore
+            if not role:
+                logger.info("taxing want to delete role with id %d, but role missing",
+                            item.role_id)
+                continue
+
+            logger.info("taxing removes role %d", item.role_id)
+            await role.delete()
+
+    @taxing.before_loop
+    async def before_taxing(self) -> None:
+        await self.bot.wait_until_ready()
+        sleep_time = second_until_end_of_day()
+        logger.debug('tax will sleep for %d second', sleep_time)
+        await asyncio.sleep(sleep_time)
 
     @commands.slash_command(**only_guild)
     async def daily(self,
@@ -64,11 +97,12 @@ class EconomyCog(commands.Cog):
             await inter.response.send_message(embed=embed)
 
     @commands.slash_command(**only_guild)
-    async def shop(self, inter: disnake.ApplicationCommandInteraction):
+    async def shop(self, inter: disnake.GuildCommandInteraction) -> None:
         """
         Магазины
         """
-        shops = get_not_empty_shops(inter.author)  # type: ignore
+        settings = get_economy_settings(inter.guild.id)
+        shops = get_not_empty_shops(inter.author, settings)  # type: ignore
         if not shops:
             await inter.response.send_message(
                 t('all_shops_empty'),
@@ -126,5 +160,5 @@ class ShopSwitcher(ViewSwitcher[Shop]):
         )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(EconomyCog(bot))

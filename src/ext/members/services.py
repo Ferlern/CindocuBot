@@ -3,7 +3,7 @@ from peewee import fn
 from src.logger import get_logger
 from src.database.models import (Guilds, Users, psql_db,
                                  Likes, Members, UserRoles,
-                                 WelcomeSettings)
+                                 WelcomeSettings, RolesInventory)
 from src.database.services import get_member, create_related
 
 
@@ -79,7 +79,7 @@ def delete_member_roles(
         where(
             (UserRoles.guild_id == guild_id) &
             (UserRoles.user_id == user_id) &
-            (UserRoles.role_id << role_ids)
+            (UserRoles.role_id << role_ids)  # type: ignore
         ).
         execute())  # type: ignore
 
@@ -92,3 +92,24 @@ def change_bio(guild_id: int, user_id: int, bio: str) -> Members:
     member.biography = bio  # type: ignore
     member.save()
     return member
+
+
+@psql_db.atomic()
+def get_inventory_roles(guild_id: int, user_id: int) -> list[RolesInventory]:
+    return list((
+        RolesInventory.
+        select(RolesInventory).
+        where(
+            (RolesInventory.guild == guild_id) &
+            (RolesInventory.user == user_id)
+        )  # type: ignore
+    ))
+
+
+@psql_db.atomic()
+def get_inventory_role(guild_id: int, user_id: int, role_id: int) -> RolesInventory:
+    return RolesInventory.get(
+        guild=guild_id,
+        user=user_id,
+        role_id=role_id,
+    )

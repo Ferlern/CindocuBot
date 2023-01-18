@@ -1,4 +1,4 @@
-from src.database.models import *  # noqa
+from src.database.models import *
 
 tables = (UserRoles, Likes, Members,
           Relationships, RelationshipParticipant,
@@ -6,7 +6,7 @@ tables = (UserRoles, Likes, Members,
           RelationshipsSettings, ModerationSettings, EconomySettings,
           ExperienceSettings, PersonalVoice, Users, Guilds,
           History, PremoderationSettings, PremoderationItem,
-          WelcomeSettings, ReminderSettings, Reminders)
+          WelcomeSettings, ReminderSettings, Reminders, CreatedShopRoles, RolesInventory)
 
 
 def create_tables() -> None:

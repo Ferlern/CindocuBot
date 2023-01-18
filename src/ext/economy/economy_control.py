@@ -9,7 +9,7 @@ from src.converters import not_bot_member
 from src.custom_errors import UsedNotOnGuild
 from src.utils.slash_shortcuts import only_admin
 from src.ext.economy.services import (add_shop_role, change_balance,
-                                      delete_shop_role, get_economy_settings)
+                                      delete_shop_role, get_economy_settings, CurrencyType)
 from src.ext.history.services import make_history
 
 
@@ -17,7 +17,7 @@ t = get_translator(route="ext.economy")
 
 
 class EconomyControlCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_admin)
@@ -25,7 +25,7 @@ class EconomyControlCog(commands.Cog):
                        inter: disnake.ApplicationCommandInteraction,
                        role: disnake.Role,
                        price: commands.Range[1, ...],
-                       ):
+                       ) -> None:
         """
         Добавить роль в магазин ролей
 
@@ -68,7 +68,7 @@ class EconomyControlCog(commands.Cog):
         inter: disnake.ApplicationCommandInteraction,
         role: disnake.Role,
         role_id: Optional[int] = None,
-    ):
+    ) -> None:
         """
         Убрать роль из магазина ролей
 
@@ -103,6 +103,7 @@ class EconomyControlCog(commands.Cog):
     async def change_balance(
         self,
         inter: disnake.ApplicationCommandInteraction,
+        currency: CurrencyType = CurrencyType.COIN,
         member=commands.Param(converter=not_bot_member),
         amount: int = commands.Param(),
     ) -> None:
@@ -111,6 +112,7 @@ class EconomyControlCog(commands.Cog):
 
         Parameters
         ----------
+        currency: Валюта
         member: Пользователь, баланс которого будет изменён
         amount: Количество валюты. Может быть отрицательным,\
         но не привышать текущий баланс пользователя
@@ -123,6 +125,7 @@ class EconomyControlCog(commands.Cog):
             guild.id,
             member.id,
             amount=amount,
+            currency=currency,
         )
         await inter.response.send_message(
             t('balance_changed'),
@@ -141,5 +144,5 @@ class EconomyControlCog(commands.Cog):
         )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(EconomyControlCog(bot))

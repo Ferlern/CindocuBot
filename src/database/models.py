@@ -4,7 +4,7 @@
 import datetime
 from typing import Optional, Sequence, TypedDict
 from peewee import (Model, BigAutoField,
-                    ForeignKeyField, CharField, SQL)
+                    ForeignKeyField, CharField, SQL, BooleanField)
 from playhouse.postgres_ext import (PostgresqlExtDatabase, BigIntegerField,
                                     IntegerField, AutoField, ArrayField,
                                     JSONField, TextField, CompositeKey,
@@ -135,6 +135,8 @@ class EconomySettings(BaseModel):
         Guild ID.
     coin: :class:`str`
         Coin emoji or text.
+    crystal: :class:`str`
+        donate currency emoji or text.
     daily: :class:`int`
         Amount of coins in the daily command.
     voice_category_id: :class:`int`
@@ -148,10 +150,20 @@ class EconomySettings(BaseModel):
         Personal voice slot price
     bitrate_price: :class:`int`
         Personal voice bitrate price
+    role_creation_price: :class:`int`
+        Cost of creating role (second currency)
+    role_day_tax: :class:`int`
+        Tax on created role (second currency)
+        If member does not have enough money, the role will be removed
+    role_under_which_create_roles: :class:Optional[`int`]
+        The role whose guild position will be used when creating new roles.
+        They will be placed below it, if role specified
     """
     guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
     coin: str = CharField(max_length=30, constraints=[
         SQL("DEFAULT ':coin:'")], default=':coin:')
+    crystal: str = CharField(max_length=30, constraints=[
+        SQL("DEFAULT ':large_blue_diamond:'")], default=':large_blue_diamond:')
     daily: int = IntegerField(constraints=[SQL("DEFAULT 35")], default=35)
     voice_category_id: Optional[int] = BigIntegerField(null=True)
     main_voice_id: Optional[int] = BigIntegerField(null=True)
@@ -160,6 +172,9 @@ class EconomySettings(BaseModel):
     slot_price: int = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
     bitrate_price: int = IntegerField(constraints=[SQL("DEFAULT 100")],
                                       default=100)
+    role_creation_price: int = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
+    role_day_tax: int = IntegerField(constraints=[SQL("DEFAULT 10")], default=10)
+    role_under_which_create_roles: Optional[int] = BigIntegerField(null=True)
 
 
 class ExperienceSettings(BaseModel):
@@ -208,6 +223,8 @@ class Members(BaseModel):
     ----------
     balance: :class:`int`
         Balance for economy exts.
+    donate_balance: :class:`int`
+        Second balance. Currency received for real money
     experience: :class:`int`
         Points gained for text activity.
     voice_activity: :class:`int`
@@ -227,6 +244,7 @@ class Members(BaseModel):
     user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
     balance: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    donate_balance: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     experience: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     voice_activity: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     biography: Optional[str] = CharField(column_name='biography', max_length=300, null=True)
@@ -385,6 +403,63 @@ class ShopRoles(BaseModel):
 
     class Meta:  # pylint: disable=too-few-public-methods
         primary_key = CompositeKey('guild_id', 'role_id')
+
+
+class CreatedShopRoles(BaseModel):
+    """
+    Model for created by members roles
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    creator: :class:`Users`
+        Role creator.
+    role_id: :class:`int`
+        Role ID. Empty if role has not yet been approved
+    approved: :class:`bool`
+        Whether the role was approved by server moderation
+    shown: :class:`bool`
+        Whether the role will be shown in shop
+    price: :class:`int`
+        Role purchase price for other members
+    properties: :class:`dict`
+        Creator-selected role properties. Color, name ect.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    creator: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    role_id: Optional[int] = BigIntegerField(null=True)
+    approved: bool = BooleanField(default=False)
+    shown: bool = BooleanField(default=True)
+    price: int = IntegerField(constraints=[SQL('DEFAULT 5000')], default=5000)
+    properties: dict = JSONField()
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        primary_key = CompositeKey('guild', 'creator')
+
+
+class RolesInventory(BaseModel):
+    """
+    Model for roles that members have bought
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    user: :class:`Users`
+        User who bought role.
+    role_id: :class:`int`
+        Role ID.
+    purchase_price: :class:`int`
+        The amount of money spent on the purchase. May be differ from current role price
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    role_id: int = BigIntegerField()
+    purchase_price: int = IntegerField()
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        primary_key = CompositeKey('guild', 'user', 'role_id')
 
 
 class Suggestions(BaseModel):

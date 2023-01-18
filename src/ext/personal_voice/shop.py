@@ -7,7 +7,7 @@ from src.translation import get_translator
 from src.custom_errors import (UsedNotOnGuild, MaxBitrateReached,
                                MaxSlotsAmount)
 from src.discord_views.embeds import DefaultEmbed
-from src.ext.economy.services import (change_balance, get_economy_settings)
+from src.ext.economy.services import change_balance
 from src.ext.economy.shops.base import Shop
 from src.ext.personal_voice.services import (create_voice_channel,
                                              has_voice_channel,
@@ -26,14 +26,15 @@ BITRATE = {
 
 
 class VoiceShop(Shop):
-    def __init__(self, author: disnake.Member):
+    def __init__(self, author: disnake.Member, settings: EconomySettings) -> None:
         self._stratagy: VoiceShopStratagy
-        super().__init__(author, timeout=300)
+        self._settings = settings
+        super().__init__(author, settings, timeout=300)
         self._update_stratagy()
-        self.add_item(self._stratagy.build_select())
+        self.add_item(self._stratagy.build_select(settings))
 
-    def create_embed(self):
-        return self._stratagy.build_embed(self.author)
+    def create_embed(self) -> disnake.Embed:
+        return self._stratagy.build_embed(self.author, self._settings)
 
     def is_empty(self) -> bool:
         return False
@@ -42,17 +43,17 @@ class VoiceShop(Shop):
     def name(self) -> str:
         return t('voice_shop_name')
 
-    async def update(self, message: disnake.Message):
+    async def update(self, message: disnake.Message) -> None:
         self._update_stratagy()
         await self._update_message(message)
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction):
+    async def _response(self, inter: disnake.ApplicationCommandInteraction) -> None:
         await inter.response.send_message(
             embed=self.create_embed(),
             view=self,
         )
 
-    def _update_stratagy(self):
+    def _update_stratagy(self) -> None:
         author = self.author
         if has_voice_channel(
             author.id,
@@ -62,8 +63,8 @@ class VoiceShop(Shop):
         else:
             self._stratagy = NoVoiceStratagy()
 
-    async def _update_message(self, message: disnake.Message):
-        select = self._stratagy.build_select()
+    async def _update_message(self, message: disnake.Message) -> None:
+        select = self._stratagy.build_select(self._settings)
         select._view = self  # noqa
         self.children[0] = select
         await message.edit(
@@ -74,25 +75,28 @@ class VoiceShop(Shop):
 
 class VoiceShopStratagy(ABC):
     @abstractmethod
-    def build_embed(self,
-                    author: disnake.Member,
-                    ) -> disnake.Embed:
+    def build_embed(
+        self,
+        author: disnake.Member,
+        settings: EconomySettings,
+    ) -> disnake.Embed:
         return DefaultEmbed(
             title=t('voice_shop'),
             description=t('voice_shop_desc'),
         )
 
     @abstractmethod
-    def build_select(self) -> disnake.ui.Select:
+    def build_select(self, settings: EconomySettings) -> disnake.ui.Select:
         pass
 
 
 class NoVoiceStratagy(VoiceShopStratagy):
-    def build_embed(self,
-                    author: disnake.Member,
-                    ) -> disnake.Embed:
-        embed = super().build_embed(author)
-        settings = get_economy_settings(author.guild.id)
+    def build_embed(
+        self,
+        author: disnake.Member,
+        settings: EconomySettings,
+    ) -> disnake.Embed:
+        embed = super().build_embed(author, settings)
         embed.add_field(
             name='1. ' + t('voice_shop_voice_title'),
             value=t('voice_shop_voice_desc',
@@ -102,21 +106,22 @@ class NoVoiceStratagy(VoiceShopStratagy):
         )
         return embed
 
-    def build_select(self) -> disnake.ui.Select:
-        return BuyVoiceSelect()
+    def build_select(self, settings: EconomySettings) -> disnake.ui.Select:
+        return BuyVoiceSelect(settings)
 
 
 class UpgradeVoiceStratagy(VoiceShopStratagy):
-    def build_embed(self,
-                    author: disnake.Member
-                    ) -> disnake.Embed:
-        embed = super().build_embed(author)
+    def build_embed(
+        self,
+        author: disnake.Member,
+        settings: EconomySettings,
+    ) -> disnake.Embed:
+        embed = super().build_embed(author, settings)
         guild = author.guild
 
         if not guild:
             raise UsedNotOnGuild()
 
-        settings = get_economy_settings(guild.id)
         voice_channel = get_voice_channel(
             author.id,
             guild.id,
@@ -124,27 +129,28 @@ class UpgradeVoiceStratagy(VoiceShopStratagy):
         embed.add_field(
             name='1. ' + t('voice_slots'),
             value=_get_slot_desc(
-                voice_channel.slots,  # type: ignore
+                voice_channel.slots,
                 settings,
             )
         )
         embed.add_field(
             name='2. ' + t('voice_bitrate'),
             value=_get_bitrate_desc(
-                voice_channel.max_bitrate,  # type: ignore
+                voice_channel.max_bitrate,
                 settings,
             )
         )
         return embed
 
-    def build_select(self) -> disnake.ui.Select:
-        return UpgradeVoiceSelect()
+    def build_select(self, settings: EconomySettings) -> disnake.ui.Select:
+        return UpgradeVoiceSelect(settings)
 
 
 class BuyVoiceSelect(disnake.ui.Select):
     view: VoiceShop
 
-    def __init__(self):
+    def __init__(self, settings: EconomySettings) -> None:
+        self._settings = settings
         options = [
             disnake.SelectOption(
                 label=t('voice_shop_voice_title'),
@@ -152,7 +158,7 @@ class BuyVoiceSelect(disnake.ui.Select):
         ]
         super().__init__(options=options)
 
-    async def callback(self, interaction: disnake.MessageInteraction, /):
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         guild = interaction.guild
         author = interaction.author
         if not guild or not isinstance(author, disnake.Member):
@@ -165,7 +171,7 @@ class BuyVoiceSelect(disnake.ui.Select):
             )
             return
 
-        settings = get_economy_settings(guild.id)
+        settings = self._settings
 
         category = guild.get_channel(
             settings.voice_category_id,  # type: ignore
@@ -181,7 +187,7 @@ class BuyVoiceSelect(disnake.ui.Select):
         change_balance(
             guild_id=guild.id,
             user_id=author.id,
-            amount=-settings.voice_price  # type: ignore
+            amount=-settings.voice_price
         )
 
         voice = await category.create_voice_channel(
@@ -208,7 +214,8 @@ class BuyVoiceSelect(disnake.ui.Select):
 class UpgradeVoiceSelect(disnake.ui.Select):
     view: VoiceShop
 
-    def __init__(self):
+    def __init__(self, settings: EconomySettings) -> None:
+        self._settings = settings
         options = [
             disnake.SelectOption(
                 label=t('voice_slots'),
@@ -221,7 +228,7 @@ class UpgradeVoiceSelect(disnake.ui.Select):
         ]
         super().__init__(options=options)
 
-    async def callback(self, interaction: disnake.MessageInteraction, /):
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         if not interaction.values:
             return  # impossible
 
@@ -235,7 +242,7 @@ class UpgradeVoiceSelect(disnake.ui.Select):
             author_id,
             guild_id,
         )
-        settings = get_economy_settings(guild_id)
+        settings = self._settings
 
         selected = interaction.values[0]
         handlers = {
@@ -255,14 +262,14 @@ class UpgradeVoiceSelect(disnake.ui.Select):
         await self.view.update(interaction.message)
 
 
-def _get_next_bitrate(bitrate: int):
+def _get_next_bitrate(bitrate: int) -> int:
     try:
         return BITRATE[bitrate]
     except KeyError as exc:
         raise MaxBitrateReached(t('voice_max_bitrate_reached')) from exc
 
 
-def _get_next_slot(slot: int):
+def _get_next_slot(slot: int) -> int:
     if slot >= MAX_SLOTS_AMOUNT:
         raise MaxSlotsAmount(t('voice_max_slot_reached'))
     return slot + 1
@@ -270,14 +277,14 @@ def _get_next_slot(slot: int):
 
 def _count_next_bitrate_price(bitrate: int, price: int) -> int:
     next_bitrate = _get_next_bitrate(bitrate)
-    return (next_bitrate - bitrate) * price // 32  # type: ignore
+    return (next_bitrate - bitrate) * price // 32
 
 
-def _count_next_slot_price(current_slot: int, price: int):
+def _count_next_slot_price(current_slot: int, price: int) -> int:
     return _get_next_slot(current_slot) * price
 
 
-def _get_bitrate_desc(bitrate: int, settings: EconomySettings):
+def _get_bitrate_desc(bitrate: int, settings: EconomySettings) -> str:
     try:
         return t(
             'voice_bitrate_desc',
@@ -287,7 +294,7 @@ def _get_bitrate_desc(bitrate: int, settings: EconomySettings):
             ),
             price=_count_next_bitrate_price(
                 bitrate,
-                settings.bitrate_price,  # type: ignore
+                settings.bitrate_price,
             ),
             coin=settings.coin
         )
@@ -295,7 +302,7 @@ def _get_bitrate_desc(bitrate: int, settings: EconomySettings):
         return t('max')
 
 
-def _get_slot_desc(slot: int, settings: EconomySettings):
+def _get_slot_desc(slot: int, settings: EconomySettings) -> str:
     try:
         return t(
             'voice_slots_desc',
@@ -303,7 +310,7 @@ def _get_slot_desc(slot: int, settings: EconomySettings):
             next=slot + 1,
             price=_count_next_slot_price(
                 slot,
-                settings.slot_price,  # type: ignore
+                settings.slot_price,
             ),
             coin=settings.coin,
         )
@@ -323,11 +330,11 @@ def _buy_slot(
         user_id=user_id,
         guild_id=guild_id,
         amount=-_count_next_slot_price(
-            voice.slots,  # type: ignore
-            settings.slot_price,  # type: ignore
+            voice.slots,
+            settings.slot_price,
         )
     )
-    voice.slots += 1  # type: ignore
+    voice.slots += 1
     voice.save()
     return t('voice_slots_purchased')
 
@@ -342,10 +349,10 @@ def _buy_bitrate(
         user_id=user_id,
         guild_id=guild_id,
         amount=-_count_next_bitrate_price(
-            voice.max_bitrate,  # type: ignore
-            settings.bitrate_price,  # type: ignore
+            voice.max_bitrate,
+            settings.bitrate_price,
         )
     )
-    voice.max_bitrate = _get_next_bitrate(voice.max_bitrate)  # type: ignore
+    voice.max_bitrate = _get_next_bitrate(voice.max_bitrate)
     voice.save()
     return t('voice_bitrate_purchased')

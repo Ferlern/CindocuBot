@@ -25,6 +25,7 @@ INITIAL_EXTENSIONS = (
     'members.profile',
     'members.top',
     'members.welcome',
+    'members.inventory_cog',
     'members.role_controller',
     'suggestions.suggestions',
     'reputation.reputation',

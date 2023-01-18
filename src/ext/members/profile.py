@@ -65,8 +65,8 @@ class ProfileCog(commands.Cog):
             inline=False,
         )
         embed.add_field(
-            name=t("balance", coin=economy_settings.coin),
-            value=f"**{member_data.balance}**",
+            name=t("balance", coin=f'{economy_settings.coin}/{economy_settings.crystal}'),
+            value=f"**{member_data.balance}** / **{member_data.donate_balance}**",
         )
         embed.add_field(
             name=t("level"),

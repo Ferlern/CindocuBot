@@ -26,7 +26,7 @@ class FunCog(commands.Cog):
         ),
     ) -> None:
         """
-        Выполнить дейстие
+        Выполнить действие
 
         Parameters
         ----------

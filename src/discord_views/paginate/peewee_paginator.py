@@ -10,8 +10,9 @@ from src.discord_views.paginate.paginators import Paginator, PaginationItem
 
 
 T = TypeVar('T', bound=peewee.Model)
-Order = Optional[Union[peewee.Field,
-                       peewee.Ordering]]
+Order = Optional[
+    list[Union[peewee.Field, peewee.Ordering]]
+]
 
 
 class PeeweePaginator(Generic[T], Paginator):
@@ -28,8 +29,7 @@ class PeeweePaginator(Generic[T], Paginator):
         self.order_by = order_by
         self.items_per_page = items_per_page
         self.items: Sequence[T] = []
-        super().__init__(timeout=timeout,
-                         max_page=self._count_max_page())
+        super().__init__(timeout=timeout)
 
     async def resolve_interaction(
         self,
@@ -41,21 +41,26 @@ class PeeweePaginator(Generic[T], Paginator):
     def is_empty(self):
         return not self.items
 
-    def update_page(self):
-        self.max_page = self._count_max_page()
-
     def update(self):
+        self._max_page = self._count_max_page()
+        self._page = self._check_page_range(self._page)
         query = self._build_query()
-        self.items = query.paginate(self.page,  # type: ignore
-                                    self.items_per_page)
+        self.items = list(query.paginate(
+            self.page,  # type: ignore
+            self.items_per_page,
+        ))
         super().update()
 
     def _build_query(self) -> peewee.ModelSelect:
         query = self._model.select()
         if self.filters:
             query = query.where(reduce(and_, self.filters.values()))
-        if self.order_by:
-            query = query.order_by(self.order_by)  # type: ignore
+        order = self.order_by
+        if order:
+            if isinstance(order, Sequence):
+                query = query.order_by(*order)  # type: ignore
+            else:
+                query = query.order_by(order)  # type: ignore
         return query  # type: ignore
 
     def _count_max_page(self) -> int:

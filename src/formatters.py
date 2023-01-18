@@ -42,7 +42,7 @@ def to_mention(
 def ordered_list(
     items: Sequence,
     formatter: Callable[[Any], str] = str,
-):
+) -> str:
     items_str = [formatter(item) for item in items]
     items_str = [f'{idx}. {item}' for idx, item in enumerate(items_str, 1)]
     return '\n'.join(items_str)

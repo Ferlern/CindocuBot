@@ -160,9 +160,9 @@ class EconomySettings(BaseModel):
         They will be placed below it, if role specified
     """
     guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
-    coin: str = CharField(max_length=30, constraints=[
+    coin: str = CharField(max_length=255, constraints=[
         SQL("DEFAULT ':coin:'")], default=':coin:')
-    crystal: str = CharField(max_length=30, constraints=[
+    crystal: str = CharField(max_length=255, constraints=[
         SQL("DEFAULT ':large_blue_diamond:'")], default=':large_blue_diamond:')
     daily: int = IntegerField(constraints=[SQL("DEFAULT 35")], default=35)
     voice_category_id: Optional[int] = BigIntegerField(null=True)

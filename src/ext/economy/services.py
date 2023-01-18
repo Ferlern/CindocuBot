@@ -15,6 +15,12 @@ class CurrencyType(str, Enum):
     COIN = 'coin'
     CRYSTAL = 'crystal'
 
+    def get_guild_repr(self, settings: EconomySettings) -> str:
+        return {
+            CurrencyType.COIN: settings.coin,
+            CurrencyType.CRYSTAL: settings.crystal,
+        }[self]
+
 
 @psql_db.atomic()
 def change_balance(

@@ -16,7 +16,7 @@ ru:
   role_not_found: "Не могу найти данную роль в магазине"
   transfered: "Успешно отправлено"
   balance_changed: "Баланс изменён успешно"
-  balance_changed_history_desc: "<@%{user_id}> изменил баланс <@%{target_id}> на %{amount}"
+  balance_changed_history_desc: "<@%{user_id}> изменил баланс <@%{target_id}> на %{amount} %{currency}"
   daily_already_recieved: ":sunny: Бонус пока что не доступен. Приходи позже"
   daily_already_recieved_desc: "Ты уже получал свой сегодняшний бонус \n\nТы сможешь получить бонус снова %{timestamp}"
   daily_recieved: ":blossom: Ежедневный бонус получен!"

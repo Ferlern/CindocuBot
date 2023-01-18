@@ -121,6 +121,8 @@ class EconomyControlCog(commands.Cog):
         if not guild:
             raise UsedNotOnGuild()
 
+        settings = get_economy_settings(guild.id)
+        currency = CurrencyType(currency)
         change_balance(
             guild.id,
             member.id,
@@ -139,8 +141,8 @@ class EconomyControlCog(commands.Cog):
                 'balance_changed_history_desc',
                 user_id=inter.author.id,
                 target_id=member.id,
-                amount=f'{amount:+}'
-            )
+                amount=f'{amount:+}',
+                currency=currency.get_guild_repr(settings)),
         )
 
 

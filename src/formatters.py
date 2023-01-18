@@ -32,6 +32,13 @@ def to_mention_and_id(
     return f'<{type_}{id_}> | `{id_}`'
 
 
+def to_mention(
+    id_: int,
+    type_: Literal['@', '#', '@&'] = '@',
+) -> str:
+    return f'<{type_}{id_}>'
+
+
 def ordered_list(
     items: Sequence,
     formatter: Callable[[Any], str] = str,

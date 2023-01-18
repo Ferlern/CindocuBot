@@ -116,7 +116,8 @@ class Paginator(BaseView):
         self.shown = True
         self._paginator_items: list[PaginationItem] = []
         self._max_page = max_page
-        self.page = 1
+        self._page = 1
+        self.update()
         self.add_paginator_item(FirstPageButton())
         self.add_paginator_item(PrevPageButton())
         self.add_paginator_item(SetPageButton())

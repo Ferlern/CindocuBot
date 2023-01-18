@@ -14,6 +14,7 @@ class ViewSwitcher(disnake.ui.Select, Generic[T]):
                  ) -> None:
         super().__init__(placeholder=placeholder, row=4)
         self._switch_items: dict[str, T] = {}
+        self._prev: Optional[T] = None
 
     def add_view(
         self,
@@ -23,6 +24,7 @@ class ViewSwitcher(disnake.ui.Select, Generic[T]):
         description: Optional[str] = None,
     ) -> None:
         view.add_item(self)
+        view.shown = False
         super().add_option(label=label, description=description)
         self._switch_items[label] = view
 
@@ -54,7 +56,12 @@ class ViewSwitcher(disnake.ui.Select, Generic[T]):
         if not values:
             return  # impossible but just for type checker
 
+        selected = self._switch_items[values[0]]
+        selected.shown = True
+        if prev := self._prev:
+            prev.shown = False
+        self._prev = selected
         await self._resolve_selection(
-            self._switch_items[values[0]],
+            selected,
             interaction
         )

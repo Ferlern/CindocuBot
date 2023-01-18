@@ -109,7 +109,11 @@ class Paginator(BaseView):
         timeout: float = 180,
         max_page: Optional[int] = None,
     ) -> None:
+        # TODO this is necessary due to multiple inheritance
+        # shops will stop work if we just call super(). Should be fixed in future
         super(BaseView, self).__init__(timeout=timeout)
+        # paginator does not call __init__ of base view, so set shown here
+        self.shown = True
         self._paginator_items: list[PaginationItem] = []
         self._max_page = max_page
         self.page = 1

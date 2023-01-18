@@ -1,3 +1,4 @@
+from typing import Optional
 import disnake
 
 from src.custom_errors import RegularException
@@ -7,6 +8,10 @@ from src.discord_views.embeds import ActionFailedEmbed
 class BaseView(disnake.ui.View):
     message: disnake.Message
     author: disnake.Member
+
+    def __init__(self, *, timeout: Optional[float] = 180) -> None:
+        super().__init__(timeout=timeout)
+        self.shown = True
 
     async def start_from(self, inter: disnake.ApplicationCommandInteraction):
         await self._response(inter)
@@ -45,6 +50,9 @@ class BaseView(disnake.ui.View):
             await super().on_error(error, item, interaction)
 
     async def on_timeout(self) -> None:
+        if not self.shown:
+            return
+
         has_message = hasattr(self, 'message')
         if not has_message:
             return

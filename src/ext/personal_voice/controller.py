@@ -187,7 +187,10 @@ class PersonalVoiceControllerCog(commands.Cog):
         )
         voice_data.voice_id = channel.id
         voice_data.save()
-        await member.move_to(channel)
+        try:
+            await member.move_to(channel)
+        except disnake.HTTPException as error:
+            logger.info("can't move %d to his voice channel: %s", error)
 
     def _check_voice_for_delete(
         self,

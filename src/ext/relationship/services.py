@@ -38,8 +38,7 @@ def create_relationships(
     )
     RelationshipParticipant.insert_many(  # noqa
         [(first_user, rel.id), (second_user, rel.id)],
-        [RelationshipParticipant.user_id,
-         RelationshipParticipant.relationship_id],
+        [RelationshipParticipant.user_id, RelationshipParticipant.relationship_id],
     ).execute()  # type: ignore
 
 

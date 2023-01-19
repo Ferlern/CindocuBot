@@ -25,7 +25,7 @@ t = get_translator(route="ext.relationships")
 
 
 class RelationshipCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_guild)
@@ -33,7 +33,7 @@ class RelationshipCog(commands.Cog):
         self,
         inter: disnake.ApplicationCommandInteraction,
         member=commands.Param(converter=interacted_member),
-    ):
+    ) -> None:
         """
         Предложить другому участнику стать парой
 
@@ -48,7 +48,7 @@ class RelationshipCog(commands.Cog):
         await view.start_from(inter)
 
     @commands.slash_command(**only_guild)
-    async def divorce(self, inter: disnake.ApplicationCommandInteraction):
+    async def divorce(self, inter: disnake.ApplicationCommandInteraction) -> None:
         """
         Закончить свои отношения
         """
@@ -69,7 +69,7 @@ class RelationshipProposalView(BaseView):
         self._target = target
         self._price = get_relationships_settings(author.guild.id).marry_price
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction):
+    async def _response(self, inter: disnake.ApplicationCommandInteraction) -> None:
         guild = inter.guild
         if not guild:
             raise UsedNotOnGuild
@@ -287,5 +287,5 @@ class DivorceView(BaseView):
         )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(RelationshipCog(bot))

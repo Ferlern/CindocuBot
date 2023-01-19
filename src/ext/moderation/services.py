@@ -1,5 +1,4 @@
-from src.database.models import (Members, psql_db, Guilds,
-                                 ModerationSettings)
+from src.database.models import Members, psql_db, Guilds, ModerationSettings
 from src.database.services import get_member, create_related
 from src.logger import get_logger
 
@@ -22,7 +21,7 @@ def add_warn(
     user_id: int,
 ) -> Members:
     member = get_member(guild_id, user_id)
-    member.warns += 1  # type: ignore
+    member.warns += 1
     member.save()
     return member
 
@@ -33,6 +32,6 @@ def remove_warn(
     user_id: int,
 ) -> Members:
     member = get_member(guild_id, user_id)
-    member.warns -= 1  # type: ignore
+    member.warns -= 1
     member.save()
     return member

@@ -13,6 +13,8 @@ class DefaultEmbed(Embed):
 
 class ActionFailedEmbed(Embed):
     def __init__(self, reason: str) -> None:
-        super().__init__(title=t('action_failed'),
-                         description=t('action_failed_reason', reason=reason),
-                         color=0x93a5cd)
+        super().__init__(
+            title=t('action_failed'),
+            description=t('action_failed_reason', reason=reason),
+            color=0x93a5cd,
+        )

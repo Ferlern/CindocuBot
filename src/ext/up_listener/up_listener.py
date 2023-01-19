@@ -18,11 +18,11 @@ UP_MESSAGES_CHECKS = {
 
 
 class UpListenerCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message: disnake.Message):
+    async def on_message(self, message: disnake.Message) -> None:
         check = UP_MESSAGES_CHECKS.get(message.author.id)
         if not check:
             return
@@ -54,5 +54,5 @@ class UpListenerCog(commands.Cog):
         ))
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(UpListenerCog(bot))

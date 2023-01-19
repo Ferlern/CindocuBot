@@ -17,10 +17,11 @@ def user_long_string(user: Union[Member, User]) -> str:
             f'`{user.id}`')
 
 
-def from_user_to_user(user: Union[Member, User],
-                      another: Union[Member, User],
-                      formatter=user_mention
-                      ) -> str:
+def from_user_to_user(
+    user: Union[Member, User],
+    another: Union[Member, User],
+    formatter=user_mention,
+) -> str:
     return (f'{formatter(user)} **->** '
             f'{formatter(another)}')
 

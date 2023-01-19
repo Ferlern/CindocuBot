@@ -2,8 +2,7 @@ import disnake
 from disnake.ext import commands
 
 from src.logger import get_logger
-from src.ext.members.services import (get_member_roles, create_member_roles,
-                                      delete_member_roles)
+from src.ext.members.services import get_member_roles, create_member_roles, delete_member_roles
 from src.bot import SEBot
 
 
@@ -28,11 +27,10 @@ class RoleControllerCog(commands.Cog):
             target.id
         )
         member_data_roles_ids = {item.role_id for item in saved_roles}  # noqa
-        member_roles_ids = {role.id for role in target.roles
-                            if role.name != '@everyone'}
+        member_roles_ids = {role.id for role in target.roles if role.name != '@everyone'}
 
-        added = member_roles_ids - member_data_roles_ids  # type: ignore
-        outdated = member_data_roles_ids - member_roles_ids  # type: ignore
+        added = member_roles_ids - member_data_roles_ids
+        outdated = member_data_roles_ids - member_roles_ids
 
         return outdated, added
 

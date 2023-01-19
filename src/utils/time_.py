@@ -123,14 +123,14 @@ def parse_time_to_seconds(message: str) -> float:
     return reduce(add, (unit.time_type * unit.amount for unit in units))
 
 
-def localize_time_unit(unit: TimeUnit):
+def localize_time_unit(unit: TimeUnit) -> str:
     return f"{unit.amount:g} {t(unit.time_type.localizable_name(), count=unit.amount)}"  # noqa
 
 
 async def time_autocomplate(
     _: disnake.ApplicationCommandInteraction,
     user_input: str,
-):
+) -> list[str]:
     if len(user_input) > 50:
         return [t('autocomplate_to_long_line')]
 

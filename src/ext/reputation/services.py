@@ -36,7 +36,7 @@ def change_reputation(
     if instance.type == action:
         return False
 
-    instance.type = action  # type: ignore
+    instance.type = action
     instance.save()
     logger.info(
         "%s change reputation for %d on guild %s",

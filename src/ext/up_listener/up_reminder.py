@@ -38,11 +38,11 @@ MONITORING_INFORMATION = {
 
 
 class UpReminderCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.Cog.listener(f'on_{custom_events.EventName.MONITORING_GUILD_PROMOTED}')
-    async def up_listener(self, guild: disnake.Guild, monitoring_bot: disnake.User):
+    async def up_listener(self, guild: disnake.Guild, monitoring_bot: disnake.User) -> None:
         info = MONITORING_INFORMATION.get(monitoring_bot.id)
         if not info:
             return
@@ -50,7 +50,7 @@ class UpReminderCog(commands.Cog):
         settings = get_reminder_settings(guild.id, monitoring_bot.id)
         channel = guild.get_channel(settings.channel_id)  # type: ignore
         if not self.check_reminder(
-            channel,  # type: ignore
+            channel,
             text=settings.text  # type: ignore
         ):
             return
@@ -75,16 +75,16 @@ class UpReminderCog(commands.Cog):
             send_time
         )
 
-    async def load_reminders(self):
+    async def load_reminders(self) -> None:
         await self.bot.wait_until_ready()
         reminders = get_all_active_not_outdated_reminders()
         logger.info('%d pending reminders found', len(reminders))
 
         for reminder in reminders:  # noqa
-            guild = self.bot.get_guild(reminder.guild_id.id)  # type: ignore
+            guild = self.bot.get_guild(reminder.guild_id.id)
             if not guild:
                 continue
-            settings = get_reminder_settings(guild.id, reminder.monitoring_bot_id)  # type: ignore
+            settings = get_reminder_settings(guild.id, reminder.monitoring_bot_id)
             channel = guild.get_channel(settings.channel_id)  # type: ignore
             if self.check_reminder(channel, settings.text):  # type: ignore
                 logger.info('Creating remidner for guild %d, monitoring %d',
@@ -136,11 +136,11 @@ def is_close_to_reset(info: MonitoringData) -> bool:
     return False
 
 
-def timedelta_as_seconds(delta: datetime.timedelta):
+def timedelta_as_seconds(delta: datetime.timedelta) -> int:
     return delta.days * time_utils.TimeEnum.DAY + delta.seconds
 
 
-def setup(bot):
+def setup(bot) -> None:
     cog = UpReminderCog(bot)
     cog.bot.loop.create_task(cog.load_reminders())
     bot.add_cog(cog)

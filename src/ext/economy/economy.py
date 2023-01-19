@@ -80,11 +80,13 @@ class EconomyCog(commands.Cog):
             ).balance
             embed = DefaultEmbed(
                 title=t('daily_recieved'),
-                description=t('daily_recieved_desc',
-                              timestamp=timestamp,
-                              balance=balance,
-                              daily=daily,
-                              coin=coin)
+                description=t(
+                    'daily_recieved_desc',
+                    timestamp=timestamp,
+                    balance=balance,
+                    daily=daily,
+                    coin=coin,
+                )
             )
         except DailyAlreadyReceived:
             embed = DefaultEmbed(
@@ -119,11 +121,12 @@ class EconomyCog(commands.Cog):
         await switcher.start_from(inter)
 
     @commands.slash_command(**only_guild)
-    async def transfer(self,
-                       inter: disnake.ApplicationCommandInteraction,
-                       member=commands.Param(converter=interacted_member),
-                       amount: commands.Range[1, ...] = commands.Param(),
-                       ) -> None:
+    async def transfer(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        member=commands.Param(converter=interacted_member),
+        amount: commands.Range[1, ...] = commands.Param(),
+    ) -> None:
         """
         Перевести валюту сервера другому участнику
 

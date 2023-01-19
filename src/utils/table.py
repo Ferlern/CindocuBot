@@ -34,16 +34,16 @@ class DiscordTable:
         self._max_columns_length = max_columns_length
         self._values: list[Sequence[str]] = []
 
-    def clear(self):
+    def clear(self) -> None:
         self._values = []
 
-    def add_row(self, row: Sequence[str]):
+    def add_row(self, row: Sequence[str]) -> None:
         self._values.append(row)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return sum(self._max_columns_length)
 
-    def __str__(self):
+    def __str__(self) -> str:
         string = '```\n'
         string += " ".join(self._prepared_columns())
         string += "\n"
@@ -61,21 +61,22 @@ class DiscordTable:
              for max_length in self._max_columns_length]
         )
 
-    def _prepared_columns(self):
+    def _prepared_columns(self) -> list[str]:
         return [
             self._prepare_string(column, max_length)
-            for column, max_length in zip(self._columns,
-                                          self._max_columns_length)
+            for column, max_length in zip(self._columns, self._max_columns_length)
         ]
 
-    def _prepared_values(self):
+    def _prepared_values(self) -> list[list[str]]:
         return [
-            [self._prepare_string(value, max_length)
-             for value, max_length in zip(row, self._max_columns_length)]
+            [self._prepare_string(
+                value,
+                max_length,
+            ) for value, max_length in zip(row, self._max_columns_length)]
             for row in self._values
         ]
 
-    def _prepare_string(self, string: str, max_length: int):
+    def _prepare_string(self, string: str, max_length: int) -> str:
         string = normalize_and_cut_string(string, max_length)
         return f'{string:{max_length}}'
 

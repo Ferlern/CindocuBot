@@ -55,8 +55,7 @@ class PremoderationCog(commands.Cog):
 
             saved_url = await self.bot.save_file(await attachment.to_file())
             if not saved_url:
-                logger.warning('Premoderation work skipped, '
-                               'no channels to save images')
+                logger.warning('Premoderation work skipped, no channels to save images')
                 return
             urls.append(saved_url)
         content = message.clean_content
@@ -104,10 +103,10 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         self.add_paginator_item(RejectButton())
         self.add_paginator_item(RejectAuthoredButton())
 
-    async def page_callback(self,
-                            interaction: Union[disnake.ModalInteraction,
-                                               disnake.MessageInteraction]
-                            ) -> None:
+    async def page_callback(
+        self,
+        interaction: Union[disnake.ModalInteraction, disnake.MessageInteraction],
+    ) -> None:
         await interaction.response.edit_message(
             content=self.create_message(),
             view=self,
@@ -123,7 +122,7 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         if self.is_empty():
             return None
 
-        channel = self.guild.get_channel(self.item.channel_id)  # type: ignore
+        channel = self.guild.get_channel(self.item.channel_id)
         if isinstance(channel, disnake.TextChannel):
             return channel
         return None
@@ -134,8 +133,8 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         message = str()
         backslash = '\n'
         item = self.item
-        message += f"{t('from_user')}: {to_mention_and_id(item.author.id)}"  # type: ignore
-        message += f"\n{t('to_channel')}: {to_mention_and_id(item.channel_id, '#')}"  # type: ignore
+        message += f"{t('from_user')}: {to_mention_and_id(item.author.id)}"
+        message += f"\n{t('to_channel')}: {to_mention_and_id(item.channel_id, '#')}"
         if item.content:
             message += f"\n{(t('content'))}: {item.content}"
         if item.urls:
@@ -200,10 +199,10 @@ class RolePremoderationPaginator(PeeweePaginator[CreatedShopRoles]):
         self.add_paginator_item(PostButton())
         self.add_paginator_item(RejectButton())
 
-    async def page_callback(self,
-                            interaction: Union[disnake.ModalInteraction,
-                                               disnake.MessageInteraction]
-                            ) -> None:
+    async def page_callback(
+        self,
+        interaction: Union[disnake.ModalInteraction, disnake.MessageInteraction],
+    ) -> None:
         await interaction.response.edit_message(
             content=self.create_message(),
             view=self,

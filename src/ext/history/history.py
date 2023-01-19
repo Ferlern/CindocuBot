@@ -18,14 +18,14 @@ t = get_translator(route='ext.history')
 
 
 class HistoryCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_admin)
     async def history(
         self,
         inter: disnake.GuildCommandInteraction,
-    ):
+    ) -> None:
         """
         Показать историю событий на этом сервере
         """
@@ -38,7 +38,7 @@ class HistoryPaginator(PeeweePaginator[History]):
         super().__init__(
             History,
             items_per_page=15,
-            order_by=-History.id,
+            order_by=-History.id,  # type: ignore
             filters={'guild': History.guild_id == guild.id},
         )
         self.add_paginator_item(HistorySelect())
@@ -78,10 +78,10 @@ class HistoryPaginator(PeeweePaginator[History]):
             description=str(table),
         )
 
-    async def page_callback(self,
-                            interaction: Union[disnake.ModalInteraction,
-                                               disnake.MessageInteraction]
-                            ) -> None:
+    async def page_callback(
+        self,
+        interaction: Union[disnake.ModalInteraction, disnake.MessageInteraction],
+    ) -> None:
         await interaction.response.edit_message(
             embed=self.create_embed(),
             view=self,
@@ -135,7 +135,7 @@ class HistoryRowInfo(BaseView):
         inter: disnake.MessageInteraction,
         item: History,
         backref: HistoryPaginator,
-    ):
+    ) -> None:
         instance = cls(item, backref)
         instance.message = inter.message
         instance.author = inter.author  # type: ignore
@@ -173,5 +173,5 @@ class HistoryRowInfo(BaseView):
         return embed
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(HistoryCog(bot))

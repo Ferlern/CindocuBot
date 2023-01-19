@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 import i18n
 
@@ -23,7 +23,7 @@ def get_translator(*, route="general"):
     return translator
 
 
-def _determine_plural_form(*, count=1):
+def _determine_plural_form(*, count=1) -> Literal[2, 0, 1]:
     count = abs(count)
     if count % 10 >= 5 or count % 10 == 0 or (count % 100) in range(11, 20):
         return 2

@@ -2,8 +2,7 @@ import disnake
 from disnake.ext import commands
 import peewee
 
-from src.database.models import (Members, Likes, Relationships,
-                                 RelationshipParticipant)
+from src.database.models import Members, Likes, Relationships, RelationshipParticipant
 from src.formatters import ordered_list
 from src.custom_errors import UsedNotOnGuild
 from src.discord_views.embeds import DefaultEmbed
@@ -23,14 +22,14 @@ TOP_SIZE = 10
 
 
 class TopCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_guild)
     async def top(
         self,
         inter: disnake.ApplicationCommandInteraction,
-    ):
+    ) -> None:
         """
         Посмотреть топы участников этого сервера
         """
@@ -55,7 +54,7 @@ class TopView(BaseView):
         }
         self.add_item(TopSelect(self.top_map))
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction):
+    async def _response(self, inter: disnake.ApplicationCommandInteraction) -> None:
         await inter.response.send_message(
             embed=list(self.top_map.values())[0](self.guild_id),
             view=self,
@@ -65,7 +64,7 @@ class TopView(BaseView):
 class TopSelect(disnake.ui.Select):
     view: TopView
 
-    def __init__(self, top_map):
+    def __init__(self, top_map) -> None:
         options = [
             disnake.SelectOption(
                 label=name,
@@ -101,21 +100,21 @@ def _build_members_top_query(
 def _build_voice_top_query(guild_id: int):
     return _build_members_top_query(
         guild_id=guild_id,
-        ordering=-Members.voice_activity,
+        ordering=-Members.voice_activity,  # type: ignore
     )
 
 
 def _build_balance_top_query(guild_id: int):
     return _build_members_top_query(
         guild_id=guild_id,
-        ordering=-Members.balance,
+        ordering=-Members.balance,  # type: ignore
     )
 
 
 def _build_experience_top_query(guild_id: int):
     return _build_members_top_query(
         guild_id=guild_id,
-        ordering=-Members.experience,
+        ordering=-Members.experience,  # type: ignore
     )
 
 
@@ -221,5 +220,5 @@ def create_relationships_top_embed(guild_id: int) -> disnake.Embed:
     )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(TopCog(bot))

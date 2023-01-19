@@ -100,8 +100,7 @@ class BuyRoleSelect(PeeweeItemSelect[ShopRoles]):
         role = inter.guild.get_role(item.role_id)  # type: ignore
 
         if not role:
-            await inter.response.send_message(t('role_missing'),
-                                              ephemeral=True)
+            await inter.response.send_message(t('role_missing'), ephemeral=True)
             return
 
         guild_id = inter.guild.id
@@ -109,8 +108,7 @@ class BuyRoleSelect(PeeweeItemSelect[ShopRoles]):
         price = item.price
 
         if has_role_in_inventory(guild_id, user_id, role.id):
-            await inter.response.send_message(t('role_already_purchased'),
-                                              ephemeral=True)
+            await inter.response.send_message(t('role_already_purchased'), ephemeral=True)
             return
         change_balance(
             guild_id=inter.guild.id,
@@ -187,7 +185,7 @@ class BuyCreatedRoleSelect(BuyRoleSelect):  # pylint: disable=too-many-ancestors
         super().update()
         self.add_option(label=t('create_role'), value=CREATE_ROLE)
 
-    async def callback(self, interaction: disnake.MessageInteraction) -> None:
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         values = interaction.values
         if not values:
             return

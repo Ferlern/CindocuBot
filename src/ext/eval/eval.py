@@ -9,15 +9,15 @@ from src.database.models import psql_db
 
 
 class EvalCommandCog(commands.Cog):
-    async def cog_check(self, ctx):  # pylint:disable=invalid-overridden-method
+    async def cog_check(self, ctx) -> bool:  # pylint:disable=invalid-overridden-method
         return await ctx.bot.is_owner(ctx.author)
 
-    def prepaire_response(self, variable):
+    def prepaire_response(self, variable) -> str:
         text = repr(variable)
         cutted_text = text[:1024]
         return f"```py\n{cutted_text}\n```{len(cutted_text)}/{len(text)}"
 
-    def prepare(self, string: str):
+    def prepare(self, string: str) -> str:
         arr = string.strip("`").removeprefix('py\n').splitlines()
         # last_line = arr[-1]
         # if not last_line.split()[0] == "return":
@@ -26,7 +26,7 @@ class EvalCommandCog(commands.Cog):
         #                f"return {last_without_indent}")
         return "".join(f"\n\t{i}" for i in arr)
 
-    async def evaluate(self, ctx: commands.Context, code: str):
+    async def evaluate(self, ctx: commands.Context, code: str) -> None:
         code = self.prepare(code)
         args = {
             "disnake": disnake,
@@ -52,8 +52,7 @@ class EvalCommandCog(commands.Cog):
                 description=self.prepaire_response(response),
                 colour=disnake.Colour.purple())
             embed.set_footer(
-                text=(f"⏱️ {type(response).__name__} |"
-                      f" {(time.time() - start_time) / 1000} ms")
+                text=(f"⏱️ {type(response).__name__} | {(time.time() - start_time) / 1000} ms")
             )
             embed.set_thumbnail(url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed)
@@ -66,9 +65,9 @@ class EvalCommandCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(aliases=['eval', 'exec', 'evaluate'])
-    async def _eval(self, ctx, *, code: str):
+    async def _eval(self, ctx, *, code: str) -> None:
         await self.evaluate(ctx, code)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(EvalCommandCog())

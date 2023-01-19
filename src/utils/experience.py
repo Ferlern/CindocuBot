@@ -5,13 +5,13 @@ FIRST_LVL_EXPERIENCE = 100
 LVL_REQUIREMENTS_GROW_PERCENT = 1.1
 
 
-def exp_to_lvl(exp: int):
+def exp_to_lvl(exp: int) -> int:
     fle = FIRST_LVL_EXPERIENCE
     prc = LVL_REQUIREMENTS_GROW_PERCENT
     return int(log(exp / fle * (prc - 1) + 1, prc) + 1)
 
 
-def lvl_to_exp(lvl: int):
+def lvl_to_exp(lvl: int) -> int:
     fle = FIRST_LVL_EXPERIENCE
     prc = LVL_REQUIREMENTS_GROW_PERCENT
     return int(fle * (prc ** (lvl - 1) - 1) / (prc - 1))

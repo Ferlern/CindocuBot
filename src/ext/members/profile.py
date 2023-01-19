@@ -21,7 +21,7 @@ t = get_translator(route="ext.profile")
 
 
 class ProfileCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_guild)
@@ -135,5 +135,5 @@ class ProfileCog(commands.Cog):
         )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(ProfileCog(bot))

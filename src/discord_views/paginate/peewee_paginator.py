@@ -16,14 +16,15 @@ Order = Optional[
 
 
 class PeeweePaginator(Generic[T], Paginator):
-    def __init__(self,
-                 model: type[T],
-                 *,
-                 timeout: float = 180,
-                 items_per_page: int = 10,
-                 order_by: Order = None,
-                 filters: Optional[dict[str, peewee.Expression]] = None
-                 ) -> None:
+    def __init__(
+        self,
+        model: type[T],
+        *,
+        timeout: float = 180,
+        items_per_page: int = 10,
+        order_by: Order = None,
+        filters: Optional[dict[str, peewee.Expression]] = None,
+    ) -> None:
         self._model = model
         self.filters = filters if filters else {}
         self.order_by = order_by
@@ -33,15 +34,14 @@ class PeeweePaginator(Generic[T], Paginator):
 
     async def resolve_interaction(
         self,
-        interaction: Union[disnake.ModalInteraction,
-                           disnake.MessageInteraction]
+        interaction: Union[disnake.ModalInteraction, disnake.MessageInteraction],
     ) -> None:
         return await super().resolve_interaction(interaction)
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return not self.items
 
-    def update(self):
+    def update(self) -> None:
         self._max_page = self._count_max_page()
         self._page = self._check_page_range(self._page)
         query = self._build_query()
@@ -58,34 +58,30 @@ class PeeweePaginator(Generic[T], Paginator):
         order = self.order_by
         if order:
             if isinstance(order, Sequence):
-                query = query.order_by(*order)  # type: ignore
+                query = query.order_by(*order)
             else:
-                query = query.order_by(order)  # type: ignore
-        return query  # type: ignore
+                query = query.order_by(order)
+        return query
 
     def _count_max_page(self) -> int:
         query = self._build_query()
-        return math.ceil(query.count() /  # type: ignore
-                         self.items_per_page) or 1
+        return math.ceil(query.count() / self.items_per_page) or 1  # type: ignore
 
 
 class PeeweeItemSelect(disnake.ui.Select, PaginationItem, Generic[T]):
     view: PeeweePaginator
 
-    def __init__(self,
-                 placeholder: Optional[str] = None,
-                 ) -> None:
+    def __init__(self, placeholder: Optional[str] = None) -> None:
         super().__init__(placeholder=placeholder)
 
-    async def callback(self, interaction: disnake.MessageInteraction):  # noqa
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         values = interaction.values
         if not values:
             return
 
-        await self._resolve_select(interaction,
-                                   self.view.items[int(values[0])])
+        await self._resolve_select(interaction, self.view.items[int(values[0])])
 
-    def update(self):
+    def update(self) -> None:
         self.options = [
             disnake.SelectOption(
                 label=self._build_option_label(index + 1, item),
@@ -94,9 +90,11 @@ class PeeweeItemSelect(disnake.ui.Select, PaginationItem, Generic[T]):
             ) for index, item in enumerate(self.view.items)
         ]
 
-    async def _resolve_select(self,
-                              inter: disnake.MessageInteraction,
-                              item: T) -> None:
+    async def _resolve_select(
+        self,
+        inter: disnake.MessageInteraction,
+        item: T,
+    ) -> None:
         raise NotImplementedError()
 
     def _build_option_label(self, index: int, item: T) -> str:  # noqa

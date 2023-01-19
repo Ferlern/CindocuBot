@@ -10,12 +10,9 @@ from src.bot import SEBot
 from src.utils.slash_shortcuts import only_admin
 from src.converters import moderate_target, parse_time
 from src.utils.time_ import time_autocomplate
-from src.ext.moderation.actoin_providers.mute_provider import (MuteProvider,
-                                                               UnmuteProvider)
-from src.ext.moderation.actoin_providers.ban_provider import (BanProvider,
-                                                              UnbanProvider)
-from src.ext.moderation.actoin_providers.warn_provider import (WarnProvider,
-                                                               UnwarnProvider)
+from src.ext.moderation.actoin_providers.mute_provider import MuteProvider, UnmuteProvider
+from src.ext.moderation.actoin_providers.ban_provider import BanProvider, UnbanProvider
+from src.ext.moderation.actoin_providers.warn_provider import WarnProvider, UnwarnProvider
 
 
 t = get_translator(route="ext.moderation")
@@ -23,7 +20,7 @@ logger = get_logger
 
 
 class ModerationCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_admin)
@@ -36,7 +33,7 @@ class ModerationCog(commands.Cog):
             converter=parse_time,
         ),
         reason: str = commands.Param(lambda _: t('default_reason')),
-    ):
+    ) -> None:
         """
         Выдать мут участнику
 
@@ -66,7 +63,7 @@ class ModerationCog(commands.Cog):
         inter: disnake.ApplicationCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
-    ):
+    ) -> None:
         """
         Снять мут с участника
 
@@ -94,7 +91,7 @@ class ModerationCog(commands.Cog):
         inter: disnake.ApplicationCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
-    ):
+    ) -> None:
         """
         Выдать варн участнику
 
@@ -121,7 +118,7 @@ class ModerationCog(commands.Cog):
         inter: disnake.ApplicationCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
-    ):
+    ) -> None:
         """
         Снять варн с участника
 
@@ -150,7 +147,7 @@ class ModerationCog(commands.Cog):
         target: disnake.Member = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
         delete_days: int = commands.Param(default=0, ge=0, le=7),
-    ):
+    ) -> None:
         """
         Выдать бан участнику
 
@@ -181,7 +178,7 @@ class ModerationCog(commands.Cog):
         inter: disnake.ApplicationCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
-    ):
+    ) -> None:
         """
         Снять бан с участника
 
@@ -209,7 +206,7 @@ class ModerationCog(commands.Cog):
         self,
         inter: disnake.ApplicationCommandInteraction,
         amount: commands.Range[1, ...] = commands.Param(),
-    ):
+    ) -> None:
         """
         Массово удалить сообщения из текущего канала
 
@@ -246,5 +243,5 @@ class ModerationCog(commands.Cog):
         await inter.response.send_message(embed=embed, delete_after=30)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(ModerationCog(bot))

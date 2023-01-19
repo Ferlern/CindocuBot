@@ -1,5 +1,4 @@
-from src.database.models import (Users, psql_db, Guilds,
-                                 PremoderationSettings, PremoderationItem)
+from src.database.models import Users, psql_db, Guilds, PremoderationSettings, PremoderationItem
 from src.database.services import create_related
 from src.logger import get_logger
 

@@ -4,8 +4,7 @@ import disnake
 from src.database.models import EconomySettings, PersonalVoice
 
 from src.translation import get_translator
-from src.custom_errors import (UsedNotOnGuild, MaxBitrateReached,
-                               MaxSlotsAmount)
+from src.custom_errors import UsedNotOnGuild, MaxBitrateReached, MaxSlotsAmount
 from src.discord_views.embeds import DefaultEmbed
 from src.ext.economy.services import change_balance
 from src.ext.economy.shops.base import Shop

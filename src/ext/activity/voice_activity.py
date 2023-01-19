@@ -140,5 +140,5 @@ def _is_muted(member: disnake.Member) -> bool:
     return voice_state.deaf or voice_state.self_deaf
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(VoiceActivityCog(bot))

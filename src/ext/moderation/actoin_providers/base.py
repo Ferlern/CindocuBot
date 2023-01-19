@@ -49,7 +49,7 @@ class ActionProvider(ABC):
         )
         await inter.response.send_message(embed=embed, delete_after=30)
 
-    async def full_action(self):
+    async def full_action(self) -> None:
         await self.send_dm_to_target()
         await self.make_discord_action()
         self.create_history()

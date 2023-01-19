@@ -5,23 +5,25 @@ import peewee
 
 
 class ItemSelectFilter(disnake.ui.Select):
-    def __init__(self, mame: str, **kwargs):
+    def __init__(self, mame: str, **kwargs) -> None:
         super().__init__(**kwargs)
         self._name = mame
 
     def _prepare_values(self) -> list:
         raise NotImplementedError()
 
-    async def callback(self, interaction: disnake.MessageInteraction):  # noqa
+    async def callback(self, interaction: disnake.MessageInteraction) -> None:  # noqa
         self.view.filters[self._name] = self._prepare_values()  # type: ignore
         await self.view.resolve_interaction(interaction)  # type: ignore
 
 
 class PeeweeSelectFilter(ItemSelectFilter):
-    def __init__(self,
-                 name: str,
-                 options: Mapping[str, peewee.Expression],
-                 **kwargs):
+    def __init__(
+        self,
+        name: str,
+        options: Mapping[str, peewee.Expression],
+        **kwargs,
+    ) -> None:
         select_options = [disnake.SelectOption(
             label=key,
         ) for key in options]

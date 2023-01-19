@@ -27,14 +27,16 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
                                                    users=True)
         intents = disnake.Intents.all()  # It's OK. This bot is for one server
         test_guilds = settings.TEST_GUILD_IDS if settings.DEBUG else None
-        super().__init__(command_prefix=_prefix_callable,
-                         test_guilds=test_guilds,
-                         sync_commands_debug=settings.DEBUG,
-                         description='temporary unknown',
-                         allowed_mentions=allowed_mentions,
-                         intents=intents,
-                         case_insensitive=True,
-                         strip_after_prefix=True)
+        super().__init__(
+            command_prefix=_prefix_callable,
+            test_guilds=test_guilds,
+            sync_commands_debug=settings.DEBUG,
+            description='temporary unknown',
+            allowed_mentions=allowed_mentions,
+            intents=intents,
+            case_insensitive=True,
+            strip_after_prefix=True,
+        )
         self.uptime = time.time()
         self.persistent_views_added = False
         self.image_channel_cycle = Cycle[int](settings.IMAGE_CHANNELS)
@@ -87,7 +89,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
 
         print(f'Ready: {self.user} (ID: {self.user.id})')
 
-    async def process_commands(self, message):
+    async def process_commands(self, message) -> None:
         if message.author.bot:
             return
 
@@ -161,7 +163,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
         elif isinstance(exception, commands.ArgumentParsingError):
             await context.send(str(exception))
 
-    async def on_error(self, event_method, *_, **__):
+    async def on_error(self, event_method, *_, **__) -> None:
         exception_info = sys.exc_info()
         traceback_str = extract_traceback(exception_info[2])
         exception_name = exception_info[0]
@@ -233,7 +235,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
 
         return channel
 
-    def _load_exts(self):
+    def _load_exts(self) -> None:
         for ext_path in settings.INITIAL_EXTENSIONS:
             self.load_extension(f'src.ext.{ext_path}')
 

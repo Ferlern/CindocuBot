@@ -13,7 +13,7 @@ class BaseView(disnake.ui.View):
         super().__init__(timeout=timeout)
         self.shown = True
 
-    async def start_from(self, inter: disnake.ApplicationCommandInteraction):
+    async def start_from(self, inter: disnake.ApplicationCommandInteraction) -> None:
         await self._response(inter)
         self.message = await inter.original_message()
         self.author = inter.author  # type: ignore
@@ -35,10 +35,12 @@ class BaseView(disnake.ui.View):
             return False
         return True
 
-    async def on_error(self,
-                       error: Exception,
-                       item: disnake.ui.Item,
-                       interaction: disnake.MessageInteraction) -> None:
+    async def on_error(
+        self,
+        error: Exception,
+        item: disnake.ui.Item,
+        interaction: disnake.MessageInteraction,
+    ) -> None:
         if isinstance(error, RegularException):
             await interaction.response.send_message(
                 embed=ActionFailedEmbed(
@@ -62,7 +64,7 @@ class BaseView(disnake.ui.View):
 
         await self.message.edit(view=self)
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction):
+    async def _response(self, inter: disnake.ApplicationCommandInteraction) -> None:
         await inter.response.send_message(
             view=self,
         )

@@ -23,7 +23,7 @@ REPUTATION_ACTION_MAP: dict[str, Literal[1, -1, 0]] = {
 
 
 class ReputationCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_guild)
@@ -31,9 +31,7 @@ class ReputationCog(commands.Cog):
         self,
         inter: disnake.ApplicationCommandInteraction,
         member=commands.Param(converter=interacted_member),
-        action=commands.Param(choices=[
-            'increase', 'decrease', 'reset'
-        ]),
+        action=commands.Param(choices=['increase', 'decrease', 'reset']),  # type: ignore
     ) -> None:
         """
         Изменить репутацию пользователю
@@ -57,20 +55,17 @@ class ReputationCog(commands.Cog):
         if action == 1:
             embed = disnake.Embed(
                 title=t("increase_title"),
-                description=t("increase_desc", author_id=author_id,
-                              target_id=target_id),
+                description=t("increase_desc", author_id=author_id, target_id=target_id),
                 color=disnake.Colour.green())
         elif action == -1:
             embed = disnake.Embed(
                 title=t("decrease_title"),
-                description=t("decrease_desc", author_id=author_id,
-                              target_id=target_id),
+                description=t("decrease_desc", author_id=author_id, target_id=target_id),
                 color=disnake.Colour.red())
         else:
             embed = DefaultEmbed(
                 title=t("reset_title"),
-                description=t("reset_desc", author_id=author_id,
-                              target_id=target_id),
+                description=t("reset_desc", author_id=author_id, target_id=target_id),
             )
         embed.set_thumbnail(url=await self.bot.save_avatar(inter.author))
         await inter.response.send_message(
@@ -78,5 +73,5 @@ class ReputationCog(commands.Cog):
         )
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(ReputationCog(bot))

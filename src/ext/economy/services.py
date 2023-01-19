@@ -68,10 +68,11 @@ def get_economy_settings(guild_id: int, /) -> EconomySettings:
 
 
 @psql_db.atomic()
-def take_bonus(guild_id: int,
-               user_id: int,
-               amount: int
-               ) -> Members:
+def take_bonus(
+    guild_id: int,
+    user_id: int,
+    amount: int
+) -> Members:
     member = get_member(guild_id, user_id)
     if member.bonus_taked_on_day >= get_current_day():
         raise DailyAlreadyReceived()
@@ -84,11 +85,12 @@ def take_bonus(guild_id: int,
 
 @create_related(Guilds)
 @psql_db.atomic()
-def add_shop_role(guild_id: int,
-                  /,
-                  role_id: int,
-                  price: int,
-                  ) -> ShopRoles:
+def add_shop_role(
+    guild_id: int,
+    /,
+    role_id: int,
+    price: int,
+) -> ShopRoles:
     item = ShopRoles.create(
         guild_id=guild_id,
         role_id=role_id,
@@ -99,10 +101,11 @@ def add_shop_role(guild_id: int,
 
 @create_related(Guilds)
 @psql_db.atomic()
-def delete_shop_role(guild_id: int,
-                     /,
-                     role_id: int,
-                     ) -> None:
+def delete_shop_role(
+    guild_id: int,
+    /,
+    role_id: int,
+) -> None:
     item: ShopRoles = ShopRoles.get(
         guild_id=guild_id,
         role_id=role_id,

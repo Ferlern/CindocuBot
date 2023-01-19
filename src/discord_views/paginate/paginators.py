@@ -13,19 +13,16 @@ T = TypeVar('T')
 
 class PaginationItem(disnake.ui.Item):
     @abstractmethod
-    def update(self):
+    def update(self) -> None:
         ...
 
 
 class FirstPageButton(Button, PaginationItem):
-    def __init__(self):
+    def __init__(self) -> None:
         self.view: Paginator
-        super().__init__(emoji="⏪",
-                         style=disnake.ButtonStyle.blurple)
+        super().__init__(emoji="⏪", style=disnake.ButtonStyle.blurple)
 
-    async def callback(self,  # pylint: disable=arguments-differ
-                       interaction: disnake.MessageInteraction
-                       ) -> None:
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         self.view.page = 1
         await self.view.resolve_interaction(interaction)
 
@@ -34,14 +31,12 @@ class FirstPageButton(Button, PaginationItem):
 
 
 class PrevPageButton(Button, PaginationItem):
-    def __init__(self):
+    def __init__(self) -> None:
         self.view: Paginator
         super().__init__(emoji="◀",
                          style=disnake.ButtonStyle.secondary)
 
-    async def callback(self,  # pylint: disable=arguments-differ
-                       interaction: disnake.MessageInteraction
-                       ) -> None:
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         self.view.page -= 1
         await self.view.resolve_interaction(interaction)
 
@@ -50,14 +45,11 @@ class PrevPageButton(Button, PaginationItem):
 
 
 class NextPageButton(Button, PaginationItem):
-    def __init__(self):
+    def __init__(self) -> None:
         self.view: Paginator
-        super().__init__(emoji="▶",
-                         style=disnake.ButtonStyle.secondary)
+        super().__init__(emoji="▶", style=disnake.ButtonStyle.secondary)
 
-    async def callback(self,  # pylint: disable=arguments-differ
-                       interaction: disnake.MessageInteraction
-                       ) -> None:
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         self.view.page += 1
         await self.view.resolve_interaction(interaction)
 
@@ -66,14 +58,11 @@ class NextPageButton(Button, PaginationItem):
 
 
 class LastPageButton(Button, PaginationItem):
-    def __init__(self):
+    def __init__(self) -> None:
         self.view: Paginator
-        super().__init__(emoji="⏩",
-                         style=disnake.ButtonStyle.blurple)
+        super().__init__(emoji="⏩", style=disnake.ButtonStyle.blurple)
 
-    async def callback(self,  # pylint: disable=arguments-differ
-                       interaction: disnake.MessageInteraction
-                       ) -> None:
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         if self.view.max_page:
             self.view.page = self.view.max_page
         await self.view.resolve_interaction(interaction)
@@ -84,13 +73,11 @@ class LastPageButton(Button, PaginationItem):
 
 
 class SetPageButton(Button, PaginationItem):
-    def __init__(self):
+    def __init__(self) -> None:
         self.view: Paginator
         super().__init__(style=disnake.ButtonStyle.secondary)
 
-    async def callback(self,  # pylint: disable=arguments-differ
-                       interaction: disnake.MessageInteraction
-                       ) -> None:
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         await interaction.response.send_modal(
             ChangePageModal(self.view),
         )
@@ -129,7 +116,7 @@ class Paginator(BaseView):
         return self._page
 
     @page.setter
-    def page(self, value: int):
+    def page(self, value: int) -> None:
         self._page = self._check_page_range(value)
         self.update()
 
@@ -138,7 +125,7 @@ class Paginator(BaseView):
         return self._max_page
 
     @max_page.setter
-    def max_page(self, value: Optional[int]):
+    def max_page(self, value: Optional[int]) -> None:
         self._max_page = value
         self._page = self._check_page_range(self._page)
         self.update()
@@ -161,14 +148,14 @@ class Paginator(BaseView):
         super().add_item(item)
         item.update()
 
-    def update(self):
+    def update(self) -> None:
         self._update_paginator_items()
 
-    def _update_paginator_items(self):
+    def _update_paginator_items(self) -> None:
         for item in self._paginator_items:
             item.update()
 
-    def _check_page_range(self, page: int):
+    def _check_page_range(self, page: int) -> int:
         if self.max_page is not None:
             page = min(page, self.max_page)
         page = max(1, page)
@@ -215,12 +202,14 @@ class ChangePageModal(disnake.ui.Modal):
                 max_length=20,
             ),
         ]
-        super().__init__(title="Изменение страницы",
-                         custom_id="cpm:set_page",
-                         components=components)
+        super().__init__(
+            title="Изменение страницы",
+            custom_id="cpm:set_page",
+            components=components,
+        )
         self.__paginator = paginator
 
-    async def callback(self, inter: disnake.ModalInteraction) -> None:  # noqa: C901
+    async def callback(self, inter: disnake.ModalInteraction, /) -> None:
         try:
             self.__paginator.page = int(inter.text_values["cpm:new_page"])
         except ValueError:

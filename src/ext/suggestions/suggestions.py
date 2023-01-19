@@ -22,7 +22,7 @@ t = get_translator(route="ext.suggestions")
 
 
 class SuggestionsCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.slash_command(**only_guild)
@@ -110,10 +110,10 @@ class SuggestionPaginator(PeeweePaginator):
         )
         self.add_paginator_item(SuggestionSelect())
 
-    async def page_callback(self,
-                            interaction: Union[disnake.ModalInteraction,
-                                               disnake.MessageInteraction]
-                            ) -> None:
+    async def page_callback(
+        self,
+        interaction: Union[disnake.ModalInteraction, disnake.MessageInteraction],
+    ) -> None:
         await interaction.response.edit_message(
             embed=self.create_embed(),
             view=self,
@@ -144,7 +144,7 @@ class SuggestionPaginator(PeeweePaginator):
         )
         return embed
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction):
+    async def _response(self, inter: disnake.ApplicationCommandInteraction) -> None:
         to_send = {}
         to_send['embed'] = self.create_embed()
         if not self.is_empty():
@@ -177,7 +177,7 @@ class SuggestionSelect(PeeweeItemSelect[Suggestions]):
         item: Suggestions
     ) -> str:
         text = item.text
-        return text[:40] + '...' if len(text) > 40 else text  # type: ignore
+        return text[:40] + '...' if len(text) > 40 else text
 
 
 class SuggestionManager(BaseView):
@@ -203,7 +203,7 @@ class SuggestionManager(BaseView):
         inter: disnake.MessageInteraction,
         suggestion: Suggestions,
         suggestions_paginator: SuggestionPaginator,
-    ):
+    ) -> None:
         logger.debug('SuggestionManager continue from %s', inter)
         instance = cls(
             inter.bot,  # type: ignore
@@ -248,8 +248,7 @@ class SuggestionManager(BaseView):
         _: disnake.ui.Button,
         interaction: disnake.MessageInteraction,
     ) -> None:
-        logger.debug('SuggestionManager accept clicked by %d',
-                     interaction.author.id)
+        logger.debug('SuggestionManager accept clicked by %d', interaction.author.id)
         await self._resolve_action(
             interaction,
             action_label=t('response_approved'),
@@ -265,8 +264,7 @@ class SuggestionManager(BaseView):
         _: disnake.ui.Button,
         interaction: disnake.MessageInteraction,
     ) -> None:
-        logger.debug('SuggestionManager reject clicked by %d',
-                     interaction.author.id)
+        logger.debug('SuggestionManager reject clicked by %d', interaction.author.id)
         await self._resolve_action(
             interaction,
             action_label=t('response_rejected'),
@@ -282,8 +280,7 @@ class SuggestionManager(BaseView):
         _: disnake.ui.Button,
         interaction: disnake.MessageInteraction,
     ) -> None:
-        logger.debug('SuggestionManager delete clicked by %d',
-                     interaction.author.id)
+        logger.debug('SuggestionManager delete clicked by %d', interaction.author.id)
         self._suggestion.delete_instance()
         await self._suggestions_paginator.continue_from(interaction)
 
@@ -296,8 +293,7 @@ class SuggestionManager(BaseView):
         _: disnake.ui.Button,
         interaction: disnake.MessageInteraction,
     ) -> None:
-        logger.debug('SuggestionManager back clicked by %d',
-                     interaction.author.id)
+        logger.debug('SuggestionManager back clicked by %d', interaction.author.id)
         await self._suggestions_paginator.continue_from(interaction)
 
     async def _resolve_action(
@@ -305,14 +301,11 @@ class SuggestionManager(BaseView):
         inter: disnake.MessageInteraction,
         action_label: str,
         action_color: int,
-    ):
+    ) -> None:
         suggestion = self._suggestion
         guild = self.author.guild
-        channel = guild.get_channel(
-            suggestion.channel_id,  # type: ignore
-        )
-        if (not channel or
-                not isinstance(channel, disnake.TextChannel)):
+        channel = guild.get_channel(suggestion.channel_id)
+        if (not channel or not isinstance(channel, disnake.TextChannel)):
             await inter.response.send_message(
                 t('resnonse_cant_find'),
                 ephemeral=True,
@@ -320,9 +313,7 @@ class SuggestionManager(BaseView):
             return
 
         try:
-            message = await channel.fetch_message(
-                suggestion.message_id,  # type: ignore
-            )
+            message = await channel.fetch_message(suggestion.message_id)
         except disnake.errors.NotFound:
             await inter.response.send_message(
                 t('resnonse_cant_find'),
@@ -388,5 +379,5 @@ class SuggestionModal(disnake.ui.Modal):
         await self._backref.continue_from(interaction)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(SuggestionsCog(bot))

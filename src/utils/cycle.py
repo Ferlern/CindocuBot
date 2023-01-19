@@ -5,7 +5,7 @@ T = TypeVar('T')
 
 
 class Cycle(Generic[T]):
-    def __init__(self, items: Sequence[T]):
+    def __init__(self, items: Sequence[T]) -> None:
         self._items = list(items)
         self._index = 0
 

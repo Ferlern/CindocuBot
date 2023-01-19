@@ -9,9 +9,10 @@ T = TypeVar('T', bound=BaseView)
 
 
 class ViewSwitcher(disnake.ui.Select, Generic[T]):
-    def __init__(self,
-                 placeholder: Optional[str] = None,
-                 ) -> None:
+    def __init__(
+        self,
+        placeholder: Optional[str] = None,
+    ) -> None:
         super().__init__(placeholder=placeholder, row=4)
         self._switch_items: dict[str, T] = {}
         self._prev: Optional[T] = None
@@ -51,7 +52,7 @@ class ViewSwitcher(disnake.ui.Select, Generic[T]):
             view=view,
         )
 
-    async def callback(self, interaction: disnake.MessageInteraction, /):
+    async def callback(self, interaction: disnake.MessageInteraction, /) -> None:
         values = interaction.values
         if not values:
             return  # impossible but just for type checker

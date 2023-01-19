@@ -32,7 +32,7 @@ class Shop(BaseView):
     def name(self) -> str:
         pass
 
-    async def start_from(self, inter: disnake.ApplicationCommandInteraction):
+    async def start_from(self, inter: disnake.ApplicationCommandInteraction) -> None:
         await inter.response.send_message(
             embed=self.create_embed(),
             view=self,

@@ -1,5 +1,4 @@
-from src.database.models import (Users, psql_db, Guilds,
-                                 History)
+from src.database.models import Users, psql_db, Guilds, History
 from src.database.services import create_related
 from src.logger import get_logger
 

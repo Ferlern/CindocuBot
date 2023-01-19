@@ -21,11 +21,12 @@ class EconomyControlCog(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(**only_admin)
-    async def add_role(self,
-                       inter: disnake.ApplicationCommandInteraction,
-                       role: disnake.Role,
-                       price: commands.Range[1, ...],
-                       ) -> None:
+    async def add_role(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        role: disnake.Role,
+        price: commands.Range[1, ...],
+    ) -> None:
         """
         Добавить роль в магазин ролей
 

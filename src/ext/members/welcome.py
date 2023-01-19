@@ -14,7 +14,7 @@ t = get_translator()
 
 
 class WelcomeCog(commands.Cog):
-    def __init__(self, bot: SEBot):
+    def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
@@ -59,14 +59,14 @@ class WelcomeCog(commands.Cog):
         channel = member.guild.get_channel(settings.channel_id)  # type: ignore
         if self._check_welcome(
             channel,
-            settings.text,  # type: ignore
-            settings.title_text  # type: ignore
+            settings.text,
+            settings.title_text
         ):
             await self._send_welcome(
                 channel,  # type: ignore
                 member,
-                settings.text,  # type: ignore
-                settings.title_text  # type: ignore
+                settings.text,
+                settings.title_text,
             )
 
     async def _send_welcome(
@@ -107,5 +107,5 @@ def _prepare_string(strings: Optional[str], member: disnake.Member) -> str:
     return strings.replace(r'%{member}', member.mention)
 
 
-def setup(bot):
+def setup(bot) -> None:
     bot.add_cog(WelcomeCog(bot))

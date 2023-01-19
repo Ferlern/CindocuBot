@@ -44,6 +44,7 @@ class RestrictionCog(commands.Cog):
         """
         if member is None and role is None:
             await inter.response.send_message(t('no_target_selected'), ephemeral=True)
+            return
 
         decision = decision == 'allow'
         guild = inter.guild

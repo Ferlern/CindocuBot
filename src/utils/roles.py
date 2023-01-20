@@ -15,10 +15,10 @@ def snowflake_roles_intersection(
         Sequence[int],
     ],
 ) -> list[disnake.Object]:
-    result = set()
+    result = None
     for roles_seq in roles_like_seqs:
-        if not roles_seq:
-            continue
+        if len(roles_seq) == 0:
+            return []
         if isinstance(roles_seq[0], int):
             ids_set = set(roles_seq)
         elif hasattr(roles_seq[0], 'role_id'):
@@ -27,7 +27,7 @@ def snowflake_roles_intersection(
             ids_set = {role.id for role in roles_seq}  # type: ignore
         else:
             raise TypeError('roles_like object must have id, role_id or be id himself')
-        if result:
+        if result is not None:
             result &= ids_set
         else:
             result = ids_set

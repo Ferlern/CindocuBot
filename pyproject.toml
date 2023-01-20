@@ -23,3 +23,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 101
+disable = "too-few-public-methods"

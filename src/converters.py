@@ -51,3 +51,15 @@ def parse_time(
     arg: str,
 ) -> float:
     return parse_time_to_seconds(arg)
+
+
+def translate_converter_error(error: commands.BadArgument, arg: str, expected_type: type) -> str:
+    translation_mapping = {
+        int: 'int_converter',
+        float: 'float_converter',
+        commands.BadBoolArgument: 'bool_converter',
+        commands.BadColourArgument: 'color_converter',
+    }
+    error_type_key = translation_mapping.get(type(error))  # type: ignore
+    expected_type_key = translation_mapping.get(expected_type)  # type: ignore
+    return t(error_type_key or expected_type_key or 'unknown_converter', arg=arg)

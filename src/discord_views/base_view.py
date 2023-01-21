@@ -68,3 +68,16 @@ class BaseView(disnake.ui.View):
         await inter.response.send_message(
             view=self,
         )
+
+
+class BaseModal(disnake.ui.Modal):
+    async def on_error(self, error: Exception, interaction: disnake.ModalInteraction) -> None:
+        if isinstance(error, RegularException):
+            await interaction.response.send_message(
+                embed=ActionFailedEmbed(
+                    reason=str(error),
+                ),
+                ephemeral=True,
+            )
+        else:
+            await super().on_error(error, interaction)

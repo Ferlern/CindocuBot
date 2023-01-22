@@ -35,6 +35,8 @@ class ViewSwitcher(disnake.ui.Select, Generic[T]):
         view: Optional[T] = None,
     ) -> None:
         view = view or list(self._switch_items.values())[0]
+        view.shown = True
+        self._prev = view
         await view.start_from(inter)
 
         message = view.message

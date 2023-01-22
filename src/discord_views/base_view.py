@@ -3,6 +3,10 @@ import disnake
 
 from src.custom_errors import RegularException
 from src.discord_views.embeds import ActionFailedEmbed
+from src.logger import get_logger
+
+
+logger = get_logger()
 
 
 class BaseView(disnake.ui.View):
@@ -52,7 +56,9 @@ class BaseView(disnake.ui.View):
             await super().on_error(error, item, interaction)
 
     async def on_timeout(self) -> None:
+        logger.debug('View %s timeout', self.__class__.__name__)
         if not self.shown:
+            logger.debug('Timeout ignored, view is not shown')
             return
 
         has_message = hasattr(self, 'message')

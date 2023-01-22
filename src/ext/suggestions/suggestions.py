@@ -3,7 +3,7 @@ from typing import Optional, Union
 import disnake
 from disnake.ext import commands
 
-from src.custom_errors import BadConfigured, UsedNotOnGuild
+from src.custom_errors import BadConfigured
 from src.database.models import Suggestions
 from src.discord_views.base_view import BaseView
 from src.discord_views.embeds import DefaultEmbed

@@ -316,7 +316,7 @@ class PersonalVoice(BaseModel):
     voice_id: Optional[int] = BigIntegerField(null=True)
     current_name: Optional[str] = CharField(max_length=255, null=True)
     current_slots: int = IntegerField(constraints=[SQL('DEFAULT 5')], default=5)
-    current_bitrate: int = IntegerField(constraints=[SQL('DEFAULT 64')], default=5)
+    current_bitrate: int = IntegerField(constraints=[SQL('DEFAULT 64')], default=64)
     current_overwrites: Optional[dict[str, list[int]]] = JSONField(null=True)
 
     class Meta:  # pylint: disable=too-few-public-methods

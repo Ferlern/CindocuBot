@@ -4,9 +4,7 @@ import peewee
 
 from src.database.models import Members, Likes, Relationships, RelationshipParticipant
 from src.formatters import ordered_list
-from src.custom_errors import UsedNotOnGuild
 from src.discord_views.embeds import DefaultEmbed
-from src.utils.slash_shortcuts import only_guild
 from src.utils.experience import format_exp
 from src.utils.time_ import display_time
 from src.ext.economy.services import get_economy_settings
@@ -25,18 +23,15 @@ class TopCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def top(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
     ) -> None:
         """
         Посмотреть топы участников этого сервера
         """
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild()
-
         view = TopView(guild_id=guild.id)
         await view.start_from(inter)
 

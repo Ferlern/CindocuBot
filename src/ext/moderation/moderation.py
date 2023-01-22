@@ -7,7 +7,6 @@ from src.translation import get_translator
 from src.discord_views.embeds import DefaultEmbed
 from src.ext.history.services import make_history
 from src.bot import SEBot
-from src.utils.slash_shortcuts import only_admin
 from src.converters import moderate_target, parse_time
 from src.utils.time_ import time_autocomplate
 from src.ext.moderation.actoin_providers.mute_provider import MuteProvider, UnmuteProvider
@@ -23,10 +22,10 @@ class ModerationCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def mute(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         time: float = commands.Param(
             autocomplete=time_autocomplate,
@@ -57,10 +56,10 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def unmute(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
     ) -> None:
@@ -85,10 +84,10 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def warn(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
     ) -> None:
@@ -112,10 +111,10 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def unwarn(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
     ) -> None:
@@ -140,10 +139,10 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def ban(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         target: disnake.Member = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
         delete_days: int = commands.Param(default=0, ge=0, le=7),
@@ -172,10 +171,10 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def unban(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         target: disnake.User = commands.Param(converter=moderate_target),
         reason: str = commands.Param(lambda _: t('default_reason')),
     ) -> None:
@@ -201,10 +200,10 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def clear(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         amount: commands.Range[1, ...] = commands.Param(),
     ) -> None:
         """

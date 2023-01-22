@@ -10,7 +10,6 @@ from src.discord_views.embeds import DefaultEmbed
 from src.converters import interacted_member
 from src.formatters import from_user_to_user
 from src.custom_errors import DailyAlreadyReceived
-from src.utils.slash_shortcuts import only_guild
 from src.ext.economy.services import (change_balance, get_economy_settings,
                                       take_bonus, take_tax_for_roles)
 from src.ext.economy.shops.shops import get_not_empty_shops, Shop
@@ -57,15 +56,16 @@ class EconomyCog(commands.Cog):
         logger.debug('tax will sleep for %d second', sleep_time)
         await asyncio.sleep(sleep_time)
 
-    @commands.slash_command(**only_guild)
-    async def daily(self,
-                    inter: disnake.ApplicationCommandInteraction
-                    ) -> None:
+    @commands.slash_command()
+    async def daily(
+        self,
+        inter: disnake.GuildCommandInteraction,
+    ) -> None:
         """
         Получить ежедневную награду
         """
-        economy_settings = get_economy_settings(inter.guild.id)  # type: ignore
-        guild_id = inter.guild.id  # type: ignore
+        economy_settings = get_economy_settings(inter.guild.id)
+        guild_id = inter.guild.id
         daily = economy_settings.daily
         coin = economy_settings.coin
         timestamp = disnake.utils.format_dt(
@@ -98,7 +98,7 @@ class EconomyCog(commands.Cog):
             embed.set_thumbnail(url=inter.author.display_avatar.url)
             await inter.response.send_message(embed=embed)
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def shop(self, inter: disnake.GuildCommandInteraction) -> None:
         """
         Магазины
@@ -120,10 +120,10 @@ class EconomyCog(commands.Cog):
             )
         await switcher.start_from(inter)
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def transfer(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
         amount: commands.Range[1, ...] = commands.Param(),
     ) -> None:
@@ -135,7 +135,7 @@ class EconomyCog(commands.Cog):
         member: Участник, которому будет переведена валюта
         amount: Количество валюты для перевода
         """
-        guild_id: int = inter.guild.id  # type: ignore
+        guild_id: int = inter.guild.id
         coin = get_economy_settings(guild_id).coin
         change_balance(guild_id, inter.author.id, -amount)  # noqa
         change_balance(guild_id, member.id, amount)

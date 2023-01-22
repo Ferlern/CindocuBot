@@ -6,7 +6,6 @@ from peewee import DoesNotExist, InternalError
 from src.bot import SEBot
 from src.translation import get_translator
 from src.converters import not_bot_member
-from src.custom_errors import UsedNotOnGuild
 from src.utils.slash_shortcuts import only_admin
 from src.ext.economy.services import (add_shop_role, change_balance,
                                       delete_shop_role, get_economy_settings, CurrencyType)
@@ -23,7 +22,7 @@ class EconomyControlCog(commands.Cog):
     @commands.slash_command(**only_admin)
     async def add_role(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         role: disnake.Role,
         price: commands.Range[1, ...],
     ) -> None:
@@ -36,9 +35,6 @@ class EconomyControlCog(commands.Cog):
         price: Цена роль в валюте сервера
         """
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild()
-
         role_id = role.id
         coin = get_economy_settings(guild.id).coin
         try:
@@ -66,7 +62,7 @@ class EconomyControlCog(commands.Cog):
     @commands.slash_command(**only_admin)
     async def remove_role(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         role: disnake.Role,
         role_id: Optional[int] = None,
     ) -> None:
@@ -79,9 +75,6 @@ class EconomyControlCog(commands.Cog):
         role_id: Роль с этим ID будет удалена, заменяет аргумент role
         """
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild()
-
         role_id = role_id or role.id
 
         try:
@@ -103,7 +96,7 @@ class EconomyControlCog(commands.Cog):
     @commands.slash_command(**only_admin)
     async def change_balance(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         currency: CurrencyType = CurrencyType.COIN,
         member=commands.Param(converter=not_bot_member),
         amount: int = commands.Param(),
@@ -119,9 +112,6 @@ class EconomyControlCog(commands.Cog):
         но не привышать текущий баланс пользователя
         """
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild()
-
         settings = get_economy_settings(guild.id)
         currency = CurrencyType(currency)
         change_balance(

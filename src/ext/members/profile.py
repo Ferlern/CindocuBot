@@ -6,7 +6,6 @@ from src.ext.relationship.services import get_user_relationships_or_none
 from src.converters import not_bot_member
 from src.custom_errors import UsedNotOnGuild
 from src.discord_views.embeds import DefaultEmbed
-from src.utils.slash_shortcuts import only_guild
 from src.utils.experience import format_exp
 from src.utils.time_ import display_time
 from src.translation import get_translator
@@ -24,10 +23,10 @@ class ProfileCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def profile(  # pylint: disable=too-many-locals
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=not_bot_member, default=None)
     ) -> None:
         """
@@ -41,7 +40,7 @@ class ProfileCog(commands.Cog):
         guild = inter.guild
         if not member:
             member = inter.author
-        if not guild or not isinstance(member, disnake.Member):
+        if not isinstance(member, disnake.Member):
             raise UsedNotOnGuild()
         self.bot.sync_user(member)
 
@@ -105,10 +104,10 @@ class ProfileCog(commands.Cog):
         embed.set_thumbnail(url=await self.bot.save_avatar(member))
         await inter.followup.send(embed=embed)
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def biography(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         biography: str,
     ) -> None:
         """
@@ -119,8 +118,6 @@ class ProfileCog(commands.Cog):
         biography: Ваша новая биография. Не длиннее 200 символов
         """
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild()
 
         if len(biography) > 200:
             raise commands.BadArgument(t('too_long_bio'))

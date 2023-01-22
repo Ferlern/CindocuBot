@@ -8,7 +8,6 @@ from src.custom_errors import CannotUseTwice
 from src.ext.reputation.services import change_reputation
 from src.discord_views.embeds import DefaultEmbed
 from src.converters import interacted_member
-from src.utils.slash_shortcuts import only_guild
 from src.translation import get_translator
 from src.bot import SEBot
 
@@ -26,10 +25,10 @@ class ReputationCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def reputation(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
         action=commands.Param(choices=['increase', 'decrease', 'reset']),  # type: ignore
     ) -> None:
@@ -43,7 +42,7 @@ class ReputationCog(commands.Cog):
         """
         action = REPUTATION_ACTION_MAP[action]
         author_id = inter.author.id
-        guild_id = inter.guild.id  # type: ignore
+        guild_id = inter.guild.id
         target_id = member.id
         changed = change_reputation(
             guild_id, author_id, target_id, action,

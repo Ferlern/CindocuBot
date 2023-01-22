@@ -7,7 +7,6 @@ from src.custom_errors import BadConfigured, UsedNotOnGuild
 from src.database.models import Suggestions
 from src.discord_views.base_view import BaseView
 from src.discord_views.embeds import DefaultEmbed
-from src.utils.slash_shortcuts import only_guild, only_admin
 from src.translation import get_translator
 from src.logger import get_logger
 from src.discord_views.paginate.peewee_paginator import (PeeweePaginator,
@@ -25,10 +24,10 @@ class SuggestionsCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def suggest(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         text: str,
         attachment: Optional[disnake.Attachment] = None,
     ) -> None:
@@ -41,9 +40,6 @@ class SuggestionsCog(commands.Cog):
         attachment: Скриншот/видео/гиф изображение
         """
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild
-
         settings = get_suggestion_settings(guild.id)
         channel = guild.get_channel(
             settings.suggestions_channel)  # type: ignore
@@ -86,10 +82,10 @@ class SuggestionsCog(commands.Cog):
         await message.add_reaction('👍')
         await message.add_reaction('👎')
 
-    @commands.slash_command(**only_admin)
+    @commands.slash_command()
     async def suggestions_control(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
     ) -> None:
         """
         Управлять предложениями на этом сервере
@@ -97,7 +93,7 @@ class SuggestionsCog(commands.Cog):
         logger.debug(
             'suggestion control called for %d', inter.author.id,
         )
-        paginator = SuggestionPaginator(inter.guild)  # type: ignore
+        paginator = SuggestionPaginator(inter.guild)
         await paginator.start_from(inter)
 
 

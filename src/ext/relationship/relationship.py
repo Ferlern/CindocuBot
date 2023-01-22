@@ -4,14 +4,11 @@ from typing import Optional
 import disnake
 from disnake.ext import commands
 
-from src.custom_errors import (UserAlreadyInRelationship,
-                               TargetAlreadyInRelationship,
-                               UsedNotOnGuild)
+from src.custom_errors import UserAlreadyInRelationship, TargetAlreadyInRelationship
 from src.discord_views.embeds import DefaultEmbed
 from src.discord_views.base_view import BaseView
 from src.converters import interacted_member
 from src.utils.color import EmbedColors
-from src.utils.slash_shortcuts import only_guild
 from src.ext.relationship.services import (get_user_relationships_or_none,
                                            get_relationships_settings,
                                            create_relationships)
@@ -28,10 +25,10 @@ class RelationshipCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command(**only_guild)
+    @commands.slash_command()
     async def marry(
         self,
-        inter: disnake.ApplicationCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         member=commands.Param(converter=interacted_member),
     ) -> None:
         """
@@ -47,8 +44,8 @@ class RelationshipCog(commands.Cog):
         )
         await view.start_from(inter)
 
-    @commands.slash_command(**only_guild)
-    async def divorce(self, inter: disnake.ApplicationCommandInteraction) -> None:
+    @commands.slash_command()
+    async def divorce(self, inter: disnake.GuildCommandInteraction) -> None:
         """
         Закончить свои отношения
         """
@@ -69,10 +66,8 @@ class RelationshipProposalView(BaseView):
         self._target = target
         self._price = get_relationships_settings(author.guild.id).marry_price
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction) -> None:
+    async def _response(self, inter: disnake.GuildCommandInteraction) -> None:
         guild = inter.guild
-        if not guild:
-            raise UsedNotOnGuild
 
         guild_id = guild.id
         author_id = inter.author.id
@@ -224,7 +219,7 @@ class DivorceView(BaseView):
         super().__init__(timeout=timeout)
         self.author = author
 
-    async def _response(self, inter: disnake.ApplicationCommandInteraction):
+    async def _response(self, inter: disnake.GuildCommandInteraction) -> None:
         guild_id = self.author.guild.id
         author_id = self.author.id
 

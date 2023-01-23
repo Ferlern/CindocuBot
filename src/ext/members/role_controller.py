@@ -3,6 +3,7 @@ from disnake.ext import commands
 
 from src.logger import get_logger
 from src.ext.members.services import get_member_roles, create_member_roles, delete_member_roles
+from src.utils.roles import filter_assignable
 from src.bot import SEBot
 
 
@@ -48,9 +49,10 @@ class RoleControllerCog(commands.Cog):
         self.in_recovery.append(target)
 
         outdated, added = self.get_roles_changes(target)
+        guild = target.guild
 
-        outdated = [disnake.Object(role) for role in outdated]
-        added = [disnake.Object(role) for role in added]
+        outdated = filter_assignable(list(outdated), guild)
+        added = filter_assignable(list(added), guild)
 
         await target.add_roles(*outdated, reason='Recovery')
         await target.remove_roles(*added, reason='Recovery')

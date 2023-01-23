@@ -193,15 +193,17 @@ class BuyVoiceSelect(disnake.ui.Select):
             name=author.name,
             user_limit=5,
         )
-        await voice.set_permissions(
-            author,
-            manage_permissions=True,
-            manage_channels=True
-        )
+        # It is important to create a database entry before changing permissions
+        # 'cause `PersonalVoiceControllerCog` will ignore permission changes otherwise
         create_voice_channel(
             author.id,
             guild.id,
             voice_id=voice.id,
+        )
+        await voice.set_permissions(
+            author,
+            manage_permissions=True,
+            manage_channels=True
         )
         await interaction.response.send_message(
             t('voice_created'),

@@ -41,7 +41,7 @@ def moderate_target(
         raise commands.BadArgument(t('target_self'))
     if not isinstance(arg, disnake.Member):
         return arg
-    if arg.top_role >= author.top_role and not author != inter.guild.owner:
+    if arg.top_role >= author.top_role and author != inter.guild.owner:
         raise commands.BadArgument(t('target_privileged'))
     return arg
 

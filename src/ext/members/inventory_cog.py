@@ -28,7 +28,7 @@ class InventoryCog(commands.Cog):
         inter: disnake.GuildCommandInteraction,
     ) -> None:
         """
-        Посмотреть свой интентарь
+        Посмотреть свой инвентарь
         """
         view = RolesInventoryPaginator(inter.author)  # type: ignore
         await view.start_from(inter)

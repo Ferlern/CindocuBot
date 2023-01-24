@@ -221,6 +221,9 @@ class Members(BaseModel):
 
     Attributes
     ----------
+    on_guild: :class:`bool`
+        Whether the user is currently on the guild.
+        Can be outdated so use it only for data display purposes.
     balance: :class:`int`
         Balance for economy exts.
     donate_balance: :class:`int`
@@ -243,6 +246,7 @@ class Members(BaseModel):
     """
     user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    on_guild: bool = BooleanField(SQL('DEFAULT TRUE'), default=True)
     balance: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     donate_balance: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     experience: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)

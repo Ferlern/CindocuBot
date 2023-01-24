@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import peewee
 
-from src.database.models import Members, Likes, Relationships, RelationshipParticipant
+from src.database.models import Members, Likes, psql_db, RelationshipTopEntry
 from src.formatters import ordered_list
 from src.discord_views.embeds import DefaultEmbed
 from src.utils.experience import format_exp
@@ -86,7 +86,7 @@ def _build_members_top_query(
     return (
         Members.
         select(Members).
-        where(Members.guild_id == guild_id).
+        where((Members.guild_id == guild_id) & (Members.on_guild == True)).  # noqa
         order_by(ordering).  # type: ignore
         limit(TOP_SIZE)
     )
@@ -125,23 +125,35 @@ def _build_reputation_top_query(guild_id: int):
             join_type=peewee.JOIN.LEFT_OUTER,
             on=Members.user_id == Likes.to_user_id
         ).
-        where(Members.guild_id == guild_id).  # type: ignore
+        where((Members.guild_id == guild_id) & (Members.on_guild == True)).  # type: ignore # noqa
         order_by(peewee.SQL('reputation DESC')).
         group_by(Members.user_id).
         limit(TOP_SIZE)
     )
 
 
-def _build_relations_top_query(guild_id: int):
-    return (
-        Relationships.select(
-            Relationships.creation_time,
-            RelationshipParticipant.user_id,
-        ).join(RelationshipParticipant).
-        where(Relationships.guild_id == guild_id).  # type: ignore
-        order_by(Relationships.creation_time).
-        limit(TOP_SIZE * 2)
+def _build_relations_top_query(guild_id: int) -> list[RelationshipTopEntry]:
+    querry = """
+    WITH rp AS (
+        SELECT
+            creation_time,
+            r.id rel_id,
+            m.user_id,
+            row_number() OVER(PARTITION BY r.id)
+        FROM Relationships r
+        INNER JOIN RelationshipParticipant rp ON r.id = rp.relationship_id
+        INNER JOIN Members m ON rp.user_id = m.user_id
+        WHERE m.on_guild = TRUE AND m.guild_id = %s
+        ORDER BY creation_time
     )
+    SELECT rp1.creation_time, rp1.user_id first_user, rp2.user_id second_user FROM rp rp1
+    INNER JOIN rp rp2 ON
+        rp1.rel_id = rp2.rel_id AND
+        rp1.user_id != rp2.user_id AND
+        rp1.row_number = 1;
+    """
+    entrys = psql_db.execute_sql(querry, (guild_id,)).fetchall()
+    return [RelationshipTopEntry(*entry) for entry in entrys]
 
 
 def create_voice_top_embed(guild_id: int) -> disnake.Embed:
@@ -194,13 +206,12 @@ def create_reputation_top_embed(guild_id: int) -> disnake.Embed:
 
 
 def create_relationships_top_embed(guild_id: int) -> disnake.Embed:
-    items = _build_relations_top_query(guild_id).execute()
-    items = [(items[i:i + 2]) for i in range(0, len(items), 2)]
+    items = _build_relations_top_query(guild_id)
 
-    def formatter(item) -> str:
-        first_user = f'<@{item[0].relationshipparticipant.user_id}>'
-        second_user = f'<@{item[1].relationshipparticipant.user_id}>'
-        timestamp = disnake.utils.format_dt(item[0].creation_time, 'f')
+    def formatter(item: RelationshipTopEntry) -> str:
+        first_user = f'<@{item.first_user_id}>'
+        second_user = f'<@{item.second_user_id}>'
+        timestamp = disnake.utils.format_dt(item.creation_time, 'f')
         return t(
             'relationship_repr',
             first_user=first_user,

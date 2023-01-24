@@ -2,6 +2,7 @@
 # types are ignored because of bad Peewee type system
 
 import datetime
+from dataclasses import dataclass
 from typing import Optional, Sequence, TypedDict
 from peewee import (Model, BigAutoField,
                     ForeignKeyField, CharField, SQL, BooleanField)
@@ -17,6 +18,13 @@ psql_db = PostgresqlExtDatabase(DATABASE['dbname'],
                                 port=DATABASE['port'],
                                 user=DATABASE['user'],
                                 password=DATABASE['password'])
+
+
+@dataclass
+class RelationshipTopEntry:
+    creation_time: int
+    first_user_id: int
+    second_user_id: int
 
 
 class ChannelExperienceSettings(TypedDict):

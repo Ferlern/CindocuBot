@@ -150,7 +150,8 @@ def _build_relations_top_query(guild_id: int) -> list[RelationshipTopEntry]:
     INNER JOIN rp rp2 ON
         rp1.rel_id = rp2.rel_id AND
         rp1.user_id != rp2.user_id AND
-        rp1.row_number = 1;
+        rp1.row_number = 1
+    LIMIT 10;
     """
     entrys = psql_db.execute_sql(querry, (guild_id,)).fetchall()
     return [RelationshipTopEntry(*entry) for entry in entrys]

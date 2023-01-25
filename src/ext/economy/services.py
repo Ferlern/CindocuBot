@@ -198,12 +198,19 @@ def take_tax_for_roles() -> list[CreatedShopRoles]:
         .join(EconomySettings, on=(Members.guild_id == EconomySettings.guild_id))
         .where(Members.donate_balance < EconomySettings.role_day_tax)
     )
-    to_delete_squery = CreatedShopRoles.select(
-        CreatedShopRoles.role_id).where(CreatedShopRoles.creator == lack_of_balance)
-    to_delete = list(CreatedShopRoles.select().where(CreatedShopRoles.creator == lack_of_balance))
+    to_delete_squery = (
+        CreatedShopRoles.
+        select(CreatedShopRoles.role_id).
+        where(CreatedShopRoles.creator.in_(lack_of_balance))  # type: ignore
+    )
+    to_delete = list(
+        CreatedShopRoles.
+        select().
+        where(CreatedShopRoles.creator.in_(lack_of_balance))  # type: ignore
+    )
 
-    RolesInventory.delete().where(RolesInventory.role_id == to_delete_squery).execute()
-    CreatedShopRoles.delete().where(CreatedShopRoles.creator == lack_of_balance).execute()
+    RolesInventory.delete().where(RolesInventory.role_id << to_delete_squery).execute()
+    CreatedShopRoles.delete().where(CreatedShopRoles.creator << lack_of_balance).execute()
     psql_db.execute_sql("""
         UPDATE members
         SET donate_balance = donate_balance - economysettings.role_day_tax

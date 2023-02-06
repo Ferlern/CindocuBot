@@ -55,8 +55,7 @@ class PremoderationCog(commands.Cog):
 
             saved_url = await self.bot.save_file(await attachment.to_file())
             if not saved_url:
-                logger.warning('Premoderation work skipped, no channels to save images')
-                return
+                continue
             urls.append(saved_url)
         content = message.clean_content
 

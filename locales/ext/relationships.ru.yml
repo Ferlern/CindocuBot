@@ -16,5 +16,5 @@ ru:
   divorce_confirm_desc: "Ты уверен, что хочешь закончить свои отношения?"
   divorce_button_label: "Развод"
   divorce_succes_title: ":broken_heart: Расторжение брака"
-  divorce_succes_desc: "<@%{author_id}> решает прекратить свои отношения. Наверное, это к лучшему..."
+  divorce_succes_desc: "<@%{author_id}> решает прекратить свои отношения. Наверное, это было к лучшему..."
   not_for_you: "Это предложения не для тебя"

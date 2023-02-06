@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional, Union
 
 import disnake
@@ -48,6 +49,7 @@ class PremoderationCog(commands.Cog):
         urls = []
         for attachment in message.attachments:
             content_type = attachment.content_type
+            logger.debug('Premoderatnio: new content, type: %s', content_type)
             if not content_type:
                 continue
             if not content_type.startswith(('image', 'video', 'audio')):
@@ -167,20 +169,24 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         if not exists:
             return
 
-        content = f"**{t('from_user')}**: <@{item.author.id}>"
-        if item.content:
-            content += f"\n\n{item.content}"
-        message = await channel.send(  # type: ignore
-            content=content,
-            allowed_mentions=disnake.AllowedMentions(users=False),
-        )
-        if item.urls is not None:
-            for url in item.urls:
-                message = await channel.send(  # type: ignore
-                    content=url,
-                )
-        await message.add_reaction('❤️')
-        await message.add_reaction('💔')
+        asyncio.create_task(_send_item(item, channel))  # type: ignore
+
+
+async def _send_item(item: PremoderationItem, channel: disnake.TextChannel) -> None:
+    content = f"**{t('from_user')}**: <@{item.author.id}>"
+    if item.content:
+        content += f"\n\n{item.content}"
+    message = await channel.send(
+        content=content,
+        allowed_mentions=disnake.AllowedMentions(users=False),
+    )
+    if item.urls is not None:
+        for url in item.urls:
+            message = await channel.send(
+                content=url,
+            )
+    await message.add_reaction('❤️')
+    await message.add_reaction('💔')
 
 
 class RolePremoderationPaginator(PeeweePaginator[CreatedShopRoles]):

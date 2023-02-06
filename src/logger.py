@@ -1,8 +1,19 @@
 import logging
+from enum import Enum
+from typing import Callable, Optional
+from functools import wraps
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
 from src import settings
+
+
+class LoggingLevel(int, Enum):
+    DEBUG = logging.DEBUG
+    INFO = logging.INFO
+    WARNING = logging.WARNING
+    ERROR = logging.ERROR
+    CRITICAL = logging.CRITICAL
 
 
 _formatter = logging.Formatter(u'[%(asctime)s:%(name)s] - %(levelname)s in %(module)s#%(lineno)d: %(message)s')  # noqa: E501
@@ -15,6 +26,23 @@ def get_logger() -> logging.Logger:
 
 def get_voice_logger() -> logging.Logger:
     return logging.getLogger(f'{settings.APP_NAME}-voice')
+
+
+def log_calls(logger: Optional[logging.Logger] = None, level: LoggingLevel = LoggingLevel.DEBUG):
+    if logger is None:
+        logger = get_logger()
+
+    def wrapper(function: Callable):
+        @wraps(function)
+        def wrapped(*args, **kwargs):
+            result = function(*args, **kwargs)
+            logger.log(
+                level, "Function %s called\nargs: %s\nkwargs: %s\nresult: %s",
+                function.__name__, args, kwargs, result
+            )
+            return result
+        return wrapped
+    return wrapper
 
 
 def _create_logger() -> None:

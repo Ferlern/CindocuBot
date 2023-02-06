@@ -56,6 +56,31 @@ def change_balance(
 
 
 @psql_db.atomic()
+def change_balances(
+    guild_id: int,
+    user_ids: list[int],
+    amount: int,
+    *,
+    currency: CurrencyType = CurrencyType.COIN,
+) -> None:
+    field = currency.model_field
+    target = ((Members.guild_id == guild_id) & (Members.user_id << user_ids))  # type: ignore
+    if amount < 0 < (
+        Members.
+        select().
+        where((field < amount) & target).
+        count()
+    ):
+        raise CriticalException("Can't change balances, some members don't have enough money")
+    (
+        Members.
+        update({field: field + amount})
+        .where(target)
+        .execute()
+    )
+
+
+@psql_db.atomic()
 def set_balance(guild_id: int, user_id: int, amount: int) -> None:
     member = get_member(guild_id, user_id)
     member.balance = amount  # type: ignore

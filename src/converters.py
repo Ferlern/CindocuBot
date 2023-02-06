@@ -1,3 +1,4 @@
+from typing import Union
 import disnake
 
 from disnake.ext import commands
@@ -9,31 +10,48 @@ from src.utils.time_ import parse_time_to_seconds
 t = get_translator()
 
 
-def not_bot_member(
+def only_member(
     _: disnake.ApplicationCommandInteraction,
-    arg: disnake.User,
+    arg: Union[disnake.User, disnake.Member],
 ) -> disnake.Member:
-    if arg.bot:
-        raise commands.BadArgument(t('target_bot'))
     if not isinstance(arg, disnake.Member):
         raise commands.BadArgument(t('cant_find_member'))
     return arg
 
 
+def not_bot_member(
+    inter: disnake.ApplicationCommandInteraction,
+    arg: Union[disnake.User, disnake.Member],
+) -> disnake.Member:
+    member = only_member(inter, arg)
+    if member.bot:
+        raise commands.BadArgument(t('target_bot'))
+    return member
+
+
+def not_self_member(
+    inter: disnake.ApplicationCommandInteraction,
+    arg: Union[disnake.User, disnake.Member],
+) -> disnake.Member:
+    member = only_member(inter, arg)
+    if member == inter.author:
+        raise commands.BadArgument(t('target_self'))
+    return member
+
+
 def interacted_member(
     inter: disnake.ApplicationCommandInteraction,
-    arg: disnake.User,
+    arg: Union[disnake.User, disnake.Member],
 ) -> disnake.Member:
     not_bot = not_bot_member(inter, arg)
-    if not_bot == inter.author:
-        raise commands.BadArgument(t('target_self'))
-    return not_bot
+    not_bot_nor_self = not_self_member(inter, not_bot)
+    return not_bot_nor_self
 
 
 def moderate_target(
     inter: disnake.ApplicationCommandInteraction,
-    arg: disnake.User,
-) -> disnake.User:
+    arg: Union[disnake.User, disnake.Member],
+) -> Union[disnake.User, disnake.Member]:
     author = inter.author
     if not isinstance(author, disnake.Member) or not inter.guild:
         raise commands.BadArgument(t('command_no_private'))

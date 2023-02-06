@@ -15,6 +15,13 @@ class CurrencyType(str, Enum):
     COIN = 'coin'
     CRYSTAL = 'crystal'
 
+    @property
+    def model_field(self):
+        return {
+            CurrencyType.COIN: Members.balance,
+            CurrencyType.CRYSTAL: Members.donate_balance,
+        }[self]
+
     def get_guild_repr(self, settings: EconomySettings) -> str:
         return {
             CurrencyType.COIN: settings.coin,

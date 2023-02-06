@@ -192,32 +192,31 @@ def delete_created_role(
 
 @psql_db.atomic()
 def take_tax_for_roles() -> list[CreatedShopRoles]:
-    lack_of_balance = (
-        Members.
-        select(Members.user_id)
-        .join(EconomySettings, on=(Members.guild_id == EconomySettings.guild_id))
-        .where(Members.donate_balance < EconomySettings.role_day_tax)
-    )
-    to_delete_squery = (
+    roles_to_delete = (
         CreatedShopRoles.
-        select(CreatedShopRoles.role_id).
-        where(CreatedShopRoles.creator.in_(lack_of_balance))  # type: ignore
+        select(CreatedShopRoles).
+        join(Members, on=(
+            (Members.guild_id == CreatedShopRoles.guild) &
+            (Members.user_id == CreatedShopRoles.creator) &
+            (CreatedShopRoles.role_id.is_null(False))  # type: ignore
+        )).
+        join(EconomySettings, on=(CreatedShopRoles.guild == EconomySettings.guild_id)).
+        where(Members.donate_balance < EconomySettings.role_day_tax)
     )
-    to_delete = list(
-        CreatedShopRoles.
-        select().
-        where(CreatedShopRoles.creator.in_(lack_of_balance))  # type: ignore
-    )
+    to_delete = list(roles_to_delete)
 
-    RolesInventory.delete().where(RolesInventory.role_id << to_delete_squery).execute()
-    CreatedShopRoles.delete().where(CreatedShopRoles.creator << lack_of_balance).execute()
+    squery = roles_to_delete.select(CreatedShopRoles.role_id)
+    RolesInventory.delete().where(RolesInventory.role_id << squery).execute()
+    CreatedShopRoles.delete().where(CreatedShopRoles.role_id << squery).execute()
     psql_db.execute_sql("""
         UPDATE members
         SET donate_balance = donate_balance - economysettings.role_day_tax
         FROM economysettings, createdshoproles
         WHERE (
             members.guild_id=economysettings.guild_id AND
-            createdshoproles.creator_id=members.user_id
+            createdshoproles.creator_id=members.user_id AND
+            createdshoproles.guild_id=members.guild_id AND
+            createdshoproles.role_id IS NOT NULL
         );
     """)
-    return to_delete
+    return list(to_delete)

@@ -50,7 +50,7 @@ class PremoderationCog(commands.Cog):
             content_type = attachment.content_type
             if not content_type:
                 continue
-            if not (content_type.startswith('image') or content_type.startswith('video')):  # noqa
+            if not content_type.startswith(('image', 'video', 'audio')):
                 continue
 
             saved_url = await self.bot.save_file(await attachment.to_file())

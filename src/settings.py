@@ -32,6 +32,7 @@ INITIAL_EXTENSIONS = (
     'reputation.reputation',
     'premoderation.premoderation',
     'fun.fun',
+    'fun.feb_cog',
     'game.play_cog',
     # ? 'ext.system.status',
     # ? 'ext.sync.sync',

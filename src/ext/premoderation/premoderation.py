@@ -87,14 +87,17 @@ class PremoderationCog(commands.Cog):
             'premoderation called for %d', inter.author.id,
         )
         switcher = PremoderationSwitcher()
-        switcher.add_view(PremoderationPaginator(inter.guild), label=t('content_premoderation'))
+        switcher.add_view(
+            PremoderationPaginator(self.bot, inter.guild), label=t('content_premoderation')
+        )
         switcher.add_view(RolePremoderationPaginator(inter.guild), label=t('roles_premoderation'))
         await switcher.start_from(inter)
 
 
 class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
-    def __init__(self, guild: disnake.Guild) -> None:
+    def __init__(self, bot: SEBot, guild: disnake.Guild) -> None:
         self.guild = guild
+        self._bot = bot
         super().__init__(
             PremoderationItem,
             items_per_page=1,
@@ -169,24 +172,25 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         if not exists:
             return
 
-        asyncio.create_task(_send_item(item, channel))  # type: ignore
+        asyncio.create_task(_send_item(self._bot, self.item, channel))  # type: ignore
 
 
-async def _send_item(item: PremoderationItem, channel: disnake.TextChannel) -> None:
+async def _send_item(bot: SEBot, item: PremoderationItem, channel: disnake.TextChannel) -> None:
     content = f"**{t('from_user')}**: <@{item.author.id}>"
     if item.content:
         content += f"\n\n{item.content}"
-    message = await channel.send(
-        content=content,
-        allowed_mentions=disnake.AllowedMentions(users=False),
-    )
-    if item.urls is not None:
-        for url in item.urls:
-            message = await channel.send(
-                content=url,
-            )
-    await message.add_reaction('❤️')
-    await message.add_reaction('💔')
+    async with bot.lock(channel):
+        message = await channel.send(
+            content=content,
+            allowed_mentions=disnake.AllowedMentions(users=False),
+        )
+        if item.urls is not None:
+            for url in item.urls:
+                message = await channel.send(
+                    content=url,
+                )
+        await message.add_reaction('❤️')
+        await message.add_reaction('💔')
 
 
 class RolePremoderationPaginator(PeeweePaginator[CreatedShopRoles]):

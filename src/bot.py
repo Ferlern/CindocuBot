@@ -21,7 +21,7 @@ logger = get_logger()
 t = get_translator()
 
 
-class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
+class SEBot(commands.AutoShardedBot):
     def __init__(self) -> None:
         allowed_mentions = disnake.AllowedMentions(roles=True,
                                                    everyone=True,
@@ -63,8 +63,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
             await channel.send(embed=embed)
         except disnake.HTTPException:
             return False
-        else:
-            return True
+        return True
 
     async def save_file(self, file: disnake.File) -> Optional[str]:
         channel = self._next_image_channel()

@@ -57,16 +57,17 @@ class UpReminderCog(commands.Cog):
 
         logger.info('Creating remidner for guild %d, monitoring %d',
                     guild.id, monitoring_bot.id)
-        current_time = datetime.datetime.now().astimezone()
+        current_time = datetime.datetime.now(info.timezone)
         if not is_close_to_reset(info):
             send_time = current_time + datetime.timedelta(hours=info.cooldown, seconds=-30)
         else:
             send_time = datetime.datetime(
-                datetime.datetime.now().year,
-                datetime.datetime.now().month,
-                datetime.datetime.now().day,
+                current_time.year,
+                current_time.month,
+                current_time.day,
                 info.reset_time,
-            ).astimezone(info.timezone)
+                tzinfo=info.timezone
+            )
 
         create_or_overrite_old_reminder(guild.id, monitoring_bot.id, send_time)
         await self.send_reminder(
@@ -110,7 +111,7 @@ class UpReminderCog(commands.Cog):
         send_time: datetime.datetime
     ) -> None:
         current_time = datetime.datetime.now().astimezone()
-        wait_time = timedelta_as_seconds(send_time - current_time)
+        wait_time = (send_time - current_time).total_seconds()
         logger.debug('send_reminder will sleep for %d second', wait_time)
 
         await asyncio.sleep(wait_time)
@@ -130,14 +131,9 @@ def is_close_to_reset(info: MonitoringData) -> bool:
     for day in info.reset_days:
         reset_time = current_time.replace(day=day, hour=info.reset_time, minute=0, second=0)
         delta = reset_time - current_time
-        dalta_as_seconds = timedelta_as_seconds(delta)
-        if 0 < dalta_as_seconds < info.cooldown * time_utils.TimeEnum.HOUR:
+        if datetime.timedelta() < delta < datetime.timedelta(hour=info.cooldown):
             return True
     return False
-
-
-def timedelta_as_seconds(delta: datetime.timedelta) -> int:
-    return delta.days * time_utils.TimeEnum.DAY + delta.seconds
 
 
 def setup(bot) -> None:

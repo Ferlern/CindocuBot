@@ -5,7 +5,7 @@ description = ""
 authors = ["Fennr <fenrir1121@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 disnake = "^2.6.1"
 psycopg2 = "^2.9.5"
 PyYAML = "^6.0"
@@ -16,6 +16,9 @@ pytz = "^2022.5"
 python-dotenv = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.group.dev.dependencies]
+prospector = "^1.9.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

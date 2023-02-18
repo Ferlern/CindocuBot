@@ -49,7 +49,7 @@ class ChannelExperienceSettings(TypedDict):
 class BaseModel(Model):
     """Base model for connection"""
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         database = psql_db
 
 
@@ -269,7 +269,7 @@ class Members(BaseModel):
         constraints=[SQL("DEFAULT '{}'::jsonb")],
     )
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('user_id', 'guild_id')
 
 
@@ -290,7 +290,7 @@ class UserRoles(BaseModel):
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
     role_id: int = BigIntegerField()
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = False
         table_name = 'user_roles'
 
@@ -331,7 +331,7 @@ class PersonalVoice(BaseModel):
     current_bitrate: int = IntegerField(constraints=[SQL('DEFAULT 64')], default=64)
     current_overwrites: Optional[dict[str, list[int]]] = JSONField(null=True)
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('user_id', 'guild_id')
 
 
@@ -355,7 +355,7 @@ class Likes(BaseModel):
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
     type: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('user_id', 'guild_id', 'to_user_id')
 
 
@@ -392,7 +392,7 @@ class RelationshipParticipant(BaseModel):
     )
     user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('relationship_id', 'user_id')
 
 
@@ -413,7 +413,7 @@ class ShopRoles(BaseModel):
     role_id: int = BigIntegerField()
     price: int = IntegerField()
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('guild_id', 'role_id')
 
 
@@ -446,7 +446,7 @@ class CreatedShopRoles(BaseModel):
     price: int = IntegerField(constraints=[SQL('DEFAULT 5000')], default=5000)
     properties: dict = JSONField()
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('guild', 'creator')
 
 
@@ -470,7 +470,7 @@ class RolesInventory(BaseModel):
     role_id: int = BigIntegerField()
     purchase_price: int = IntegerField()
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('guild', 'user', 'role_id')
 
 
@@ -607,7 +607,7 @@ class ReminderSettings(BaseModel):
     channel_id: Optional[int] = BigIntegerField(null=True)
     text: Optional[int] = CharField(max_length=2000, null=True)
 
-    class Meta:  # pylint: disable=too-few-public-methods
+    class Meta:
         primary_key = CompositeKey('guild_id', 'monitoring_bot_id')
 
 

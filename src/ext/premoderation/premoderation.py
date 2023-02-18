@@ -1,5 +1,7 @@
 import asyncio
 from typing import Optional, Union
+import aiohttp
+import io
 
 import disnake
 from disnake.ext import commands
@@ -186,11 +188,30 @@ async def _send_item(bot: SEBot, item: PremoderationItem, channel: disnake.TextC
         )
         if item.urls is not None:
             for url in item.urls:
-                message = await channel.send(
-                    content=url,
-                )
+                if _is_audio_file(url):
+                    message = await _download_and_send(channel, url) or message
+                else:
+                    message = await channel.send(
+                        content=url,
+                    )
         await message.add_reaction('❤️')
         await message.add_reaction('💔')
+
+
+async def _download_and_send(channel: disnake.TextChannel, url: str) -> Optional[disnake.Message]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as r:
+            if r.status != 200:
+                return
+
+            *_, filename = url.split('/')
+            payload = io.BytesIO(await r.read())
+            file = disnake.File(fp=payload, filename=filename or 'file.mp3')
+            return await channel.send(file=file)
+
+
+def _is_audio_file(url: str) -> bool:
+    return url.endswith(('mp3', 'wav', 'aiff', 'ape', 'flac', 'ogg'))
 
 
 class RolePremoderationPaginator(PeeweePaginator[CreatedShopRoles]):

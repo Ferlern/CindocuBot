@@ -7,6 +7,7 @@ import disnake
 from disnake.ext import commands
 
 from src import settings
+from src.lock import AsyncioLockManager
 from src.database.services import get_guild_prefixes
 from src.logger import get_logger
 from src.translation import get_translator
@@ -40,6 +41,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
         self.uptime = time.time()
         self.persistent_views_added = False
         self.image_channel_cycle = Cycle[int](settings.IMAGE_CHANNELS)
+        self.lock = AsyncioLockManager()
 
         self._load_exts()
 

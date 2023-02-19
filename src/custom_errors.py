@@ -78,3 +78,7 @@ class ActionRestricted(RegularException):
             message = t('action_restricted')
         self.message = message
         super().__init__(self.message)
+
+
+class BadProjectSettings(CriticalException):
+    pass

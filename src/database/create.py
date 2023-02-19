@@ -26,10 +26,13 @@ def create_database() -> None:
         cursor.execute('CREATE DATABASE %s;', (DATABASE['dbname'],))
 
 
-def create_tables() -> None:
+def recreate_tables() -> None:
     """drop & create tables in DB"""
     psql_db.drop_tables(tables)
     psql_db.create_tables(tables)
     psql_db.close()
 
-    print('DB created succesfuly')
+
+def create_tables() -> None:
+    psql_db.create_tables(tables)
+    psql_db.close()

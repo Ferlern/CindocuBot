@@ -1,5 +1,6 @@
+from __future__ import annotations
 import asyncio
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, TYPE_CHECKING
 import datetime
 
 import disnake
@@ -8,11 +9,12 @@ from pytz import timezone
 
 from src.translation import get_translator
 from src.logger import get_logger
-from src.bot import SEBot
 from src.utils import custom_events
 from src.ext.up_listener.services import (get_reminder_settings,
                                           create_or_overrite_old_reminder,
                                           get_all_active_not_outdated_reminders)
+if TYPE_CHECKING:
+    from src.bot import SEBot
 
 
 logger = get_logger()

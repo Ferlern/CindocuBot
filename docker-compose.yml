@@ -12,7 +12,7 @@ services:
       - 5432:5432
   bot:
     build: .
-    command: ["python3", "-O", "docker.py"]
+    command: ["python3", "-O", "run.py"]
     env_file:
       - .env
     depends_on:

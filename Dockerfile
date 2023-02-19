@@ -9,4 +9,4 @@ RUN poetry config virtualenvs.create false
 RUN poetry install
 
 COPY . ./
-CMD ["python3.10", "-O", "docker.py"]
+CMD ["python3.10", "-O", "run.py"]

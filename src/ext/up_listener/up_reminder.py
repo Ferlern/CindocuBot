@@ -131,7 +131,7 @@ def is_close_to_reset(info: MonitoringData) -> bool:
     for day in info.reset_days:
         reset_time = current_time.replace(day=day, hour=info.reset_time, minute=0, second=0)
         delta = reset_time - current_time
-        if datetime.timedelta() < delta < datetime.timedelta(hour=info.cooldown):
+        if datetime.timedelta() < delta < datetime.timedelta(hours=info.cooldown):
             return True
     return False
 

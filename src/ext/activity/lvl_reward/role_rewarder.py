@@ -50,18 +50,16 @@ async def role_rewarder(
     if not roles:
         return
 
-    int_lvl_keys = (int(lvl_key) for lvl_key in roles.keys())
-    expected_role_id = max(int(lvl_key) for lvl_key in int_lvl_keys if int(lvl_key) <= lvl)
-
+    expected_role_id = roles[(max((lvl_key for lvl_key in roles if int(lvl_key) <= lvl), key=int))]
     experiece_roles_ids = set(roles.values())
     member_roles_ids = {role.id for role in member.roles}
     member_experiece_roles_ids = experiece_roles_ids & member_roles_ids
     outdated_experiece_roles_ids = member_experiece_roles_ids - {expected_role_id}
 
     await asyncio.gather(
-        remove_outdated_roles(outdated_experiece_roles_ids, member), 
+        remove_outdated_roles(outdated_experiece_roles_ids, member),
         add_new_role(expected_role_id, member_experiece_roles_ids, member)
     )
 
-    if expected_role_id in member_experiece_roles_ids:
-        return t('award_role', role_id=expected_role_id) 
+    if expected_role_id not in member_experiece_roles_ids:
+        return t('award_role', role_id=expected_role_id)

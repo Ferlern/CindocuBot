@@ -57,7 +57,11 @@ async def role_rewarder(
     if not roles:
         return
 
-    expected_role_id = roles[(max((lvl_key for lvl_key in roles if int(lvl_key) <= lvl), key=int))]
+    experience_roles_keys = [lvl_key for lvl_key in roles if int(lvl_key) <= lvl]
+    if len(experience_roles_keys) == 0:
+        return
+
+    expected_role_id = roles[(max(experience_roles_keys, key=int))]
     experiece_roles_ids = set(roles.values())
     member_roles_ids = {role.id for role in member.roles}
     member_experiece_roles_ids = experiece_roles_ids & member_roles_ids

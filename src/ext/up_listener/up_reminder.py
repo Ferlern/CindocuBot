@@ -10,7 +10,6 @@ from src.translation import get_translator
 from src.logger import get_logger
 from src.bot import SEBot
 from src.utils import custom_events
-from src.utils import time_ as time_utils
 from src.ext.up_listener.services import (get_reminder_settings,
                                           create_or_overrite_old_reminder,
                                           get_all_active_not_outdated_reminders)

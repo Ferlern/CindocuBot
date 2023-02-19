@@ -63,6 +63,10 @@ async def role_rewarder(
     member_experiece_roles_ids = experiece_roles_ids & member_roles_ids
     outdated_experiece_roles_ids = member_experiece_roles_ids - {expected_role_id}
 
+    expected_role = member.guild.get_role(expected_role_id)
+    if expected_role is None:
+        return
+
     await asyncio.gather(
         remove_outdated_roles(outdated_experiece_roles_ids, member),
         add_new_role(expected_role_id, member_experiece_roles_ids, member)

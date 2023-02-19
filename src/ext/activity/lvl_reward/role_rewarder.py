@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Iterable
 
 import asyncio
 import disnake
@@ -12,7 +12,10 @@ logger = get_logger()
 t = get_translator(route="ext.activity")
 
 
-async def remove_outdated_roles(outdated_experiece_roles_ids, member):
+async def remove_outdated_roles(
+    outdated_experiece_roles_ids: Iterable[int],
+    member: disnake.Member,
+) -> None:
     if not outdated_experiece_roles_ids:
         return
     outdated_experiece_roles = [
@@ -27,7 +30,11 @@ async def remove_outdated_roles(outdated_experiece_roles_ids, member):
     await member.remove_roles(*outdated_experiece_roles)
 
 
-async def add_new_role(expected_role_id, member_experiece_roles_ids, member):
+async def add_new_role(
+    expected_role_id: int,
+    member_experiece_roles_ids: Iterable[int],
+    member: disnake.Member,
+) -> None:
     if expected_role_id in member_experiece_roles_ids:
         return
     new_role = disnake.Object(expected_role_id)

@@ -3,7 +3,7 @@ from enum import Enum
 from src.database.models import (Members, Users, psql_db, Guilds,
                                  EconomySettings, ShopRoles, CreatedShopRoles, RolesInventory)
 from src.database.services import get_member, create_related
-from src.logger import get_logger
+from src.logger import LoggingLevel, get_logger, log_calls
 from src.custom_errors import CriticalException, NotEnoughMoney, DailyAlreadyReceived
 from src.utils.time_ import get_current_day
 
@@ -16,7 +16,7 @@ class CurrencyType(str, Enum):
     CRYSTAL = 'crystal'
 
     @property
-    def model_field(self):
+    def model_field(self) -> int:
         return {
             CurrencyType.COIN: Members.balance,
             CurrencyType.CRYSTAL: Members.donate_balance,
@@ -56,6 +56,7 @@ def change_balance(
 
 
 @psql_db.atomic()
+@log_calls(level=LoggingLevel.INFO)
 def change_balances(
     guild_id: int,
     user_ids: list[int],

@@ -6,7 +6,7 @@ authors = ["Fennr <fenrir1121@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-disnake = "^2.6.1"
+disnake = "^2.7.0"
 psycopg2 = "^2.9.5"
 PyYAML = "^6.0"
 peewee = "^3.15.3"

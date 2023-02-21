@@ -10,22 +10,22 @@ IMAGE_CHANNELS = []
 DEBUG = False
 
 # Test settings. Used to simplify development
-DEVELOPMENT = True
-TEST_GUILD_IDS = [591972703888605195]
-TESTERS_DISCORD_IDS = [511090102542270475]
+DEVELOPMENT = False
+TEST_GUILD_IDS = []
+TESTERS_DISCORD_IDS = []
 # If there is no test guild, a new one will be created automatically,
 # link will be sent to stdout
-CREATE_NEW_TEST_GUILD = False
+CREATE_NEW_TEST_GUILD = True
 # Required when changing the database schema (models)
-RECREATE_DATABASE_SCHEMA = False
+RECREATE_DATABASE_SCHEMA = True
 # Data in the database will be set to standard for testing
-PREPARE_DATABASE = False
+PREPARE_DATABASE = True
 # Require PREPARE_DATABASE
 # If TEST guild does not have any required channels or roles,
 # they will be created automatically and added to the database
 # If any of the settings in the database are missing for the specified testing guilds,
 # they will be filled automatically.
-PREPARE_GUILDS = False
+PREPARE_GUILDS = True
 # End of test settings
 
 TOKEN = os.getenv('TOKEN')

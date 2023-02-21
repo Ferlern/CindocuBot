@@ -251,6 +251,8 @@ class Members(BaseModel):
     restrictions: :class:`Optional[dict[str, list[str]]]`
         Mapping discord user's id to restricted actions
         If action is restricred it cannot be used on this member
+    game_ticket_until: :class:`Optional[datetime]`
+        The time until which the user can play games
     """
     user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
@@ -268,6 +270,7 @@ class Members(BaseModel):
         default=dict,
         constraints=[SQL("DEFAULT '{}'::jsonb")],
     )
+    game_ticket_until: Optional[datetime.datetime] = DateTimeField(null=True)
 
     class Meta:
         primary_key = CompositeKey('user_id', 'guild_id')

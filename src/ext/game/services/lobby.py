@@ -2,6 +2,7 @@ from src.ext.game.services.games.classes import Player
 
 from src.ext.economy.services import change_balance, change_balances
 from src.ext.game.services.games import Game
+from src.ext.game.services.game_ticket import ensure_ticket
 
 
 class Lobby:
@@ -62,6 +63,7 @@ class Lobby:
             raise ValueError("This player can't join")
 
         if not player.bot:
+            ensure_ticket(self._guild_id, player.player_id)
             change_balance(self._guild_id, player.player_id, -self._bet)
         self._players.add(player)
 

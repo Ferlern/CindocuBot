@@ -96,8 +96,9 @@ async def setup_development(  # noqa
     if prepare_database:
         logger.info("preparing database...")
         await setup_default_data(test_guilds, testers_ids)
-    logger.info("Grant admin role to testers...")
-    await grant_admin_to_testers(test_guilds, testers_ids)
+    if prepare_guilds:
+        logger.info("Grant admin role to testers...")
+        await grant_admin_to_testers(test_guilds, testers_ids)
 
 
 async def grant_admin_to_testers(

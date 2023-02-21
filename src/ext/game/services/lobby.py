@@ -7,7 +7,7 @@ from src.ext.game.services.games import Game
 class Lobby:
     def __init__(self, guild_id: int, bet: int, game: Game, creator: Player) -> None:
         self.open = True
-        self._players = {creator}
+        self._players = set[Player]()
         self._invited = set[Player]()
         self._creator = creator
         self._guild_id = guild_id

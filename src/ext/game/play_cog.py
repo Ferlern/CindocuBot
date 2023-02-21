@@ -44,6 +44,7 @@ class PlayCog(commands.Cog):
         discord_game = game_type()
 
         lobby = Lobby(inter.guild.id, bet, discord_game, user_to_player(inter.author))
+        lobby.add(user_to_player(inter.author))
         if player:
             lobby.invite(user_to_player(player))
 

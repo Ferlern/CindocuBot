@@ -7,7 +7,7 @@ import disnake
 from disnake.ext import commands
 
 from src import settings
-from src.setup.entry import setup_development
+from src.setup_development.entry import setup_development
 from src.lock import AsyncioLockManager
 from src.database.services import get_guild_prefixes
 from src.logger import get_logger

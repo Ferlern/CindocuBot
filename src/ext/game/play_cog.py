@@ -27,7 +27,7 @@ class PlayCog(commands.Cog):
     async def play(
         self,
         inter: disnake.GuildCommandInteraction,
-        bet: int,
+        bet: commands.Range[25, ...],
         game: str = commands.Param(choices=list(GAMES_MAPPING.keys())),
         player: disnake.Member = commands.Param(default=None, converter=not_self_member),
     ) -> None:

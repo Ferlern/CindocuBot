@@ -5,7 +5,8 @@ import disnake
 
 from src.translation import get_translator
 from src.logger import get_logger
-from src.ext.game.utils import user_to_player
+from src.utils.filters import remove_bots
+from src.ext.game.utils import user_to_player, players_to_members
 if TYPE_CHECKING:
     from ext.game.views.lobby_view import LobbyView
 
@@ -34,6 +35,16 @@ class StartGameButton(disnake.ui.Button):
             await interaction.response.send_message(t('cant_start'), ephemeral=True)
             return
 
+        members_to_ping = remove_bots(players_to_members(
+            view.guild,
+            [player for player in lobby.players if player != lobby.creator]
+        ))
+        message: disnake.InteractionMessage = view.message  # type: ignore
+        pings = ', '.join([member.mention for member in members_to_ping])
+        content = f"{pings}\n{t('game_started', jump_url=message.jump_url)}"
+
         lobby.start_game()
         view.stop()
         await view.interface_type.start_from(interaction, lobby.game, lobby.bet)
+        if members_to_ping:
+            await message.channel.send(content)

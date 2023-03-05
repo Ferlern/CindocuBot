@@ -31,6 +31,11 @@ class KickPlayerSelect(disnake.ui.Select):
         lobby = self.view.lobby
         host = lobby.creator
         str_ids_to_kick = interaction.values
+        if host != user_to_player(interaction.author):
+            await interaction.response.send_message(
+                t('not_a_host', user_id=lobby.creator.player_id), ephemeral=True,
+            )
+            return
         if not str_ids_to_kick:
             await self.view.update_using(interaction)
             return

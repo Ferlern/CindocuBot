@@ -6,6 +6,7 @@ import datetime
 import disnake
 from disnake.ext import commands
 from pytz import timezone
+from pytz.tzinfo import BaseTzInfo
 
 from src.translation import get_translator
 from src.logger import get_logger
@@ -25,7 +26,7 @@ class MonitoringData(NamedTuple):
     reset_days: tuple[int, ...]
     reset_time: int
     cooldown: int
-    timezone: datetime.tzinfo
+    timezone: BaseTzInfo
 
 
 MONITORING_INFORMATION = {
@@ -62,13 +63,12 @@ class UpReminderCog(commands.Cog):
         if not is_close_to_reset(info):
             send_time = current_time + datetime.timedelta(hours=info.cooldown, seconds=-30)
         else:
-            send_time = datetime.datetime(
+            send_time = info.timezone.localize(datetime.datetime(
                 current_time.year,
                 current_time.month,
                 current_time.day,
                 info.reset_time,
-                tzinfo=info.timezone
-            )
+            ))
 
         create_or_overrite_old_reminder(guild.id, monitoring_bot.id, send_time)
         await self.send_reminder(

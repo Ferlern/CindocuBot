@@ -42,11 +42,7 @@ class LobbyView(disnake.ui.View):
         self.add_item(open_close_button)
         self.add_item(kick_select)
 
-        _updateable_components = []
-        _updateable_components.append(open_close_button)
-        _updateable_components.append(kick_select)
-        self._updateable_components = _updateable_components
-
+        self._updateable_components = [open_close_button, kick_select]
         self._update_components()
 
     async def update(self) -> None:

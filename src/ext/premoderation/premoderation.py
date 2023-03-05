@@ -131,7 +131,6 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         channel = self.guild.get_channel(self.item.channel_id)
         if isinstance(channel, disnake.TextChannel):
             return channel
-        return None
 
     def create_message(self) -> str:
         if self.is_empty():

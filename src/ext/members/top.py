@@ -1,8 +1,9 @@
+from typing import Sequence
 import disnake
 from disnake.ext import commands
 import peewee
 
-from src.database.models import Members, Likes, psql_db, RelationshipTopEntry
+from src.database.models import Members, Likes, GameStatistics, psql_db, RelationshipTopEntry
 from src.formatters import ordered_list
 from src.discord_views.embeds import DefaultEmbed
 from src.utils.experience import format_exp
@@ -46,6 +47,7 @@ class TopView(BaseView):
             t('top_select_reputation'): create_reputation_top_embed,
             t('top_select_experience'): create_experience_top_embed,
             t('top_select_relationship'): create_relationships_top_embed,
+            t('top_select_games'): create_games_top_embed,
         }
         self.add_item(TopSelect(self.top_map))
 
@@ -157,6 +159,12 @@ def _build_relations_top_query(guild_id: int) -> list[RelationshipTopEntry]:
     return [RelationshipTopEntry(*entry) for entry in entrys]
 
 
+def _build_games_top_query(guild_id: int) -> Sequence[GameStatistics]:
+    return GameStatistics.select().where(
+        GameStatistics.guild == guild_id
+    ).order_by(-GameStatistics.wins).limit(TOP_SIZE)
+
+
 def create_voice_top_embed(guild_id: int) -> disnake.Embed:
     query = _build_voice_top_query(guild_id)
     desc = ordered_list(
@@ -223,6 +231,29 @@ def create_relationships_top_embed(guild_id: int) -> disnake.Embed:
     desc = ordered_list(items, formatter)
     return DefaultEmbed(
         title=t('top_relationship'),
+        description=desc,
+    )
+
+
+def create_games_top_embed(guild_id: int) -> disnake.Embed:
+    query = _build_games_top_query(guild_id)
+    economy_settings = get_economy_settings(guild_id)
+    coin = economy_settings.coin
+
+    def formatter(item: GameStatistics) -> str:
+        return t(
+            'games_repr',
+            user_id=item.user_id,  # type: ignore
+            wins=t('wins', count=item.wins),
+            money=item.money_won,
+            coin=coin,
+        )
+    desc = ordered_list(
+        query,
+        formatter
+    )
+    return DefaultEmbed(
+        title=t('top_games'),
         description=desc,
     )
 

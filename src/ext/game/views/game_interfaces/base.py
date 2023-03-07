@@ -11,6 +11,7 @@ from src.discord_views.embeds import DefaultEmbed
 from src.ext.economy.services import change_balances
 from src.formatters import ordered_list, to_mention
 from src.ext.game.services.calculate_win_amount import calculate_win_amount
+from src.ext.game.services.statistic import count_wins
 from src.ext.game.services.games.classes import Game, GameState
 from src.ext.game.utils import user_to_player
 
@@ -69,6 +70,11 @@ class DiscordInterface(Generic[T], disnake.ui.View):
         self.stop()
         asyncio.create_task(self._end_game_update(win_amount))
         self._give_rewards(win_amount)
+        count_wins(
+            self.guild.id,
+            [player.player_id for player in result.winners if not player.bot],
+            win_amount - self.bet,
+        )
 
     async def _end_game_update(self, win_amount: int) -> None:
         await asyncio.sleep(3)

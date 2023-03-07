@@ -9,7 +9,8 @@ tables = (UserRoles, Likes, Members,
           RelationshipsSettings, ModerationSettings, EconomySettings,
           ExperienceSettings, PersonalVoice, Users, Guilds,
           History, PremoderationSettings, PremoderationItem,
-          WelcomeSettings, ReminderSettings, Reminders, CreatedShopRoles, RolesInventory)
+          WelcomeSettings, ReminderSettings, Reminders, CreatedShopRoles, RolesInventory,
+          GameStatistics)
 
 
 def create_database() -> None:

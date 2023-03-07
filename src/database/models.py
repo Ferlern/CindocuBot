@@ -632,6 +632,30 @@ class Reminders(BaseModel):
     send_time: datetime.datetime = DateTimeTZField()
 
 
+class GameStatistics(BaseModel):
+    """
+    Current active reminders
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    user: :class:`Users`
+        User.
+    wins: :class:`str`
+        Number of games won
+    money_won: :class:`int`
+        Amount of money won
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    wins: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    money_won: int = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+    class Meta:
+        primary_key = CompositeKey('guild', 'user')
+
+
 # Depricated?
 class Codes(BaseModel):
     """

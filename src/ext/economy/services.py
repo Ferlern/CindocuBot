@@ -10,6 +10,8 @@ from src.utils.time_ import get_current_day
 
 logger = get_logger()
 
+COINS_PER_CRYSTAL = 10
+
 
 class CurrencyType(str, Enum):
     COIN = 'coin'
@@ -253,3 +255,17 @@ def take_tax_for_roles() -> list[CreatedShopRoles]:
         );
     """)
     return list(to_delete)
+
+
+@psql_db.atomic()
+def swap_crystals_to_coins(
+    guild_id: int,
+    user_id: int,
+    amount: int,
+) -> None:
+    member_data = get_member(guild_id, user_id)
+    if member_data.donate_balance < 1:
+        raise NotEnoughMoney(amount)
+    amount = min(amount, member_data.donate_balance)
+    change_balance(guild_id, user_id, -amount, currency=CurrencyType.CRYSTAL)
+    change_balance(guild_id, user_id, amount * COINS_PER_CRYSTAL, currency=CurrencyType.COIN)

@@ -10,7 +10,7 @@ ru:
   top_select_relationship: "длительность отношений"
   top_select_reputation: "репутация"
   top_select_experience: "уровень"
-  top_select_games: "Игры"
+  top_select_games: "игры"
   relationship_repr: "%{first_user} & %{second_user} с %{timestamp}"
   wins: "%{count} %{p(победа|победы|побед)}"
   games_repr: "<@%{user_id}> — %{wins}, %{money} %{coin}"

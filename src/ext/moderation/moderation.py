@@ -8,6 +8,7 @@ from src.discord_views.embeds import DefaultEmbed
 from src.ext.history.services import make_history
 from src.bot import SEBot
 from src.converters import moderate_target, parse_time
+from src.utils.slash_shortcuts import only_admin
 from src.utils.time_ import time_autocomplate
 from src.ext.moderation.actoin_providers.mute_provider import MuteProvider, UnmuteProvider
 from src.ext.moderation.actoin_providers.ban_provider import BanProvider, UnbanProvider
@@ -22,7 +23,7 @@ class ModerationCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def mute(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -56,7 +57,7 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def unmute(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -84,7 +85,7 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def warn(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -111,7 +112,7 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def unwarn(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -139,7 +140,7 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def ban(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -171,7 +172,7 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def unban(
         self,
         inter: disnake.GuildCommandInteraction,
@@ -200,7 +201,7 @@ class ModerationCog(commands.Cog):
         await action_provider.resolve_interaction(inter)
         await action_provider.full_action()
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def clear(
         self,
         inter: disnake.GuildCommandInteraction,

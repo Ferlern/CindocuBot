@@ -8,6 +8,7 @@ from src.database.models import Suggestions
 from src.discord_views.base_view import BaseView
 from src.discord_views.embeds import DefaultEmbed
 from src.translation import get_translator
+from src.utils.slash_shortcuts import only_admin
 from src.logger import get_logger
 from src.discord_views.paginate.peewee_paginator import (PeeweePaginator,
                                                          PeeweeItemSelect)
@@ -82,7 +83,7 @@ class SuggestionsCog(commands.Cog):
         await message.add_reaction('👍')
         await message.add_reaction('👎')
 
-    @commands.slash_command()
+    @commands.slash_command(**only_admin)
     async def suggestions_control(
         self,
         inter: disnake.GuildCommandInteraction,

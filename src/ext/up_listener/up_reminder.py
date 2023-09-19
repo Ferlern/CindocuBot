@@ -36,6 +36,12 @@ MONITORING_INFORMATION = {
         cooldown=4,
         timezone=timezone('Europe/Moscow'),
     ),
+    575776004233232386: MonitoringData(
+        reset_days=(1, 15),
+        reset_time=3,
+        cooldown=4,
+        timezone=timezone('Europe/Moscow'),
+    )
 }
 
 

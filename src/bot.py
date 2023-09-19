@@ -270,3 +270,4 @@ def _prefix_callable(bot_: SEBot, message: disnake.Message) -> list[str]:
 
 
 bot = SEBot()
+bot.remove_command('help')

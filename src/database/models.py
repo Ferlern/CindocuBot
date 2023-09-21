@@ -656,6 +656,17 @@ class GameStatistics(BaseModel):
         primary_key = CompositeKey('guild', 'user')
 
 
+class Puzzles(BaseModel):
+    """
+    Pazzles
+    """
+    id: int = BigAutoField()
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    text: str = CharField(max_length=2000)
+    answers: list[str] = ArrayField(TextField)
+    prize: int = IntegerField()
+
+
 # Depricated?
 class Codes(BaseModel):
     """

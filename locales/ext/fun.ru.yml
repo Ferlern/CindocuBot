@@ -12,4 +12,7 @@ ru:
   bite_name: Укусить
   slap_name: Ударить
   puzzle_created: Создано
-  puzzle_right_answer: Правильный ответ!
+  puzzle_title: ":cherry_blossom: Новый бонус на горизонте!"
+  puzzle_desc: "Отгадай загадку и получи %{prize} %{coin}:"
+  puzzle_right_answer_title: ":cherry_blossom: Ты успешно отгадал ^^"
+  puzzle_right_answer_desc: "Поздравляю!\n\nТы получаешь свои заслуженные %{prize} %{coin}\nСледующая загадка появится через час"

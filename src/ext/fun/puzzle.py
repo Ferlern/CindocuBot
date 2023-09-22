@@ -1,5 +1,6 @@
 import asyncio
 from dataclasses import dataclass
+import itertools
 import re
 import disnake
 from disnake.ext import commands
@@ -10,7 +11,7 @@ from src.utils.slash_shortcuts import only_admin
 from src.utils.counter import Counter
 from src.database.services import create_related
 from src.database.models import psql_db, Guilds, Puzzles
-from src.ext.economy.services import change_balance
+from src.ext.economy.services import change_balance, get_economy_settings
 from src.logger import get_logger
 from src.translation import get_translator
 
@@ -22,6 +23,14 @@ MESSAGES_TIMER = 60  # 60
 PUZZLE_TIMEOUT = 600  # 600
 PUZZLE_DELAY = 3600  # 3600
 MESSAGES_COUNT = 10  # 10
+IMAGES_CYCLE = itertools.cycle((
+    "https://i.pinimg.com/originals/c1/dc/10/c1dc10bb56883a1b134e50305abe10b8.gif",
+    "https://i.pinimg.com/originals/df/ff/8f/dfff8f4a814276130f1bdbb74a5c3a45.gif",
+    "https://i.pinimg.com/originals/2e/6d/cb/2e6dcb397d31d7fde0f1a58b3daeb543.gif",
+    "https://i.pinimg.com/originals/f6/95/e7/f695e77ed1b45c3c55d77996b9b136fe.gif",
+    "https://i.pinimg.com/originals/72/67/03/726703ed24cb298eddd25ee9f8da00db.gif",
+    "https://i.pinimg.com/originals/9b/36/64/9b3664015c7e18a503d10f80e1062695.gif",
+))
 t = get_translator(route='ext.fun')
 
 
@@ -41,10 +50,11 @@ class PuzzleCog(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message) -> None:
         author = message.author
-        if author.bot or not isinstance(author, disnake.Member):
+        if author.bot or not isinstance(author, disnake.Member) or message.channel.id != CHANNEL:
             return
 
         guild: disnake.Guild = message.guild  # type: ignore
+        settings = get_economy_settings(guild.id)
         discord_puzzle = self._current_discord_puzzles.get(guild)
 
         if discord_puzzle:
@@ -55,7 +65,20 @@ class PuzzleCog(commands.Cog):
 
             logger.debug("puzzle exists on guild %s and asnwer is right", guild.id)
             # TODO send message to user
-            asyncio.create_task(message.channel.send(t('puzzle_right_answer'), reference=message))
+            asyncio.create_task(
+                message.channel.send(
+                    embed=disnake.Embed(
+                        title=t("puzzle_right_answer_title"),
+                        description=t(
+                            "puzzle_right_answer_desc",
+                            prize=puzzle.prize,
+                            coin=settings.coin,
+                        ),
+                        color=0x2c2f33,
+                    ),
+                    reference=message
+                )
+            )
             asyncio.create_task(puzzle_message.delete())
             discord_puzzle.remove_unsolved_task.cancel()
             del self._current_discord_puzzles[guild]
@@ -79,7 +102,19 @@ class PuzzleCog(commands.Cog):
             return
 
         logger.debug("sending puzzle on guild %s", guild.id)
-        puzzle_message = await message.channel.send(puzzle.text)
+        embed = disnake.Embed(
+            title=t("puzzle_title"),
+            description=t(
+                "puzzle_desc",
+                prize=puzzle.prize,
+                coin=settings.coin,
+            ) + f"\n\n{puzzle.text}",
+            color=0x2c2f33,
+        )
+        embed.set_image(next(IMAGES_CYCLE))
+        puzzle_message = await message.channel.send(
+            embed=embed
+        )
 
         task = asyncio.create_task(self._remove_unsolved_puzzle(puzzle_message))
         self._current_discord_puzzles[guild] = DiscordPuzzle(

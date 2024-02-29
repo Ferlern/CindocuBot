@@ -23,7 +23,7 @@ from src.bot import SEBot
 logger = get_logger()
 t = get_translator(route="ext.top")
 TOP_SIZE = 10
-REWARD_CHANNEL = 1212035478430158938
+REWARD_CHANNEL = 0 # change for correct guild
 REWARDS = {
     1: "2000",
     2: "1000",

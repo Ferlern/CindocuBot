@@ -128,10 +128,8 @@ def reset_members_activity(guild_id: int) -> None:
 def give_activity_rewards(guild_id: int, rewards: dict[int, str]) -> None: 
     logger.info("give monthly rewards to active members")
     awarded = Members.select().order_by(Members.monthly_chat_activity.desc()).limit(len(rewards))
-    ids = [str(user.user_id) for user in awarded]
-    
-    for i in range(len(ids)):
+    for index, user in enumerate(awarded, 1):
         (Members
-        .update({Members.balance: Members.balance + int(rewards[i + 1])})
-        .where((Members.user_id == int(ids[i])) & (Members.guild_id == guild_id))
+        .update({Members.balance: Members.balance + int(rewards[index])})
+        .where((Members.user_id == user.user_id) & (Members.guild_id == guild_id))
         .execute())

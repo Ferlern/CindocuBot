@@ -2,7 +2,8 @@ from typing import Sequence
 import disnake
 from disnake.ext import commands
 import peewee
-from datetime import datetime, time
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import asyncio
 
 from src.database.models import Members, Likes, GameStatistics, psql_db, RelationshipTopEntry
@@ -27,22 +28,28 @@ REWARD_CHANNEL = 0 # change for correct guild
 REWARDS = {
     1: "2000",
     2: "1000",
-    3: "500"
-}
+    3: "500",
+} 
 
 class TopCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
+        self.is_listener_started = False
+
 
     @commands.Cog.listener()    
     async def on_ready(self):
-        year = datetime.today().year
-        first_days_of_month = [datetime(year, month, 1).date() for month in range(1, 13)]
-        target_time = time(hour=0, minute=0).strftime('%H:%M')
+        logger.info("trying to start month listener")
+        (await self.start_month_listener() if not self.is_listener_started 
+         else logger.info("month listener has already started"))
+
+
+    async def start_month_listener(self):
+        self.is_listener_started = True
         logger.info("month listener started successfully")
         while True:
             current_time = datetime.utcnow()
-            if (current_time.date() in first_days_of_month) and (current_time.strftime('%H:%M') == target_time):
+            if current_time.day == 1 and current_time.hour == 0 and current_time.minute == 0:
                 channel = self.bot.get_channel(REWARD_CHANNEL)
                 guild_id = channel.guild.id
 
@@ -55,8 +62,13 @@ class TopCog(commands.Cog):
                 except Exception as e:
                     logger.error("tried to sum up the month but an error occured: %s", repr(e))
 
-            await asyncio.sleep(60)  
+            next_month = current_time + relativedelta(months=1, day=1, hour=0, minute=0, second=0)
+            delta_seconds = (next_month - current_time).total_seconds()
+ 
+            logger.info("listener will sleep for %d seconds", delta_seconds)
+            await asyncio.sleep(delta_seconds)  
         
+
     @commands.slash_command()
     async def top(
         self,

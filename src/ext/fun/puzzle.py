@@ -5,6 +5,7 @@ import re
 import disnake
 from disnake.ext import commands
 from peewee import DoesNotExist
+from typing import Optional
 import requests
 
 from src.bot import SEBot
@@ -196,7 +197,7 @@ async def create_puzzle(
     /,
     text: str,
     answers: list[str],
-    image_url: str,
+    image_url: Optional[str],
     prize: int,
 ) -> None:
     Puzzles.create(

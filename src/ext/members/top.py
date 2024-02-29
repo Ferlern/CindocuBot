@@ -234,7 +234,7 @@ def create_chat_activity_top_embed(guild_id: int) -> disnake.Embed:
         query,
         lambda item: f'<@{item.user_id}> — **{item.monthly_chat_activity}** опыта'
     ).split('\n')
-    desc = '\n'.join([item + f'  **|**  {REWARDS[index + 1]} {settings.coin}' if index < 3 else item for index, item in enumerate(top)])
+    desc = '\n'.join([item + f'  **|**  {REWARDS[index + 1]} {settings.coin}' if index < len(REWARDS) else item for index, item in enumerate(top)])
     return DefaultEmbed(
         title=t('top_activity'),
         description=desc,
@@ -246,7 +246,7 @@ def create_rewards_embed(guild_id: int) -> disnake.Embed:
     top = ordered_list(
         query,
         lambda item: f'<@{item.user_id}> — ' 
-    ).split('\n')[:3]
+    ).split('\n')[:len(REWARDS)]
     desc = '\n'.join([item + f'{REWARDS[index + 1]} {settings.coin}' for index, item in enumerate(top)])
 
     embed = disnake.Embed(

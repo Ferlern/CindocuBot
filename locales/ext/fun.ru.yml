@@ -16,3 +16,6 @@ ru:
   puzzle_desc: "Отгадай загадку и получи %{prize} %{coin}:"
   puzzle_right_answer_title: ":cherry_blossom: Ты успешно отгадал ^^"
   puzzle_right_answer_desc: "Поздравляю!\n\nТы получаешь свои заслуженные %{prize} %{coin}\nСледующая загадка появится через час"
+  invalid_link: "Недопустимая ссылка"
+  created_puzzle_title: "Добавлена новая загадка"
+  created_puzzle_desc: "**Награда:** %{prize} \n**Подходящие ответы:** %{answers}"

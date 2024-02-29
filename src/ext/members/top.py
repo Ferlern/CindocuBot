@@ -2,6 +2,8 @@ from typing import Sequence
 import disnake
 from disnake.ext import commands
 import peewee
+from datetime import datetime, time
+import asyncio
 
 from src.database.models import Members, Likes, GameStatistics, psql_db, RelationshipTopEntry
 from src.formatters import ordered_list
@@ -9,21 +11,52 @@ from src.discord_views.embeds import DefaultEmbed
 from src.utils.experience import format_exp
 from src.utils.time_ import display_time
 from src.ext.economy.services import get_economy_settings
+from src.ext.members.services import reset_members_activity, give_activity_rewards
 from src.translation import get_translator
 from src.discord_views.base_view import BaseView
 from src.logger import get_logger
 from src.bot import SEBot
 
 
+
+
 logger = get_logger()
 t = get_translator(route="ext.top")
 TOP_SIZE = 10
-
+REWARD_CHANNEL = 1212035478430158938
+REWARDS = {
+    1: "2000",
+    2: "1000",
+    3: "500"
+}
 
 class TopCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
+    @commands.Cog.listener()    
+    async def on_ready(self):
+        year = datetime.today().year
+        first_days_of_month = [datetime(year, month, 29).date() for month in range(1, 13)]
+        target_time = time(hour=14, minute=25).strftime('%H:%M')
+        logger.info("month listener started successfully")
+        while True:
+            current_time = datetime.utcnow()
+            if (current_time.date() in first_days_of_month) and (current_time.strftime('%H:%M') == target_time):
+                channel = self.bot.get_channel(REWARD_CHANNEL)
+                guild_id = channel.guild.id
+
+                try:
+                    logger.info("sending message with rewards on guild: %s", channel.guild)
+                    await channel.send(embed=create_rewards_embed(guild_id))
+                    
+                    give_activity_rewards(guild_id, REWARDS)
+                    reset_members_activity(guild_id)
+                except Exception as e:
+                    logger.error("tried to sum up the month but an error occured: %s", repr(e))
+
+            await asyncio.sleep(60)  
+        
     @commands.slash_command()
     async def top(
         self,
@@ -43,6 +76,7 @@ class TopView(BaseView):
         self.guild_id = guild_id
         self.top_map = {
             t('top_select_voice'): create_voice_top_embed,
+            t('top_select_activity'): create_chat_activity_top_embed,
             t('top_select_balance'): create_balance_top_embed,
             t('top_select_reputation'): create_reputation_top_embed,
             t('top_select_experience'): create_experience_top_embed,
@@ -83,7 +117,7 @@ class TopSelect(disnake.ui.Select):
 
 def _build_members_top_query(
     guild_id: int,
-    ordering: peewee.Ordering
+    ordering: peewee.Ordering,
 ):
     return (
         Members.
@@ -114,6 +148,11 @@ def _build_experience_top_query(guild_id: int):
         ordering=-Members.experience,  # type: ignore
     )
 
+def _build_chat_activity_top_query(guild_id: int):
+    return _build_members_top_query(
+        guild_id=guild_id,
+        ordering=-Members.monthly_chat_activity,
+    )
 
 def _build_reputation_top_query(guild_id: int):
     reputation_sum = peewee.fn.COALESCE(peewee.fn.sum(Likes.type), 0)
@@ -188,6 +227,34 @@ def create_experience_top_embed(guild_id: int) -> disnake.Embed:
         description=desc,
     )
 
+def create_chat_activity_top_embed(guild_id: int) -> disnake.Embed:
+    query = _build_chat_activity_top_query(guild_id)
+    settings = get_economy_settings(guild_id)
+    top = ordered_list(
+        query,
+        lambda item: f'<@{item.user_id}> — **{item.monthly_chat_activity}** опыта'
+    ).split('\n')
+    desc = '\n'.join([item + f'  **|**  {REWARDS[index + 1]} {settings.coin}' if index < 3 else item for index, item in enumerate(top)])
+    return DefaultEmbed(
+        title=t('top_activity'),
+        description=desc,
+    )   
+
+def create_rewards_embed(guild_id: int) -> disnake.Embed:
+    query = _build_chat_activity_top_query(guild_id)
+    settings = get_economy_settings(guild_id)
+    top = ordered_list(
+        query,
+        lambda item: f'<@{item.user_id}> — ' 
+    ).split('\n')[:3]
+    desc = '\n'.join([item + f'{REWARDS[index + 1]} {settings.coin}' for index, item in enumerate(top)])
+
+    embed = disnake.Embed(
+        title = t('monthly_rewards_title'),
+        description = desc + '\n\n' + t('activity_thanks'),
+    )   
+    embed.set_image(url='https://imgur.com/iXIpPd8.gif')
+    return embed
 
 def create_balance_top_embed(guild_id: int) -> disnake.Embed:
     query = _build_balance_top_query(guild_id)

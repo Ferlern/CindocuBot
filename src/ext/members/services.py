@@ -113,3 +113,25 @@ def get_inventory_role(guild_id: int, user_id: int, role_id: int) -> RolesInvent
         user=user_id,
         role_id=role_id,
     )
+
+
+@psql_db.atomic()
+def reset_members_activity(guild_id: int) -> None:
+    logger.info('reset all members chat activity to 0')
+    (Members
+    .update(monthly_chat_activity = 0)
+    .where(Members.guild_id == guild_id)
+    .execute())
+
+
+@psql_db.atomic()
+def give_activity_rewards(guild_id: int, rewards: dict[int, str]) -> None: 
+    logger.info("give monthly rewards to active members")
+    awarded = Members.select().order_by(Members.monthly_chat_activity.desc()).limit(len(rewards))
+    ids = [str(user.user_id) for user in awarded]
+    
+    for i in range(len(ids)):
+        (Members
+        .update({Members.balance: Members.balance + int(rewards[i + 1])})
+        .where((Members.user_id == int(ids[i])) & (Members.guild_id == guild_id))
+        .execute())

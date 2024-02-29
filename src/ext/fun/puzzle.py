@@ -5,6 +5,7 @@ import re
 import disnake
 from disnake.ext import commands
 from peewee import DoesNotExist
+import requests
 
 from src.bot import SEBot
 from src.utils.slash_shortcuts import only_admin
@@ -111,7 +112,7 @@ class PuzzleCog(commands.Cog):
             ) + f"\n\n{puzzle.text}",
             color=0x2c2f33,
         )
-        embed.set_image(next(IMAGES_CYCLE))
+        embed.set_image(next(IMAGES_CYCLE) if puzzle.image_url is None else puzzle.image_url)
         puzzle_message = await message.channel.send(
             embed=embed
         )
@@ -129,6 +130,7 @@ class PuzzleCog(commands.Cog):
         inter: disnake.GuildCommandInteraction,
         text: str,
         answers: str,
+        image_url: str = None,
         prize: int = 100,
     ) -> None:
         """
@@ -136,14 +138,38 @@ class PuzzleCog(commands.Cog):
 
         Parameters
         ----------
-        text: Текст загадки
+        text: Текст загадки (\\n для переноса строки)
         answers: Возможные ответы (указывать через запятую)
+        image_url: Ссылка на картинку
         prize: Приз за решение загадки
         """
-        asyncio.create_task(
-            create_puzzle(inter.guild_id, text, re.split(r', |,', answers), prize)
+        text = text.replace('\\n', '\n')
+
+        created_puzzle_embed = disnake.Embed(
+            title=t('created_puzzle_title'),
+            description=t(
+                'created_puzzle_desc',
+                prize=prize,
+                answers=answers
+            ) + f"\n\n{text}",
+            color=0x2c2f33,
         )
-        asyncio.create_task(inter.response.send_message(t('puzzle_created')))
+
+        if not image_url:
+            asyncio.create_task(create_puzzle(inter.guild_id, text, re.split(r', |,', answers), None, prize))
+            asyncio.create_task(inter.response.send_message(embed=created_puzzle_embed))
+            return
+
+        url = self._fix_image_url(image_url)
+        is_image = self._check_for_correct_url(url)
+
+        if not is_image:
+            asyncio.create_task(inter.response.send_message(t('invalid_link'), ephemeral=True))
+            return
+
+        asyncio.create_task(create_puzzle(inter.guild_id, text, re.split(r', |,', answers), url, prize))
+        created_puzzle_embed.set_image(url=url)
+        asyncio.create_task(inter.response.send_message(embed=created_puzzle_embed))
 
     async def _remove_unsolved_puzzle(self, message: disnake.Message) -> None:
         logger.debug("Start remove unsolved puzzle")
@@ -151,6 +177,16 @@ class PuzzleCog(commands.Cog):
         logger.debug("Remove unsolved puzzle")
         del self._current_discord_puzzles[message.guild]  # type: ignore
         await message.delete()
+
+    def _fix_image_url(self, url) -> str:
+        return url if any(ext in url for ext in ['.jpg', '.jpeg', '.png', '.gif',]) else url + '.jpg'
+    
+    def _check_for_correct_url(self, url) -> bool:
+        try:
+            response = requests.get(url)
+            return response.status_code == 200
+        except:
+            return False
 
 
 @create_related(Guilds)
@@ -160,12 +196,14 @@ async def create_puzzle(
     /,
     text: str,
     answers: list[str],
+    image_url: str,
     prize: int,
 ) -> None:
     Puzzles.create(
         guild=guild_id,
         text=text,
         answers=answers,
+        image_url=image_url,
         prize=prize
     )
 

@@ -37,8 +37,8 @@ class TopCog(commands.Cog):
     @commands.Cog.listener()    
     async def on_ready(self):
         year = datetime.today().year
-        first_days_of_month = [datetime(year, month, 29).date() for month in range(1, 13)]
-        target_time = time(hour=14, minute=25).strftime('%H:%M')
+        first_days_of_month = [datetime(year, month, 1).date() for month in range(1, 13)]
+        target_time = time(hour=0, minute=0).strftime('%H:%M')
         logger.info("month listener started successfully")
         while True:
             current_time = datetime.utcnow()

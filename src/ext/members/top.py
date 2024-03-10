@@ -24,7 +24,7 @@ from src.bot import SEBot
 logger = get_logger()
 t = get_translator(route="ext.top")
 TOP_SIZE = 10
-REWARD_CHANNEL = 0 # change for correct guild
+REWARD_CHANNEL = 1216474823610339469 # change for correct guild
 REWARDS = {
     1: "2000",
     2: "1000",
@@ -264,8 +264,9 @@ def create_rewards_embed(guild_id: int) -> disnake.Embed:
     embed = disnake.Embed(
         title = t('monthly_rewards_title'),
         description = desc + '\n\n' + t('activity_thanks'),
+        color = 0x2c2f33,
     )   
-    embed.set_image(url='https://imgur.com/iXIpPd8.gif')
+    embed.set_image(url='https://imgur.com/Xp7Gni2.jpg')
     return embed
 
 def create_balance_top_embed(guild_id: int) -> disnake.Embed:

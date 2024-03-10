@@ -18,5 +18,5 @@ ru:
   experience: "%{amount} опыта"
   games_repr: "<@%{user_id}> — %{wins}, %{money} %{coin}"
   activity_repr: "<@%{user_id}> - %{experience}  |  %{reward} %{coin}" 
-  monthly_rewards_title: "Подошли итоги месяца по активности"
+  monthly_rewards_title: ":sparkles: Подошли итоги месяца по активности"
   activity_thanks: "Спасибо всем за активность!\nСледующие итоги через месяц."

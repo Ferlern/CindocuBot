@@ -240,6 +240,8 @@ class Members(BaseModel):
         Points gained for text activity.
     voice_activity: :class:`int`
         Seconds in voice channel.
+    monthly_chat_activity:`int`
+        Points gained for text activity for 1 month.
     biography: Optional[:class:`str`]
         Short bio, will be displayed in profile.
     bonus_taked_on_day: :class:`int`
@@ -261,6 +263,7 @@ class Members(BaseModel):
     donate_balance: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     experience: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     voice_activity: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
+    monthly_chat_activity: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
     biography: Optional[str] = CharField(column_name='biography', max_length=300, null=True)
     bonus_taked_on_day: int = IntegerField(
         constraints=[SQL('DEFAULT 0')], default=0)
@@ -664,6 +667,7 @@ class Puzzles(BaseModel):
     guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
     text: str = CharField(max_length=2000)
     answers: list[str] = ArrayField(TextField)
+    image_url: str = CharField(null = True)
     prize: int = IntegerField()
 
 

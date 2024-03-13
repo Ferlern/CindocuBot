@@ -102,10 +102,13 @@ async def _give_prize_for_activity(
     logger.info("count text activity for %s on guild %s",
                 member, member.guild)
     prev_lvl = exp_to_lvl(member_data.experience)
-    member_data.experience += randint(
+    gained_experience = randint(
         channel_settings["min_experience_per_message"],
         channel_settings["max_experience_per_message"],
     )
+    member_data.experience += gained_experience
+    member_data.monthly_chat_activity += gained_experience
+
     lvl = exp_to_lvl(member_data.experience)
     if lvl > prev_lvl:
         await _give_new_lvl_award(member, member_data, settings, lvl, message)

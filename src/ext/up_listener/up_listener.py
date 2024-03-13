@@ -20,6 +20,7 @@ UP_MESSAGES_CHECKS = {
 class UpListenerCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
+        self._m = []
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message) -> None:
@@ -30,6 +31,8 @@ class UpListenerCog(commands.Cog):
         await self._check_for_up(after)
 
     async def _check_for_up(self, message: disnake.Message) -> None:
+        if message.id in self._m:
+            return
         check = UP_MESSAGES_CHECKS.get(message.author.id)
         if not check:
             return
@@ -44,6 +47,9 @@ class UpListenerCog(commands.Cog):
 
         if not check(message.embeds[0]):
             return
+
+        self._m.append(message.id)
+        self._m = self._m[-10:]
 
         change_balance(
             guild_id=message.guild.id,

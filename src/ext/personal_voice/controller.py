@@ -260,10 +260,9 @@ class PersonalVoiceControllerCog(commands.Cog):
         overwrites = state.overwrites
         for _, overwrite in overwrites.items():
             if any([
-                overwrite.move_members, overwrite.mute_members,
+                overwrite.mute_members,
                 overwrite.deafen_members
             ]):
-                overwrite.move_members = None
                 overwrite.mute_members = None
                 overwrite.deafen_members = None
 

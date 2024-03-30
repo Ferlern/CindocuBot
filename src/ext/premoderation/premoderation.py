@@ -141,7 +141,7 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         message += f"{t('from_user')}: {to_mention_and_id(item.author.id)}"
         message += f"\n{t('to_channel')}: {to_mention_and_id(item.channel_id, '#')}"
         if item.content:
-            message += f"\n{(t('content'))}: {item.content}"
+            message += f"\n{(t('content'))}: {item.content[:1800]}{'(контент обрезан)' if len(item.content) > 1800 else ''}"
         if item.urls:
             message += f"\n\n{(t('files'))}: {backslash.join([str(url) for url in item.urls])}"
         return message

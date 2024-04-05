@@ -39,9 +39,11 @@ class TopCog(commands.Cog):
 
     @commands.Cog.listener()    
     async def on_ready(self):
-        logger.info("trying to start month listener")
-        (await self.start_month_listener() if not self.is_listener_started 
-         else logger.info("month listener has already started"))
+        if self.is_listener_started:
+            logger.info("month listener has already started")
+            return
+        
+        await self.start_month_listener()
 
 
     async def start_month_listener(self):

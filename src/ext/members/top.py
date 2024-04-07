@@ -39,18 +39,23 @@ class TopCog(commands.Cog):
 
     @commands.Cog.listener()    
     async def on_ready(self):
-        logger.info("trying to start month listener")
-        (await self.start_month_listener() if not self.is_listener_started 
-         else logger.info("month listener has already started"))
+        if self.is_listener_started:
+            logger.info("month listener has already started")
+            return
+        
+        await self.start_month_listener()
 
 
     async def start_month_listener(self):
         self.is_listener_started = True
+        channel = self.bot.get_channel(REWARD_CHANNEL)
+        if not isinstance(channel, disnake.TextChannel):
+            logger.error("can not get text channel for month listener")
+            return
         logger.info("month listener started successfully")
         while True:
-            current_time = datetime.utcnow()
-            if current_time.day == 1 and current_time.hour == 0 and current_time.minute == 0:
-                channel = self.bot.get_channel(REWARD_CHANNEL)
+            current_time = datetime.now()
+            if current_time.day == 1 and current_time.hour == 0 and current_time.minute == 0:                
                 guild_id = channel.guild.id
 
                 try:
@@ -163,7 +168,7 @@ def _build_experience_top_query(guild_id: int):
 def _build_chat_activity_top_query(guild_id: int):
     return _build_members_top_query(
         guild_id=guild_id,
-        ordering=-Members.monthly_chat_activity,
+        ordering=-Members.monthly_chat_activity, # type: ignore
     )
 
 def _build_reputation_top_query(guild_id: int):

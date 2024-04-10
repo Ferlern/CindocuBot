@@ -65,6 +65,8 @@ class Lobby:
         if not player.bot:
             ensure_ticket(self._guild_id, player.player_id)
             change_balance(self._guild_id, player.player_id, -self._bet)
+        else:
+            return
         self._players.add(player)
 
     def remove(self, player: Player) -> None:
@@ -88,6 +90,7 @@ class Lobby:
 
     def invite(self, player: Player) -> None:
         if player.bot:
+            return
             self.add(player)
         else:
             self._invited.add(player)

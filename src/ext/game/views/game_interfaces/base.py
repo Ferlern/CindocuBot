@@ -106,6 +106,6 @@ class DiscordInterface(Generic[T], disnake.ui.View):
         result = self.game.result
         change_balances(
             self.guild.id,
-            [player.player_id for player in result.winners],
+            [player.player_id for player in result.winners if not player.bot],
             win_amount,
         )

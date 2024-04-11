@@ -40,7 +40,7 @@ class TopCog(commands.Cog):
     @commands.Cog.listener()    
     async def on_ready(self):
         if self.is_listener_started:
-            logger.info("month listener has already started")
+            logger.debug("month listener has already started")
             return
         
         await self.start_month_listener()
@@ -52,7 +52,7 @@ class TopCog(commands.Cog):
         if not isinstance(channel, disnake.TextChannel):
             logger.error("can not get text channel for month listener")
             return
-        logger.info("month listener started successfully")
+        logger.debug("month listener started successfully")
         while True:
             current_time = datetime.now()
             if current_time.day == 1 and current_time.hour == 0 and current_time.minute == 0:                
@@ -70,7 +70,7 @@ class TopCog(commands.Cog):
             next_month = current_time + relativedelta(months=1, day=1, hour=0, minute=0, second=0)
             delta_seconds = (next_month - current_time).total_seconds()
  
-            logger.info("listener will sleep for %d seconds", delta_seconds)
+            logger.debug("listener will sleep for %d seconds", delta_seconds)
             await asyncio.sleep(delta_seconds)  
         
 

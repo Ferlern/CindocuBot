@@ -218,6 +218,11 @@ def _build_relations_top_query(guild_id: int) -> list[RelationshipTopEntry]:
 def _build_games_top_query(guild_id: int) -> Sequence[GameStatistics]:
     return GameStatistics.select().where(
         GameStatistics.guild == guild_id
+    ).join(Members, on=(
+        Members.guild_id == GameStatistics.guild
+    )).where(
+        Members.user_id == GameStatistics.user,
+        Members.on_guild == True
     ).order_by(-GameStatistics.wins).limit(TOP_SIZE)
 
 

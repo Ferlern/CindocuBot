@@ -35,9 +35,6 @@ class TextActivityCog(commands.Cog):
         if author.bot or not isinstance(author, disnake.Member):
             return
 
-        if self.bot.user.mention in message.content:
-            await message.add_reaction("❤️")
-
         settings = get_experience_settings(author.guild.id)
         channels_settings = settings.experience_channels
         if not channels_settings:

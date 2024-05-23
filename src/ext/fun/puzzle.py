@@ -131,7 +131,7 @@ class PuzzleCog(commands.Cog):
         inter: disnake.GuildCommandInteraction,
         text: str,
         answers: str,
-        image_url: str = None,
+        image_url: Optional[str] = None,
         prize: int = 100,
     ) -> None:
         """

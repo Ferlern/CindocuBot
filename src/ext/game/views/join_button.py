@@ -34,6 +34,6 @@ class JoinGameButton(disnake.ui.Button):
         if lobby.full:
             await interaction.response.send_message(t('max_players'), ephemeral=True)
             return
-
+        
         lobby.add(user_to_player(interaction.author))
         await self.view.update_using(interaction)

@@ -1,4 +1,5 @@
 import asyncio
+import re
 from random import randint
 
 import disnake
@@ -34,6 +35,9 @@ class TextActivityCog(commands.Cog):
         channel = message.channel
         if author.bot or not isinstance(author, disnake.Member):
             return
+
+        if re.search(r"\b{}\b".format("мяу"), message.content):
+            _count_meow(author)
 
         settings = get_experience_settings(author.guild.id)
         channels_settings = settings.experience_channels
@@ -114,6 +118,13 @@ async def _give_prize_for_activity(
         await _give_new_lvl_award(member, member_data, settings, lvl, message)
     member_data.save()
 
+def _count_meow(member: disnake.Member) -> None:
+    member_data = get_member(
+        member.guild.id,
+        member.id
+    )
+    member_data.meow_count += 1
+    member_data.save()
 
 async def _give_new_lvl_award(
     member: disnake.Member,

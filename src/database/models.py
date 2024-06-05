@@ -274,6 +274,7 @@ class Members(BaseModel):
         constraints=[SQL("DEFAULT '{}'::jsonb")],
     )
     game_ticket_until: Optional[datetime.datetime] = DateTimeField(null=True)
+    meow_count: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
 
     class Meta:
         primary_key = CompositeKey('user_id', 'guild_id')

@@ -52,6 +52,7 @@ INITIAL_EXTENSIONS = (
     'premoderation.premoderation',
     'fun.fun',
     'fun.puzzle',
+    'fun.meow_counter',
     'game.play_cog',
     # ? 'ext.system.status',
     # ? 'ext.sync.sync',

@@ -36,8 +36,9 @@ class TextActivityCog(commands.Cog):
         if author.bot or not isinstance(author, disnake.Member):
             return
 
-        if re.search(r"\b{}\b".format("мяу"), message.content):
-            _count_meow(author)
+        meow_count = len(re.findall(r"\b{}\b".format("мяу"), message.content.lower()))
+        if meow_count > 0:
+            _count_meow(author, meow_count)
 
         settings = get_experience_settings(author.guild.id)
         channels_settings = settings.experience_channels
@@ -118,12 +119,12 @@ async def _give_prize_for_activity(
         await _give_new_lvl_award(member, member_data, settings, lvl, message)
     member_data.save()
 
-def _count_meow(member: disnake.Member) -> None:
+def _count_meow(member: disnake.Member, meow_count: int) -> None:
     member_data = get_member(
         member.guild.id,
         member.id
     )
-    member_data.meow_count += 1
+    member_data.meow_count += meow_count
     member_data.save()
 
 async def _give_new_lvl_award(

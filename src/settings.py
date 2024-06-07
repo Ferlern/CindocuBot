@@ -58,6 +58,7 @@ INITIAL_EXTENSIONS = (
     # ? 'ext.sync.sync',
     'up_listener.up_listener',
     'up_listener.up_reminder',
+    'events.event_notification'
 )
 
 DATABASE = {

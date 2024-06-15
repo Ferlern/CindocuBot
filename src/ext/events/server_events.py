@@ -15,7 +15,9 @@ class ServerEvents(str, Enum):
         self,
     ) -> tuple[ModalInput, ModalInput]:
         return (
-            ModalInput(label=t("event_time")),
+            ModalInput(label=t("event_time"),
+                       placeholder="1 января, 00:00",
+                       required=True),
             ModalInput(label=t("event_channel"), 
                        placeholder=t("can_be_empty"),
                        required=False)

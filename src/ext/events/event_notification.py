@@ -12,12 +12,11 @@ from src.discord_views.shortcuts import request_data_via_modal
 from src.utils.slash_shortcuts import only_admin
 from src.logger import get_logger
 from src.translation import get_translator
+from .services import get_events_settings
 
 logger = get_logger()
 t = get_translator(route='ext.events')
 
-NOTIFICATION_CHANNEL_ID = 987069250806095963
-EVENT_CHANNEL_ID = 968268849034174524
 
 class EventsCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
@@ -26,7 +25,7 @@ class EventsCog(commands.Cog):
     @commands.slash_command(**only_admin)
     async def create_event(
         self,
-        inter: disnake.MessageCommandInteraction,
+        inter: disnake.GuildCommandInteraction,
         event_type: str = commands.Param(
             choices={event.get_translated_name(): 
                      event.name for event in ServerEvents}
@@ -43,10 +42,10 @@ class EventsCog(commands.Cog):
         result = await request_data_via_modal(
             inter, t('event_set'), type.get_modal_params()
         )
-
+        settings = get_events_settings(inter.guild.id)
         await inter.response.defer(with_message=False)
 
-        notification_channel = self.bot.get_channel(NOTIFICATION_CHANNEL_ID)
+        notification_channel = self.bot.get_channel(settings.notification_channel) # type: ignore
         if not isinstance(notification_channel, disnake.TextChannel):
             logger.error("can not get notification channel id")
             return
@@ -56,7 +55,9 @@ class EventsCog(commands.Cog):
             await inter.followup.send(t('wrong_date'), ephemeral=True)
             return 
         
-        event_channel = self.bot.get_channel(int(result[2]) if result[2] != '' else EVENT_CHANNEL_ID)
+        event_channel = self.bot.get_channel(
+            int(result[2]) if result[2] != '' else settings.event_channel # type: ignore
+        )
         if not (isinstance(event_channel, disnake.VoiceChannel)
              or isinstance(event_channel, disnake.StageChannel)):
             await inter.followup.send(t('wrong_channel_id'), ephemeral=True)
@@ -125,8 +126,7 @@ class SubmitEventButton(disnake.ui.Button):
             description=t(view.event_type + '_short_desc', jump_url=notification_message.jump_url),
             image=await get_image_bytes(t(view.event_type + '_image'))
         )
-        logger.info("event notification created in %d", NOTIFICATION_CHANNEL_ID)
-
+        logger.info("event notification created in %d", view.notification_channel.id)
         self.view.stop()
         await interaction.message.delete()
     

@@ -7,6 +7,7 @@ t = get_translator(route='ext.events')
 
 class ServerEvents(str, Enum):
     MAFIA = 'mafia'
+    CODENAMES = 'codenames'
 
     def get_translated_name(self) -> str:
         return t(self.value + '_name')

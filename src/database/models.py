@@ -618,6 +618,24 @@ class ReminderSettings(BaseModel):
         primary_key = CompositeKey('guild_id', 'monitoring_bot_id')
 
 
+class EventsSettings(BaseModel):
+    """
+    Model for storing event channel settings
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    notification_channel: Optional[:class:`int`]
+        Channel for sending embeds with event info.
+    event_channel: Optional[:class:`int`]
+        Channel (voice/stage) for holding event.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE', primary_key = True)
+    notification_channel: Optional[int] = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    event_channel: Optional[int] = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+
 class Reminders(BaseModel):
     """
     Current active reminders

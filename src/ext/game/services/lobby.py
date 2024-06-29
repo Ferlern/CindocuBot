@@ -18,7 +18,11 @@ class Lobby:
     @property
     def full(self) -> bool:
         return len(self._players) >= (self._game.max_players or 10)
-
+        
+    @property
+    def not_enough_players(self) -> bool:
+        return len(self._players) < (self._game.min_players or 2)
+ 
     @property
     def creator(self) -> Player:
         return self._creator

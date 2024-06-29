@@ -54,6 +54,7 @@ INITIAL_EXTENSIONS = (
     'fun.puzzle',
     'fun.meow_counter',
     'game.play_cog',
+    'game.game_channel_cog',
     # ? 'ext.system.status',
     # ? 'ext.sync.sync',
     'up_listener.up_listener',

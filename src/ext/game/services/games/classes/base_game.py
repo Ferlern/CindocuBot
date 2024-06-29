@@ -15,7 +15,10 @@ class Game(ABC):
     def __init__(self) -> None:
         self._vision_change_callbacks: list[VisionChangeCallback] = []
         self._state_change_callbacks: list[StateChangeCallback] = []
-        self.max_players: Optional[int] = None
+        self.max_players: Optional[int] = 10
+        self.min_players: Optional[int] = 2
+        self.master: Optional[Player]
+        self.end_game_art_url: Optional[str]
 
     # TODO move events logic somewhere else
     def on_vision_change(self, callback: VisionChangeCallback) -> None:

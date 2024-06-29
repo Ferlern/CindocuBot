@@ -678,6 +678,30 @@ class GameStatistics(BaseModel):
         primary_key = CompositeKey('guild', 'user')
 
 
+class GameChannelSettings(BaseModel):
+    """
+    Model for storing game channel settings
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    category_id: Optional[:class:`int`]
+        Category for creating game channels
+    voice_game_category_id: Optional[:class:`int`]
+        Category for created voice game channels
+    channels_id: Optional[:class:`dict[str, int]`]
+        Channels with game message
+    messages_id: Optional[:class:`dict[str, int]`]
+        Current game messages on guild channel
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE', primary_key=True)
+    category_id: Optional[int] = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    voice_game_category_id: Optional[int] = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    channels_id: Optional[dict[str, int]] = JSONField(null=True)
+    messages_id: Optional[dict[str, int]] = JSONField(null=True)
+
+
 class Puzzles(BaseModel):
     """
     Pazzles

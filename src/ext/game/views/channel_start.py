@@ -10,7 +10,7 @@ from src.ext.game.services.game_channel import GameChannel
 logger = get_logger()
 t = get_translator(route="ext.games")
 
-ON_TIMEOUT_CHANNEL_DELETE_TIME = 180
+ON_TIMEOUT_CHANNEL_DELETE_TIME = 30
 
 class VoiceGameStart(disnake.ui.View):
     def __init__(

@@ -69,7 +69,7 @@ class LobbyView(disnake.ui.View):
                 players=', '.join([to_mention(player.player_id) for player in self.lobby.players]),
                 bet=self.lobby.bet,
                 current=len(self.lobby),
-                limit=10,
+                limit=self.lobby.game.max_players,
             ),
         )
 

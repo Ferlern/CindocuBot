@@ -31,7 +31,8 @@ class StartGameButton(disnake.ui.Button):
                 t('not_a_host', user_id=lobby.creator.player_id), ephemeral=True,
             )
             return
-        if len(lobby) < 2:
+
+        if lobby.not_enough_players:
             await interaction.response.send_message(t('cant_start'), ephemeral=True)
             return
 

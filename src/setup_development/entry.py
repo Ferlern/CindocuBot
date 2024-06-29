@@ -12,6 +12,7 @@ from src.ext.economy.services import get_economy_settings, add_shop_role
 from src.ext.premoderation.services import get_premoderation_settings
 from src.ext.members.services import get_welcome_settings, get_member
 from src.ext.up_listener.services import get_reminder_settings
+from src.ext.game.db_services import get_game_channel_settings
 from src.ext.up_listener.up_reminder import MONITORING_INFORMATION
 from src.logger import get_logger
 from src.database.create import recreate_tables
@@ -57,6 +58,9 @@ WELCOME_TITLE = 'Hello user!'
 WELCOME_TEXT = 'A new user has joined: %{member}!'
 REMINDER_CHANNEL_NAME = 'up_reminders'
 TESTER_ROLE_NAME = 'Developer'
+GAME_CATEGORY_NAME = 'game category'
+VOICE_GAME_CATEGORY_NAME = 'voice game category'
+GAMES = ['bunker_game']
 
 
 async def setup_development(  # noqa
@@ -143,6 +147,7 @@ async def setup_guilds(
         await ensure_premoderation_settings(guild)
         await ensure_welcome_settings(guild)
         await ensure_reminder_settings(guild)
+        await ensure_game_channel_settings(guild)
 
 
 async def ensure_reminder_settings(guild: Guild) -> None:
@@ -206,6 +211,34 @@ async def ensure_suggestion_settings(guild: Guild) -> None:
     if settings.suggestions_channel != channel.id:
         settings.suggestions_channel = channel.id
         settings.save()
+
+
+async def ensure_game_channel_settings(guild: Guild) -> None:
+    settings = get_game_channel_settings(guild.id)
+    
+    game_cat = await get_or_create_by_name(
+        guild.categories, guild.create_category, name=GAME_CATEGORY_NAME
+    )
+    if settings.category_id != game_cat.id:
+        settings.category_id = game_cat.id
+
+    voice_game_cat = await get_or_create_by_name(
+        guild.categories, guild.create_category, name=VOICE_GAME_CATEGORY_NAME
+    )
+    if settings.voice_game_category_id != voice_game_cat.id:
+        settings.voice_game_category_id = voice_game_cat.id
+
+    channels = {}
+    messages = {}
+    for game in GAMES:
+        channel = await get_or_create_by_name(
+            game_cat.channels, game_cat.create_text_channel, name=game
+        )
+        channels[game] = channel.id
+    settings.channels_id = channels
+    settings.messages_id = messages
+
+    settings.save()
 
 
 async def ensure_experience_settings(guild: Guild) -> None:

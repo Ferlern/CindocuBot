@@ -1,4 +1,4 @@
-from src.ext.game.services.games.bunker import BunkerGame
+from src.ext.game.services.games import BunkerGame
 from src.ext.game.services.games.classes.game_settings import GameSettings
 from .bunker_info import CHANNEL_ART, RULES
 

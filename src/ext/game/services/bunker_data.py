@@ -1,6 +1,6 @@
 import random
-from typing import Union, Optional, List, Dict, Tuple, Set
-from disnake import Member, User, Embed
+from typing import Optional, List, Dict, Tuple, Set
+from disnake import Embed
 from src.translation import get_translator
 from src.ext.game.services.games.classes import Player
 from .bunker_info import *

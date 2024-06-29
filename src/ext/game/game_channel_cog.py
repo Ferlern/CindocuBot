@@ -10,7 +10,7 @@ from src.ext.game.views.game_channel_view import GameChannelView
 from src.ext.game.services.bunker_settings import BunkerSettings
 from src.ext.game.services.game_channel import GameChannel
 from src.ext.game.db_services import get_game_channel_settings
-from src.ext.game.services.games.bunker import BunkerGame
+from src.ext.game.services.games import BunkerGame
 from src.ext.game.views.game_interfaces.bunker.bunker import BunkerDiscordInterface
 
 logger = get_logger()

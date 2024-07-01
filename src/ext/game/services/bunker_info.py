@@ -185,7 +185,7 @@ class Professions(Enum):
     SHOEMAKER = "Сапожник"
     BAKER = "Пекарь"
     BREWER = "Пивовар"
-    BARBER = "Пирюльник"
+    BARBER = "Цирюльник"
     POACHER = "Браконьер"
 
 class Hobby(Enum):

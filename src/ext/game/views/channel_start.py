@@ -74,7 +74,7 @@ class VoiceGameStart(disnake.ui.View):
         return True
 
     async def create_message(self) -> None:
-        game_message = await self.voice_channel.send_message(self)
+        await self.voice_channel.send_message(self)
 
     async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
         if interaction.user not in self.voice_channel.channel.members:
@@ -84,7 +84,7 @@ class VoiceGameStart(disnake.ui.View):
     
     async def on_timeout(self) -> None:
         voice_channel = self.voice_channel
-        GameChannel.voice_channels.remove(voice_channel)
+        _remove_voice_channel(voice_channel)
         try:
             await voice_channel.message.edit(view=None, embed=disnake.Embed(  # type: ignore
                 title="Увы...",
@@ -110,7 +110,7 @@ class StartButton(disnake.ui.Button):
 
     async def callback(self, interaction: disnake.MessageInteraction) -> None:
         success = await self.view.start_game(interaction)
-        if success: GameChannel.voice_channels.remove(self.view.voice_channel)
+        if success: _remove_voice_channel(self.view.voice_channel)
 
 
 class InviteSelect(disnake.ui.UserSelect):
@@ -145,3 +145,9 @@ class OpenCloseVoiceGame(disnake.ui.Button):
         self.view.voice_channel.close_or_open_connection()
         await self.view.update_using(interaction)
 
+
+def _remove_voice_channel(voice_channel: VoiceGameChannel):
+    try:
+        GameChannel.voice_channels.remove(voice_channel)
+    except:
+        logger.warning('voice channel was not in a list')

@@ -85,7 +85,7 @@ class CreateGameButton(disnake.ui.Button):
         channel_name = f"{t(game_channel.game_name)} - {player.display_name}"
         user_limit = game_channel.game_settings.max_players
         channel = await voice_category.create_voice_channel(name=channel_name, user_limit=user_limit)
-        await channel.set_permissions(player, view_channel=True, move_members=True)
+        await channel.set_permissions(player, view_channel=True, connect=True, move_members=True)
 
         v_channel = VoiceGameChannel(guild, voice_category, channel, game_channel.game_settings, interface_type)
         view.game_channel.voice_channels.append(v_channel)
@@ -131,7 +131,7 @@ class FindGameButton(disnake.ui.Button):
         await self._hide_voice_channels(player, voice_channels)
 
     async def _show_voice_channels(self, player: disnake.Member, channels: list[disnake.VoiceChannel]) -> None:
-        tasks = [channel.set_permissions(player, view_channel=True) for channel in channels]
+        tasks = [channel.set_permissions(player, view_channel=True, connect=True) for channel in channels]
         await asyncio.gather(*tasks)
 
     async def _hide_voice_channels(self, player: disnake.Member, channels: list[disnake.VoiceChannel]) -> None:

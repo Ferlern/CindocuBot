@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Optional, Sequence
+from disnake import TextInputStyle
 
 from src.discord_views.shortcuts import ModalInput
 from src.translation import get_translator
@@ -40,6 +41,12 @@ class Codenames(EventType):
             is_concrete = True
         )
 
+class Film(EventType):
+    def __init__(self) -> None:
+        super().__init__(
+            event = 'film',
+            is_concrete = False
+        )
 
 class Gartic(EventType):
     def __init__(self) -> None:
@@ -52,6 +59,7 @@ class ServerEvents(Enum):
     MAFIA = Mafia()
     CODENAMES = Codenames()
     GARTIC = Gartic()
+    FILM = Film()
 
     def get_event_option(self) -> str:
         return self.value.event_option
@@ -76,6 +84,15 @@ class ServerEvents(Enum):
                 )
             )
             inputs.insert(2,
+                ModalInput(
+                    label=t("event_addition_desc"),
+                    placeholder=t("addition_desc_placeholder"),
+                    required=True,
+                    style=TextInputStyle.long,
+                    max_length=2000
+                )
+            )
+            inputs.insert(3,
                 ModalInput(
                     label=t("event_addition_gif"),
                     placeholder=t("addition_gif_value"),

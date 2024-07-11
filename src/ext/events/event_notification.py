@@ -19,6 +19,9 @@ logger = get_logger()
 t = get_translator(route='ext.events')
 
 
+EVENT_ROLE_ID = 1018464008837287946
+
+
 class EventsCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
@@ -62,7 +65,7 @@ class EventsCog(commands.Cog):
             await inter.followup.send(t('wrong_channel_id'), ephemeral=True)
             return
         
-        event_gif = event.gif if event.is_concrete else _fix_gif_url(modal_data[3])
+        event_gif = event.gif if event.is_concrete else _fix_gif_url(modal_data[4])
         if not (_check_gif_availability(event_gif)):
             await inter.followup.send(t('wrong_gif'), ephemeral=True)
             return
@@ -125,7 +128,10 @@ class SubmitEventButton(disnake.ui.Button):
         view = self.view
         event = view.event
 
-        notification_message = await self.view.notification_channel.send(embed=interaction.message.embeds[0])
+        notification_message = await self.view.notification_channel.send(
+            content = f"<@&{EVENT_ROLE_ID}>",
+            embed=interaction.message.embeds[0]
+        )
         await interaction.guild.create_scheduled_event( # type: ignore
             name=t(event.event) if event.is_concrete else view.event_addition_name, # type: ignore
             channel=view.event_channel,
@@ -180,6 +186,7 @@ def _get_event_long_desc(
         )
     return event.get_long_desc(
         event_addition_name=modal_data[2],
+        event_addition_desc=modal_data[3],
         event_time=modal_data[1] + " МСК",
         event_channel=event_channel_id
     )

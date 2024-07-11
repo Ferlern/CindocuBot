@@ -1,11 +1,13 @@
 ru:
   event_time: "Когда планируется ивент?"
   event_addition_name: "Название?"
+  event_addition_desc: "Описание ивента"
   event_addition_gif: "Гиф для эмбеда (ссылка)"
   event_channel: "Айди войс канала для ивента"
   can_be_empty: "Возьмётся значение по умолч."
   time_placeholder: "1 января, 00:00"
   addition_name_placeholder: "МИНЬОНЫ"
+  addition_desc_placeholder: "Краткое описание ивента"
   addition_gif_placeholder: "https://example.com/example.gif"
   addition_gif_value: "https://i.ibb.co/W6RHCb9/Minions.gif"
 
@@ -37,6 +39,16 @@ ru:
   codenames_short_desc: "Собирай своих друзей, и вместе бросьте вызов тайнам слов в Codenames!\n\nВсе подробности тут -> %{jump_url}"
   codenames_gif: "https://i.pinimg.com/originals/27/64/b8/2764b8cfd081e19c2497bb59043f84d4.gif"
   codenames_image: "https://i.ibb.co/6N9SThZ/codenames.png"
+
+  # FILM
+
+  film_option: "Просмотр Фильма"
+  film: "Фильм"
+  
+  film_long_desc: "## :projector: Собирай своих друзей для совместного просмотра фильма!\n### :popcorn: Приглашаем на киновечер на нашем сервере! :popcorn:\n### :film_frames: Название фильма: %{event_addition_name}\n### :busts_in_silhouette: Когда: %{event_time}\n### :round_pushpin: Где: <#%{event_channel}>\n### :vhs: Что вас ждёт?\n- Совместный просмотр фильма (чаще всего смотрим через [gowo.su](https://gowo.tv/orooms))\n- Приятно проведённое время\n### <:c_catypopcorn:998332952993869934> Краткое описание\n%{event_addition_desc}\n"
+  film_short_desc: "Собирай своих друзей для совместного просмотра фильма!\n\nВсе подробности тут -> %{jump_url}"
+  film_gif: "https://i.ibb.co/W6RHCb9/Minions.gif"
+  film_image: "https://i.ibb.co/S7Hhpbm/film.jpg"
  
   # GARTIC
   

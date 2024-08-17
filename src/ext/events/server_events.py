@@ -52,14 +52,22 @@ class Gartic(EventType):
     def __init__(self) -> None:
         super().__init__(
             event = 'gartic',
-            is_concrete=True
+            is_concrete = True
         )
     
+class Bunker(EventType):
+    def __init__(self) -> None:
+        super().__init__(
+            event = 'bunker',
+            is_concrete = True
+        )
+
 class ServerEvents(Enum):
     MAFIA = Mafia()
     CODENAMES = Codenames()
     GARTIC = Gartic()
     FILM = Film()
+    BUNKER = Bunker()
 
     def get_event_option(self) -> str:
         return self.value.event_option

@@ -62,12 +62,20 @@ class Bunker(EventType):
             is_concrete = True
         )
 
+class Hat(EventType):
+    def __init__(self) -> None:
+        super().__init__(
+            event = 'hat',
+            is_concrete = True
+        )
+
 class ServerEvents(Enum):
     MAFIA = Mafia()
     CODENAMES = Codenames()
     GARTIC = Gartic()
-    FILM = Film()
     BUNKER = Bunker()
+    HAT = Hat()
+    FILM = Film()
 
     def get_event_option(self) -> str:
         return self.value.event_option

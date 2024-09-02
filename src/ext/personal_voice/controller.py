@@ -169,6 +169,7 @@ class PersonalVoiceControllerCog(commands.Cog):
             voice_data = get_voice_channel(member.id, guild.id)
         except DoesNotExist:
             logger.info("member %s joined main channel but don't have personal channel", member)
+            await member.move_to(None) # type: ignore
             return
 
         current_voice = guild.get_channel(voice_data.voice_id)  # type: ignore
@@ -268,6 +269,9 @@ class PersonalVoiceControllerCog(commands.Cog):
 
         if category := after.category:
             overwrites.update(category.overwrites)
+            for role_or_member, overwrite in overwrites.items():
+                overwrite.send_messages = after.overwrites[role_or_member].send_messages
+
 
         owner = after.guild.get_member(voice_data.user_id.id)
         if owner:
@@ -276,11 +280,13 @@ class PersonalVoiceControllerCog(commands.Cog):
                 overwrite.view_channel = True
                 overwrite.manage_channels = True
                 overwrite.manage_permissions = True
+                overwrite.move_members = True
             else:
                 overwrites[owner] = disnake.PermissionOverwrite(
                     view_channel=True,
                     manage_channels=True,
                     manage_permissions=True,
+                    move_members=True
                 )
 
         return state

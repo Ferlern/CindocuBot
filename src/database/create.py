@@ -10,7 +10,9 @@ tables = (UserRoles, Likes, Members,
           ExperienceSettings, PersonalVoice, Users, Guilds,
           History, PremoderationSettings, PremoderationItem,
           WelcomeSettings, ReminderSettings, Reminders, CreatedShopRoles, RolesInventory,
-          GameStatistics, Puzzles, GameChannelSettings, EventsSettings)
+          GameStatistics, Puzzles,
+          VoiceRewardsSettings, GameChannelSettings, EventsSettings, 
+          Pets, Gifts, UserPets, PetBattleSettings, AuctionPet, AuctionMail, FontainCounter)
 
 
 def create_database() -> None:

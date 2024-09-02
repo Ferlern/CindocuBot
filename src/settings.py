@@ -59,7 +59,13 @@ INITIAL_EXTENSIONS = (
     # ? 'ext.sync.sync',
     'up_listener.up_listener',
     'up_listener.up_reminder',
-    'events.event_notification'
+    'events.event_notification',
+    'gifts.gifts_cog',
+    'pets.pet_profile',
+    'pets.pet_battle',
+    'pets.pet_auction',
+    'pets.pet_creation',
+    'fun.fountain',
 )
 
 DATABASE = {

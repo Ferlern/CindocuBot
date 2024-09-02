@@ -28,6 +28,9 @@ logger = get_logger()
 t = get_translator(route="ext.premoderation")
 
 
+MAX_ATTACHMENTS = 5 # <= 10
+
+
 class PremoderationCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
@@ -47,11 +50,16 @@ class PremoderationCog(commands.Cog):
 
         if channel.id not in premoderation_channels:  # type: ignore
             return
+        
+        if len(message.attachments) > MAX_ATTACHMENTS:
+            await message.delete()
+            await channel.send(t('too_much_attachments'), delete_after=5)
+            return
 
         urls = []
         for attachment in message.attachments:
             content_type = attachment.content_type
-            logger.debug('Premoderatnio: new content, type: %s', content_type)
+            logger.debug('Premoderation: new content, type: %s', content_type)
             if not content_type:
                 continue
             if not content_type.startswith(('image', 'video', 'audio')):

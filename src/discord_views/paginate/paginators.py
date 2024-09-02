@@ -173,6 +173,7 @@ class ItemsPaginator(Generic[T], Paginator):
         max_page = ceil(len(items) / items_per_page) or 1
         self._all_items = items
         self.items: list[T] = []
+        self.items_per_page = items_per_page
         super().__init__(timeout=timeout, max_page=max_page)
 
     def is_empty(self) -> bool:
@@ -180,8 +181,22 @@ class ItemsPaginator(Generic[T], Paginator):
 
     def update(self) -> None:
         page = self.page
-        self.items = self._all_items[(page-1)*10:page*10]
+        count = self.items_per_page
+
+        self.items = self._all_items[(page-1)*count:page*count]
         return super().update()
+    
+    def add_page(self, T) -> None:
+        self._all_items.append(T)
+        if self.max_page:
+            self.max_page += 1
+            self.page = self.max_page
+        self.update()
+
+    def turn_to_last_page(self) -> None:
+        if self.max_page:
+            self.page = self.max_page
+            self.update()
 
     async def page_callback(
         self,

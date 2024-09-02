@@ -10,6 +10,8 @@ ru:
   target_privileged: "Указанный пользователь занимает более высокую позицию на сервере"
   not_enough_money_default: "Не хватает ещё %{amount} валюты"
   cannot_use_twice_default: "Ты не можешь делать это действие дважды"
+  not_enough_feed_stuff_default: "Недостаточно корма. | `/shop`"
+  auc_item_already_sold_default: "Извините, но этот лот уже был недавно выкуплен"
   autocomplate_to_long_line: "Автоподстановка отключена (строка слишком длинная)"
   bad_configured: "Отсутствуют настройки для выполнения действия"
   cant_find_member: Не могу найти пользователя на этом сервере

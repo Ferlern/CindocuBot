@@ -1,9 +1,9 @@
 import disnake
 
-from src.discord_views.embeds import DefaultEmbed
+from src.discord_views.embeds import ActionFailedEmbed, DefaultEmbed
 from src.translation import get_translator
 from src.logger import get_logger
-from src.custom_errors import CriticalException
+from src.custom_errors import CriticalException, RegularException
 from src.formatters import to_mention
 from src.ext.game.services.lobby import Lobby
 from src.ext.game.views.game_interfaces import DiscordInterface
@@ -83,3 +83,19 @@ class LobbyView(disnake.ui.View):
     def _update_components(self) -> None:
         for component in self._updateable_components:
             component.update()
+
+    async def on_error(
+        self,
+        error: Exception,
+        item: disnake.ui.Item,
+        interaction: disnake.MessageInteraction,
+    ) -> None:
+        if isinstance(error, RegularException):
+            await interaction.response.send_message(
+                embed=ActionFailedEmbed(
+                    reason=str(error),
+                ),
+                ephemeral=True,
+            )
+        else:
+            await super().on_error(error, item, interaction)

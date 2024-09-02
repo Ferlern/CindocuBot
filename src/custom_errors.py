@@ -82,3 +82,19 @@ class ActionRestricted(RegularException):
 
 class BadProjectSettings(CriticalException):
     pass
+
+
+class NotEnoughFeedStuff(RegularException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        if message is None:
+            message = t('not_enough_feed_stuff_default')
+        self.message = message
+        super().__init__(self.message)
+
+
+class ItemAlreadySold(RegularException):
+    def __init__(self, message: Optional[str] = None) -> None:
+        if message is None:
+            message = t('auc_item_already_sold_default')
+        self.message = message
+        super().__init__(self.message)

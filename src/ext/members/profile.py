@@ -13,6 +13,7 @@ from src.logger import get_logger
 from src.ext.economy.services import get_economy_settings
 from src.ext.members.services import get_member_reputation, change_bio
 from src.bot import SEBot
+from src.ext.pets.services import get_main_pet
 
 
 logger = get_logger()
@@ -51,6 +52,7 @@ class ProfileCog(commands.Cog):
         economy_settings = get_economy_settings(guild_id)
         relationships = get_user_relationships_or_none(guild_id, member_id)
         reputations = get_member_reputation(guild_id, member_id)
+        pet = get_main_pet(guild_id, member_id)
 
         bio = member_data.biography or t('no_bio')
 
@@ -92,6 +94,20 @@ class ProfileCog(commands.Cog):
                     ),
                 ),
                 inline=False,
+            )
+        
+        if pet:
+            embed.add_field(
+                name=t("pet"),
+                value=t(
+                    "pet_value",
+                    pet_name=pet.name,
+                    pet_level=pet.level,
+                    timestamp=disnake.utils.format_dt(
+                        pet.got_date, 'f'
+                    )
+                ),
+                inline=False
             )
 
         value = t('joined_at', timestamp=disnake.utils.format_dt(

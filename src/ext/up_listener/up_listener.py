@@ -13,7 +13,8 @@ logger = get_logger()
 t = get_translator(route='ext.up_listener')
 UP_MESSAGES_CHECKS = {
     464272403766444044: lambda embed: embed.color.value == 4437377,
-    575776004233232386: lambda embed: embed.description.startswith('Вы успешно лайкнули'),  # noqa
+    575776004233232386: lambda embed: embed.description.startswith((
+        'Вы успешно лайкнули', 'You successfully liked')),  # noqa
 }
 
 

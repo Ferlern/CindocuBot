@@ -9,7 +9,7 @@ from peewee import (Model, BigAutoField,
 from playhouse.postgres_ext import (PostgresqlExtDatabase, BigIntegerField,
                                     IntegerField, AutoField, ArrayField,
                                     JSONField, TextField, CompositeKey,
-                                    DateTimeField, DateTimeTZField)
+                                    DateTimeField, DateTimeTZField, FloatField)
 
 from src.settings import DATABASE
 
@@ -166,6 +166,8 @@ class EconomySettings(BaseModel):
     role_under_which_create_roles: :class:Optional[`int`]
         The role whose guild position will be used when creating new roles.
         They will be placed below it, if role specified
+    feed_stuff_price: :class:`int`
+        Cost of feed for pets.
     """
     guild_id: Guilds = ForeignKeyField(Guilds, primary_key=True, on_delete='CASCADE')
     coin: str = CharField(max_length=255, constraints=[
@@ -183,6 +185,7 @@ class EconomySettings(BaseModel):
     role_creation_price: int = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
     role_day_tax: int = IntegerField(constraints=[SQL("DEFAULT 10")], default=10)
     role_under_which_create_roles: Optional[int] = BigIntegerField(null=True)
+    feed_stuff_price: int = IntegerField(constraints=[SQL("DEFAULT 250")], default=250)
 
 
 class ExperienceSettings(BaseModel):
@@ -255,6 +258,10 @@ class Members(BaseModel):
         If action is restricred it cannot be used on this member
     game_ticket_until: :class:`Optional[datetime]`
         The time until which the user can play games
+    until_present: :class:`int`
+        Counter for seconds until activity present. 
+    meow_count: :class:`int`
+        Count of "meow" the user wrote.
     """
     user_id: Users = ForeignKeyField(Users, on_delete='CASCADE')
     guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
@@ -274,6 +281,7 @@ class Members(BaseModel):
         constraints=[SQL("DEFAULT '{}'::jsonb")],
     )
     game_ticket_until: Optional[datetime.datetime] = DateTimeField(null=True)
+    until_present: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
     meow_count: int = IntegerField(constraints=[SQL('DEFAULT 0')], default=0)
 
     class Meta:
@@ -594,6 +602,26 @@ class WelcomeSettings(BaseModel):
     text: Optional[str] = CharField(max_length=2000, null=True)
 
 
+class VoiceRewardsSettings(BaseModel):
+    """
+    guild_id: :class:`int`
+        Guild ID.
+    channel_id: Optional[:class:`int`]
+        ID of channel where reward message will be sended.
+    seconds_for_present: Optional[:class:`int`]
+        Seconds needed to be in voice to gain present.
+    parts_for_role: :class:`int`
+        Amount of peaces needed to get a role.
+    gifts_role: :class:`int`
+        Role for collecting all peaces.
+    """
+    guild_id: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE', primary_key=True)
+    channel_id: Optional[int] = BigIntegerField(null=True)
+    seconds_for_present: Optional[int] = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    parts_for_role: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    gifts_role: int = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+
 class ReminderSettings(BaseModel):
     """
     Settings for each monitoring
@@ -712,6 +740,205 @@ class Puzzles(BaseModel):
     answers: list[str] = ArrayField(TextField)
     image_url: str = CharField(null = True)
     prize: int = IntegerField()
+
+
+class Gifts(BaseModel):
+    """
+    Model for storing info about user's gifts (activity, etc.)
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    user: :class:`Users`
+        User.
+    activity_presents: :class:`int`
+        Amount of activity presents.
+    role: :class:`int`
+        Amount of role shards.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    activity_presents: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    role: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+    class Meta:
+        primary_key = CompositeKey('guild', 'user')
+
+
+class Pets(BaseModel):
+    """
+    Model for storing pets
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    user: :class:`Users`
+        User.
+    id: :class:`int`
+        Id.
+    name: :class:`str`
+        Name of user's pet.
+    spec: :class:`str`
+        Prefix from pet's specialization
+        for skills/stats definition.
+    level: :class:`int`
+        Pet's level.
+    experience: :class:`int`
+        Experience before pet's level up.
+    exp_scale: `float`
+        Modifier for end game exp recieve
+        (Also works as pet's rarity definition).
+    max_energy: `int`
+        Amount of pet's energy maximum capaсity.
+    energy: `int`
+        Current amount of pet's energy.
+    wins: `int`
+        Amount of pet's game wins.
+    loses: `int`
+        Amount of pet's game loses.
+    max_health: `int`
+        Amount of pet's health maximum capaсity.
+    health: `int`
+        Current amount of pet's health.
+    strenght: `int`
+        Current amount of pet's attribute: strength.
+    dexterity: `int`
+        Current amount of pet's attribute: dexterity.
+    intellect: `int`
+        Current amount of pet's attribute: intellect.
+    petted: `bool`
+        Indicator if user have pressed `PetPetButton`.
+    on_auction: `bool`
+        Indicator if pet is now on an auction sale.
+    got_date: `float`
+        Timestamp for pet recieve. 
+    """
+    id: int = BigAutoField(primary_key=True)
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    name: str = CharField(max_length=25)
+    spec: str = CharField(max_length=7, null=True)
+    level: int = IntegerField(constraints=[SQL("DEFAULT 1")], default=1)
+    experience: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    exp_scale: float = FloatField(constraints=[SQL("DEFAULT 0")], default=0)
+    max_energy: int = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
+    energy: int = IntegerField(constraints=[SQL("DEFAULT 100")], default=100)
+    wins: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    loses: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    max_health: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    health: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    strength: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    dexterity: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    intellect: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+    petted: bool = BooleanField(default=False)
+    on_auction: bool = BooleanField(default=False)
+    got_date: float = FloatField(constraints=[SQL("DEFAULT 0")], default=0)
+
+
+class UserPets(BaseModel):
+    """
+    Model for storing user's pets
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    user: :class:`Users`
+        User.
+    current_pet: :class:`Pets`
+        Pet.
+    feed_stuff: :class:`int`
+        Amount of feed_stuff the user have.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    current_pet: Optional[Pets] = ForeignKeyField(Pets, on_delete='CASCADE', null=True)
+    feed_stuff: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+    class Meta:
+        primary_key = CompositeKey('guild', 'user')
+        table_name = "user_pets"
+
+
+class PetBattleSettings(BaseModel):
+    """
+    Model for storing pet battle settings
+
+    Attributes
+    ----------
+    guild: :class:`Guilds`
+        Guild.
+    game_channel: :class:`int`
+        Channel in which one will be sent game message.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE', primary_key=True)
+    game_channel: Optional[int] = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    game_message: Optional[int] = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+
+
+class AuctionPet(BaseModel):
+    """
+    guild: `Guilds`
+        Guild.
+    owner: `Users`
+        Owner of auction item.
+    pet: `Pets`
+        Pet for auction.
+    price: `int`
+        Cost for buy an item.
+    sale_date: `float`
+        Timestamp of setting a pet for auction.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    owner: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    pet: Pets = ForeignKeyField(Pets, on_delete='CASCADE')
+    price: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    sale_date: float = FloatField(constraints=[SQL("DEFAULT 0")], default=0)
+
+    class Meta:
+        primary_key = CompositeKey('guild', 'owner', 'pet')
+
+class AuctionMail(BaseModel):
+    """
+    id: `int`
+        Id.
+    guild: `Guilds`
+        Guild.
+    user: `Users`
+        Mail recipient.
+    buyer_id: `int`
+        Id of user who bought recipient's item.
+    proceed: `int`
+        Proceeds from the transaction.
+    buy_date: `float`
+        Timestamp of selling a pet on auction.
+    is_read: `bool`
+        Indicator if recipient have read the mail.
+    """
+    id: int = AutoField(primary_key = True)
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE')
+    user: Users = ForeignKeyField(Users, on_delete='CASCADE')
+    buyer_id: int = BigIntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    proceed: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    buy_date: float = FloatField(constraints=[SQL("DEFAULT 0")], default=0)
+    is_read: bool = BooleanField(default=False)
+
+
+class FontainCounter(BaseModel):
+    """
+    guild: `Guilds`
+        Guild.
+    money_count: `int`
+        Amount of money in fountain.
+    money_needed: `int`
+        Amount of money needed for a win.
+    """
+    guild: Guilds = ForeignKeyField(Guilds, on_delete='CASCADE', primary_key=True)
+    money_count: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
+    money_needed: int = IntegerField(constraints=[SQL("DEFAULT 0")], default=0)
 
 
 # Depricated?

@@ -23,3 +23,10 @@ ru:
   top_meow: "Мяучные легенды"
   meow_message: "мяукнул **%{count}** %{p(раз|раза|раз)}"
   meow_lack: "***Тут должен был быть топ, но пока ещё никто не мяукнул...***"
+
+  fountain_title: "⛲ Денежный фонтан"
+  fountain_desc: "Количество монет в фонтане: **%{amount}**"
+  donate_money_button: "Бросить монетку (%{amount})"
+  fountain_winner: "Счастливчик"
+  fountain_winner_desc: "<@%{user_id}> счастливчик и забирает всю сумму!\nВыигранные монеты: **%{amount}**"
+  only_for_text_channels: "Команда только для текстовых каналов."

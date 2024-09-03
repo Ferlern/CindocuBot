@@ -299,7 +299,7 @@ class Pet:
 
         if self._level % 4 == 0:
             main_attr = self.spec.main_attr
-            setattr(self, main_attr, getattr(self, main_attr) + 1)
+            setattr(self, f"_{main_attr}", getattr(self, main_attr) + 1)
 
         self.delta = {
             stat: getattr(self, stat) - old_stats[stat]

@@ -161,7 +161,7 @@ class Rage(Skill):
             id = "s3",
             name = "Rage",
             affects = {"in_rage": 2},
-            cooldown = 3
+            cooldown = 2
         )
 
         self._journal_desc = t("rage_journal_desc")
@@ -211,7 +211,7 @@ class PoisonedArrow(Skill):
             id = "s5",
             name = "Poisoned Arrow",
             affects = {"poisoned": 2},
-            cooldown = 4
+            cooldown = 5
         )
 
     @property

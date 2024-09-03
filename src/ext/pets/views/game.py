@@ -152,11 +152,11 @@ class PetsGameView(disnake.ui.View):
         current_exp_display = exp_display(
             pet.exp, pet_lvl_to_exp(pet.level + 1) - pet_lvl_to_exp(pet.level))
         
-        desc = t("exp_gained", exp=exp_gain) + \
-            t("lvl_gained", lvl=pet.level) if is_lvl_up else "" + \
-            t("current_exp", exp=current_exp_display)
+        desc = (t("exp_gained", exp=exp_gain) +
+            t("current_exp", exp=current_exp_display))
         
         if is_lvl_up:
+            desc += t("lvl_gained", lvl=pet.level)
             desc += t("bonus_characteristics",
                       max_health=pet.delta['max_health'],
                       strength=pet.delta['strength'],

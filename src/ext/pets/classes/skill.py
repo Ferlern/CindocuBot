@@ -161,7 +161,7 @@ class Rage(Skill):
             id = "s3",
             name = "Rage",
             affects = {"in_rage": 2},
-            cooldown = 2
+            cooldown = 3
         )
 
         self._journal_desc = t("rage_journal_desc")

@@ -448,3 +448,14 @@ def change_price(
     item.price = new_price
     item.save()
     return item
+
+
+@psql_db.atomic()
+def award_winner(
+    guild_id: int,
+    winner_id: int,
+    amount: int
+) -> None:
+    change_balance(
+        guild_id, winner_id, amount
+    )

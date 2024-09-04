@@ -6,6 +6,7 @@ from src.bot import SEBot
 from src.logger import get_logger
 from src.translation import get_translator
 from src.ext.pets.classes import PetsGame, Pet
+from src.ext.pets.services import award_winner
 from src.ext.pets.views.journal_paginator import JournalPaginator
 from src.ext.pets.utils import GameEmbed, exp_display
 from src.ext.game.utils import user_to_player
@@ -18,6 +19,9 @@ from .skill_use import SkillUseView
 
 logger = get_logger()
 t = get_translator(route='ext.pet_battle')
+
+
+MONEY_FOR_WIN = 100
 
 
 class PetsGameView(disnake.ui.View):
@@ -103,6 +107,14 @@ class PetsGameView(disnake.ui.View):
     async def _end_game_update(self) -> None:
         thread = self.thread
         results = self.game.result()
+
+        if not self.define_draw(results):
+            award_winner(
+                self.thread.guild.id,
+                results.winners[0].player_id,
+                MONEY_FOR_WIN
+            )
+        
         await thread.send(
             embed=self._create_end_game_embed(results)
         )
@@ -125,7 +137,10 @@ class PetsGameView(disnake.ui.View):
 
         embed = disnake.Embed(
             title=t('game_results'),
-            description=t('game_end', winners=winners_str, losers=losers_str),
+            description=t('game_end',
+                           winners=winners_str,
+                           losers=losers_str,
+                           amount=MONEY_FOR_WIN),
             color=0x7B68EE
         )
         embed.set_image(url=self.game.end_game_art_url)

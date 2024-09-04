@@ -136,7 +136,7 @@ class PetsGame(Game):
             return 0
         
     def roll_poison_damage_dices(self, pet: Pet) -> int:
-        return random.randint(1, 3) + pet.calculate_modifier()
+        return 1 + pet.calculate_modifier()
     
     async def accept_use_skill(self, skill_id: str, player: Player) -> bool:
         if not self.state == GameState.WAIT_FOR_INPUT:

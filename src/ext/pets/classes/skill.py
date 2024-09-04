@@ -211,7 +211,7 @@ class PoisonedArrow(Skill):
             id = "s5",
             name = "Poisoned Arrow",
             affects = {"poisoned": 2},
-            cooldown = 4
+            cooldown = 5
         )
 
     @property

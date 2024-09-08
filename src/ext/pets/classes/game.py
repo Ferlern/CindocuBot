@@ -45,6 +45,7 @@ class PetsGame(Game):
     async def start(self, guild_id: int) -> None:
         self.state = GameState.WAIT_FOR_INPUT
         self._turn += 1
+        random.shuffle(self._players)
         for player in self._players:
             player_id = player.player_id
             self._pets[player] = self._create_battle_pet(guild_id, player_id)

@@ -137,7 +137,7 @@ class Mage(Specialization):
         super().__init__()
         if with_stats:
             self.generate_stats()
-        self._skills = [HolyBubble(), ReverseInTime()]
+        self._skills = [HolyPotion(), ReverseInTime()]
 
     @property
     def main_attr(self) -> str:

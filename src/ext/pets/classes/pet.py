@@ -144,7 +144,7 @@ class Pet:
 
         if self.under_shield:
             damage_reduction = self.calculate_damage_reduction()
-            damage -= max(0, damage-damage_reduction)
+            damage = max(0, damage-damage_reduction)
 
         if self.in_bubble:
             damage = 0
@@ -180,6 +180,7 @@ class Pet:
 
         if self.in_rage:
             hit_chance = 100
+            crit_damage_chance = 100
 
         return (
             100 - hit_chance,

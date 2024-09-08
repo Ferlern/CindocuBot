@@ -21,7 +21,8 @@ logger = get_logger()
 t = get_translator(route='ext.pet_battle')
 
 
-MONEY_FOR_WIN = 100
+MONEY_FOR_WIN = 200
+MONEY_FOR_LOSE = 100
 
 
 class PetsGameView(disnake.ui.View):
@@ -32,7 +33,7 @@ class PetsGameView(disnake.ui.View):
         thread: disnake.Thread,
         journal: JournalPaginator
     ) -> None:
-        super().__init__(timeout=9000)
+        super().__init__(timeout=900)
         self.bot = bot
         self.game = game
         self.thread = thread
@@ -98,9 +99,9 @@ class PetsGameView(disnake.ui.View):
 
     def _end_game_listener(self, game: Game, state: GameState) -> None:
         if state is not GameState.END:
-            logger.debug("ChannelGameListener: Game not in END state")
+            logger.debug("PetGameListener: Game not in END state")
             return
-        logger.debug("ChannelGameListener: Game in END state")
+        logger.debug("PetGameListener: Game in END state")
         self.stop()
         asyncio.create_task(self._end_game_update())
     
@@ -114,6 +115,12 @@ class PetsGameView(disnake.ui.View):
                 results.winners[0].player_id,
                 MONEY_FOR_WIN
             )
+            award_winner(
+                self.thread.guild.id,
+                results.losers[0].player_id,
+                MONEY_FOR_LOSE
+            )
+
         
         await thread.send(
             embed=self._create_end_game_embed(results)
@@ -140,7 +147,8 @@ class PetsGameView(disnake.ui.View):
             description=t('game_end',
                            winners=winners_str,
                            losers=losers_str,
-                           amount=MONEY_FOR_WIN),
+                           amount_win=MONEY_FOR_WIN,
+                           amount_lose=MONEY_FOR_LOSE),
             color=0x7B68EE
         )
         embed.set_image(url=self.game.end_game_art_url)

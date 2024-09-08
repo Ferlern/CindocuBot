@@ -109,7 +109,7 @@ class Skill(ABC):
         raise NotImplementedError
     
 
-class HolyBubble(Skill):
+class HolyPotion(Skill):
     def __init__(self) -> None:
         super().__init__(
             id = "s1",
@@ -160,7 +160,8 @@ class Rage(Skill):
         super().__init__(
             id = "s3",
             name = "Rage",
-            affects = {"in_rage": 2},
+            affects = {"in_rage": 2,
+                        "poisoned": 0},
             cooldown = 3
         )
 
@@ -259,8 +260,8 @@ class KnifeThrow(Skill):
         if not self.usable:
             return False
         
-        attacker.attack_target(defender, damage)
         if damage:
+            damage = attacker.attack_target(defender, damage)
             self._journal_desc = t("knife_journal_desc_success", damage=damage)
         else:
             self._journal_desc = t("knife_journal_desc_failure")

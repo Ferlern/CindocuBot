@@ -21,7 +21,7 @@ def get_gifts(
 def add_activity_present(
     guild_id: int,
     user_id: int,
-    amount: int
+    amount: int = 1
 ) -> Gifts:
     gifts_data = get_gifts(guild_id, user_id)
     gifts_data.activity_presents += amount
@@ -43,10 +43,11 @@ def add_role_peace(
 @psql_db.atomic()
 def remove_activity_present(
     guild_id: int,
-    user_id: int
+    user_id: int,
+    amount: int = 1,
 ) -> Gifts:
     gifts_data = get_gifts(guild_id, user_id)
-    gifts_data.activity_presents -= 1
+    gifts_data.activity_presents -= amount
     gifts_data.save()
     return gifts_data
 

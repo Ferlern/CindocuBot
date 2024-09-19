@@ -147,8 +147,8 @@ class PetsGame(Game):
         defender = self._get_defender(player)
 
         damage_skills = {
-            "s5": self.roll_poison_damage_dices,
-            "s6": self.roll_extra_attack_dices
+            "h1": self.roll_poison_damage_dices,
+            "h2": self.roll_extra_attack_dices
         }
 
         damage_skill = damage_skills.get(skill_id)

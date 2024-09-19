@@ -6,13 +6,13 @@ from .skill import Skill
 from src.utils.experience import pet_lvl_to_exp
 
 
-HIT_MULTIPLIER = 0.12
+HIT_MULTIPLIER = 0.11   
 DODGE_MULTIPLIER = 0.1
 CRIT_MULTIPLIER = 0.2
 BASE_CRIT_CHANCE = 0.1
 BASE_HIT_CHANCE = 0.3
-MAX_HIT_CHANCE = 0.8
-MAX_CRIT_CHANCE = 0.8
+MAX_HIT_CHANCE = 0.80
+MAX_CRIT_CHANCE = 0.85
 MIN_DAMAGE = 1
 MAX_DAMAGE = 8
 
@@ -61,8 +61,6 @@ class Pet:
             "under_shield": 0,
             "in_bubble": 0,
             "poisoned": 0,
-            "extra_knife": 0,
-            "reversed_in_time": 0
         }
 
         self.delta: dict[str, int] = {}
@@ -178,10 +176,6 @@ class Pet:
         crit_damage_chance = round(hit_chance * crit_chance)
         damage_range = self._calculate_damage_range()
 
-        if self.in_rage:
-            hit_chance = 100
-            crit_damage_chance = 100
-
         return (
             100 - hit_chance,
             100 - crit_damage_chance,
@@ -207,17 +201,29 @@ class Pet:
             (self._strength * HIT_MULTIPLIER) -
             (target_dexterity * DODGE_MULTIPLIER)
         )
+
+        if self.in_rage:
+            hit_chance = MAX_HIT_CHANCE
+
         hit_chance = min(hit_chance, MAX_HIT_CHANCE)
         return int(max(hit_chance * 100, BASE_HIT_CHANCE * 100))
     
     def _calculate_crit_chance(self, target_intellect: int) -> float:
         crit_chance = (self._intellect - target_intellect) / 10  + CRIT_MULTIPLIER
+
+        if self.in_rage:
+            crit_chance = MAX_CRIT_CHANCE
+
         crit_chance = min(MAX_CRIT_CHANCE, crit_chance)
         return max(crit_chance, BASE_CRIT_CHANCE)
 
     def _calculate_damage_range(self) -> tuple[int, int]:
         modifier = self.calculate_modifier()
         min_damage = MIN_DAMAGE + modifier
+
+        if self.in_rage:
+            min_damage = int(MAX_DAMAGE / 2 + modifier)
+
         max_damage = MAX_DAMAGE + modifier
         return (min_damage, max_damage)
     

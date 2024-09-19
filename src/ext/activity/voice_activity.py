@@ -100,13 +100,14 @@ class VoiceActivityCog(commands.Cog):
         user = member_data.user_id.id
 
         settings = get_voice_rewards_settings(guild)
-        if member_data.until_present <= settings.seconds_for_present:
+        seconds = settings.seconds_for_present
+        if member_data.until_present < seconds:
             return
         
         logger.info('rewarding member %s for voice activity on guild %s',
                 member_data.user_id, member_data.guild_id)
-        restart_present_counter(guild, user, settings.seconds_for_present) #type: ignore 
-        add_activity_present(guild, user, 1)
+        restart_present_counter(guild, user, seconds) #type: ignore 
+        add_activity_present(guild, user)
 
         channel = self.bot.get_channel(settings.channel_id) # type: ignore
         if not isinstance(channel, disnake.TextChannel):

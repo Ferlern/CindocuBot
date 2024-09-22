@@ -55,6 +55,7 @@ class Pet:
         self._last_turn_health: int = self._health
 
         self.poison_damage: int = 0
+        # self.fire_damage: int = 0
 
         self.status_effects = {
             "in_rage": 0,
@@ -156,6 +157,7 @@ class Pet:
 
     def reverse_last_hp(self) -> None:
         self._health = self._last_turn_health
+        self.heal(self.calculate_modifier())
 
     def take_poison_damage(self, callback) -> None:
         if self.poisoned:

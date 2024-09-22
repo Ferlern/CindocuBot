@@ -19,7 +19,7 @@ from src.discord_views.embeds import DefaultEmbed
 logger = get_voice_logger()
 t = get_translator(route="ext.activity")
 MIN_MEMRBER_AMOUNT = 2
-REWARD_MESSAGE_DELETE_TIME = 60
+# REWARD_MESSAGE_DELETE_TIME = 60 ?
 
 
 class VoiceActivityCog(commands.Cog):
@@ -177,12 +177,11 @@ async def _send_reward_embed(channel: disnake.TextChannel, user_id: int) -> None
     embed = DefaultEmbed(
         description = t('present_got',
             user_id=user_id
-        )
+        )   
     )
     await channel.send(
         content=f"<@{user_id}>",
         embed=embed,
-        delete_after=REWARD_MESSAGE_DELETE_TIME
     )
 
 

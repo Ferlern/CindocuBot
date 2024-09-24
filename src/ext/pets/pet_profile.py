@@ -10,6 +10,7 @@ from src.discord_views.paginate.peewee_paginator import PeeweePaginator
 from src.database.models import Pets
 from src.converters import not_bot_member
 from src.utils.experience import format_pet_exp_and_lvl
+from src.ext.pets.classes import SpecUtils
 from src.ext.pets.services import (
     change_main_pet,
     delete_pet,
@@ -166,7 +167,8 @@ class PetPaginator(PeeweePaginator[Pets]):
             value = self._get_pet_stats(pet),
             inline = False
         )
-        embed.set_thumbnail(self.user.avatar)
+        embed.set_thumbnail(
+            SpecUtils.get_spec_by_prefix(pet.spec).avatar) # type: ignore
 
         main_pet = get_main_pet(self.guild.id, self.user.id)
         if main_pet and main_pet.id == pet.id and self.is_owner:

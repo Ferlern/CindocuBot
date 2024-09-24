@@ -105,7 +105,7 @@ class Warrior(Specialization):
     
     @property
     def avatar(self) -> str:
-        return ""
+        return "https://i.ibb.co/8BNCMnR/war.png"
 
 
 class Hunter(Specialization):
@@ -129,7 +129,7 @@ class Hunter(Specialization):
     
     @property
     def avatar(self) -> str:
-        return ""
+        return "https://i.ibb.co/kQb2q90/hunt.png"
 
 
 class Mage(Specialization):
@@ -153,7 +153,7 @@ class Mage(Specialization):
     
     @property
     def avatar(self) -> str:
-        return ""
+        return "https://i.ibb.co/4mdqNmk/mage.png"
     
 
 class Demon(Specialization):
@@ -177,7 +177,7 @@ class Demon(Specialization):
     
     @property
     def avatar(self) -> str:
-        return ""
+        return "https://i.imgur.com/DJXkJ32.jpeg"
 
 
 class SpecUtils:

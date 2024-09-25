@@ -52,22 +52,22 @@ class GiftsCog(commands.Cog):
     async def give_act_gifts(
         self,
         inter: disnake.GuildCommandInteraction,
-        amount: int,
+        amount: int = 1,
         receiver = commands.Param(converter=not_bot_member),
     ) -> None:
         """
         Добавить подарков за активность участнику
         """
         add_activity_present(inter.guild.id, receiver.id, abs(amount))
+        logger.info('%d has gifted %d activity presents to %d',
+                     inter.user.id, amount, receiver.id)
         await inter.response.send_message(
             embed = DefaultEmbed(
                 title = t("give_success"),
                 description = (
                     f"<@{inter.user.id}> **->** <@{receiver.id}> " +
                     f"**|** {amount} :gift:"
-                )
-            )
-        )
+                )))
 
 
 class GiftsView(BaseView):
@@ -78,7 +78,7 @@ class GiftsView(BaseView):
         self.gift_map = {
             t("gifts_storage_opt"): self._create_gifts_storage_embed,
             t("activity_present_opt"): self._create_activity_present_embed,
-            # t("another_present"): self._create_another_present_embed
+            # t("another_present"): self._create_another_present_embed -> to create new types of presents
         }
         self.is_openable = False
         self.present = None

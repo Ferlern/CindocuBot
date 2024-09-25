@@ -136,7 +136,7 @@ class JoinButton(disnake.ui.Button):
             )
             return
         
-        if pet.health <= 0:
+        if pet.health <= 0 or view.creator_pet.health <= 0:
             await interaction.response.send_message(
                 t("zero_health_pet_err"),
                 ephemeral=True

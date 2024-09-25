@@ -33,7 +33,7 @@ class PetsGameView(disnake.ui.View):
         thread: disnake.Thread,
         journal: JournalPaginator
     ) -> None:
-        super().__init__(timeout=900)
+        super().__init__(timeout=1200)
         self.bot = bot
         self.game = game
         self.thread = thread

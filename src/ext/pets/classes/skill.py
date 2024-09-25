@@ -112,7 +112,7 @@ class Skill(ABC):
 class HolyPotion(Skill):
     def __init__(self) -> None:
         super().__init__(
-            id = "s1",
+            id = "m1",
             name = "Holy Potion",
             affects = {"in_bubble": 999},
             cooldown = 4
@@ -132,10 +132,10 @@ class HolyPotion(Skill):
 class ReverseInTime(Skill):
     def __init__(self) -> None:
         super().__init__(
-            id = "s2",
+            id = "m2",
             name = "Reverse in Time",
-            affects = {"reversed_in_time": 1},
-            cooldown = None
+            affects = {},
+            cooldown = 12
         )
 
     @property
@@ -158,10 +158,9 @@ class ReverseInTime(Skill):
 class Rage(Skill):
     def __init__(self) -> None:
         super().__init__(
-            id = "s3",
+            id = "w1",
             name = "Rage",
-            affects = {"in_rage": 2,
-                        "poisoned": 0},
+            affects = {"in_rage": 2},
             cooldown = 3
         )
 
@@ -179,9 +178,10 @@ class Rage(Skill):
 class ShieldsUp(Skill):
     def __init__(self) -> None:
         super().__init__(
-            id = "s4",
+            id = "w2",
             name = "Shields Up",
-            affects = {"under_shield": 2},
+            affects = {"under_shield":2,
+                        "poisoned": 0},
             cooldown = 3
         )
 
@@ -200,6 +200,7 @@ class ShieldsUp(Skill):
         
         for attr, value in self._affects.items():
             attacker.status_effects[attr] = value
+            
         self._start_cooldown()
         reduction = attacker.calculate_damage_reduction()
         self._journal_desc = t("shield_journal_desc", reduction=reduction)
@@ -209,7 +210,7 @@ class ShieldsUp(Skill):
 class PoisonedArrow(Skill):
     def __init__(self) -> None:
         super().__init__(
-            id = "s5",
+            id = "h1",
             name = "Poisoned Arrow",
             affects = {"poisoned": 2},
             cooldown = 5
@@ -238,10 +239,10 @@ class PoisonedArrow(Skill):
 class KnifeThrow(Skill):
     def __init__(self) -> None:
         super().__init__(
-            id = "s6",
+            id = "h2",
             name = "Knife Throw",
-            affects = {"extra_knife": 1},
-            cooldown = None
+            affects = {},
+            cooldown = 9
         )
 
     @property

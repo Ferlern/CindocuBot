@@ -61,7 +61,7 @@ ru:
   auc_item_set: "Питомец успешно отправлен на аукцион"
 
   pet_shop_select: "Магазин всё для питомца"
-  pet_shop: ":smirk_cat: %{.pet_shop_select}"
+  pet_shop: ":smirk_cat: Магазин всё для питомца"
   feed_stuff: "Корм для питомца"
   shop_desc: "1. Корм для питомца — %{price} %{coin}\n(Восстанавливает **20** здоровья)\n\n\n"
   shop_desc_add: "Сейчас у вас: **%{count}** %{p(корм|корма|корма)}"

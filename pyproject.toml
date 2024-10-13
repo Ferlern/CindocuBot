@@ -16,6 +16,7 @@ python-dotenv = "^0.21.0"
 psycopg2-binary = "^2.9.9"
 requests = "^2.32.3"
 python-dateutil = "^2.9.0.post0"
+dateparser = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 

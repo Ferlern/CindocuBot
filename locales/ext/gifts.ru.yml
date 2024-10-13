@@ -3,9 +3,9 @@ ru:
   not_enough_presents: "Недостаточно подарков"
 
   gifts_storage_opt: "Склад подарков"
-  gifts_storage: ":gift: %{.gifts_storage_opt}"
+  gifts_storage: ":gift: Склад подарков"
   activity_present_opt: "Подарки за активность"
-  activity_present: ":gift: %{.activity_present_opt}"
+  activity_present: ":gift: Подарки за активность"
   another_present: "Сторонние подарки"
 
   activity_presents: "**%{count}** %{p(подарок|подарка|подарков)} за активность"

@@ -14,6 +14,8 @@ python-i18n = {git = "https://github.com/Krutyi-4el/python-i18n.git", branch="ma
 pytz = "^2022.5"
 python-dotenv = "^0.21.0"
 psycopg2-binary = "^2.9.9"
+requests = "^2.32.3"
+python-dateutil = "^2.9.0.post0"
 
 [tool.poetry.dev-dependencies]
 

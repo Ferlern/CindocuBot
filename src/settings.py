@@ -51,6 +51,7 @@ INITIAL_EXTENSIONS = (
     'reputation.reputation',
     'premoderation.premoderation',
     'fun.fun',
+    'fun.feb_cog',
     'fun.puzzle',
     'fun.meow_counter',
     'game.play_cog',

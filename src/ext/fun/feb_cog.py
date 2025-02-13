@@ -9,7 +9,7 @@ from src.discord_views.shortcuts import request_data_via_modal, ModalInput
 
 
 VALENTINE_PRICE = 100
-FEB_CHANNEL = 882377885720121424
+FEB_CHANNEL = 1339673894583533600
 
 
 class FebCog(commands.Cog):

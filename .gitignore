@@ -17,3 +17,5 @@ data
 
 # env
 .env
+
+src/**/.gitignore

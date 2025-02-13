@@ -37,7 +37,7 @@ def log_calls(logger: Optional[logging.Logger] = None, level: LoggingLevel = Log
         def wrapped(*args, **kwargs):
             result = function(*args, **kwargs)
             logger.log(
-                level, "Function %s called\nargs: %s\nkwargs: %s\nresult: %s",
+                level, "Function %s called with args: %s, kwargs: %s, result: %s",
                 function.__name__, args, kwargs, result
             )
             return result

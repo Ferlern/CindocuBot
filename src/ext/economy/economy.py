@@ -11,7 +11,7 @@ from src.converters import interacted_member
 from src.formatters import from_user_to_user
 from src.custom_errors import DailyAlreadyReceived
 from src.ext.economy.services import (change_balance, get_economy_settings,
-                                      take_bonus, take_tax_for_roles)
+                                      take_bonus, take_tax_for_roles, swap_crystals_to_coins)
 from src.ext.economy.shops.shops import get_not_empty_shops, Shop
 from src.discord_views.switch import ViewSwitcher
 from src.utils.time_ import second_until_end_of_day
@@ -97,6 +97,22 @@ class EconomyCog(commands.Cog):
         finally:
             embed.set_thumbnail(url=inter.author.display_avatar.url)
             await inter.response.send_message(embed=embed)
+
+    @commands.slash_command()
+    async def swap(
+        self,
+        inter: disnake.GuildCommandInteraction,
+        amount: commands.Range[1, ...],
+    ) -> None:
+        """
+        Обменять донатную валюту на обычную (1 -> 10)
+
+        Parameters
+        ----------
+        amount: Количество валюты для обмена
+        """
+        swap_crystals_to_coins(inter.guild_id, inter.author.id, amount)
+        await inter.response.send_message(t('swapped'), ephemeral=True)
 
     @commands.slash_command()
     async def shop(self, inter: disnake.GuildCommandInteraction) -> None:

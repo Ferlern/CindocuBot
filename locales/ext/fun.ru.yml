@@ -11,4 +11,22 @@ ru:
   lick_name: Лизнуть
   bite_name: Укусить
   slap_name: Ударить
+  puzzle_created: Создано
+  puzzle_title: ":cherry_blossom: Новый бонус на горизонте!"
+  puzzle_desc: "Отгадай загадку и получи %{prize} %{coin}:"
+  puzzle_right_answer_title: ":cherry_blossom: Ты успешно отгадал ^^"
+  puzzle_right_answer_desc: "Поздравляю!\n\nТы получаешь свои заслуженные %{prize} %{coin}\nСледующая загадка появится через час"
+  invalid_link: "Недопустимая ссылка"
+  created_puzzle_title: "Добавлена новая загадка"
+  created_puzzle_desc: "**Награда:** %{prize} \n**Подходящие ответы:** %{answers}"
   
+  top_meow: "Мяучные легенды"
+  meow_message: "мяукнул **%{count}** %{p(раз|раза|раз)}"
+  meow_lack: "***Тут должен был быть топ, но пока ещё никто не мяукнул...***"
+
+  fountain_title: "⛲ Денежный фонтан"
+  fountain_desc: "Количество монет в фонтане: **%{amount}**"
+  donate_money_button: "Бросить монетку (%{amount})"
+  fountain_winner: "Счастливчик"
+  fountain_winner_desc: "<@%{user_id}> счастливчик и забирает всю сумму!\nВыигранные монеты: **%{amount}**"
+  only_for_text_channels: "Команда только для текстовых каналов."

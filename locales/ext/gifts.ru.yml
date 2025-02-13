@@ -1,0 +1,31 @@
+ru:
+  open_present: "Открыть подарок"
+  not_enough_presents: "Недостаточно подарков"
+
+  gifts_storage_opt: "Склад подарков"
+  gifts_storage: ":gift: Склад подарков"
+  activity_present_opt: "Подарки за активность"
+  activity_present: ":gift: Подарки за активность"
+  another_present: "Сторонние подарки"
+
+  activity_presents: "**%{count}** %{p(подарок|подарка|подарков)} за активность"
+  role_shards: "- **%{shards_have}/%{shards_needed}** осколков роли <@&%{role_id}> собрано"
+  chances: "### ШАНСЫ"
+  coins: "100-500 серверной валюты"
+  default_pet: "Обычный питомец"
+  role_shard: "Осколок роли"
+  legendary_pet: "Легендарный питомец"
+
+  pet_name: "Придумайте имя для питомца"
+  spec: "Выберите класс для питомца"
+  spec_placeholder: "W/H/M или В/О/М"
+
+  coins_got: "Вы получили %{amount} <:bc_distrum:1065308707258376403>."
+  pet_got: "Вам выпал питомец! Информацию о нем можно посмотреть в `/pets`"
+  role_shard_got: "Вам выпал осколок роли."
+  all_shards_got: "Поздравляем! Вы собрали все осколки и получили роль!"
+  
+  another_presents: "**0** других подарков"
+
+  activity_embed_footer: "‧ После выпадения питомца, вам будет предложено выбрать ему имя."
+  give_success: "Успешно отправлено"

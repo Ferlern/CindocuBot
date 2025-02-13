@@ -3,12 +3,14 @@ from enum import Enum
 from src.database.models import (Members, Users, psql_db, Guilds,
                                  EconomySettings, ShopRoles, CreatedShopRoles, RolesInventory)
 from src.database.services import get_member, create_related
-from src.logger import get_logger
+from src.logger import LoggingLevel, get_logger, log_calls
 from src.custom_errors import CriticalException, NotEnoughMoney, DailyAlreadyReceived
 from src.utils.time_ import get_current_day
 
 
 logger = get_logger()
+
+COINS_PER_CRYSTAL = 10
 
 
 class CurrencyType(str, Enum):
@@ -16,7 +18,7 @@ class CurrencyType(str, Enum):
     CRYSTAL = 'crystal'
 
     @property
-    def model_field(self):
+    def model_field(self) -> int:
         return {
             CurrencyType.COIN: Members.balance,
             CurrencyType.CRYSTAL: Members.donate_balance,
@@ -56,6 +58,7 @@ def change_balance(
 
 
 @psql_db.atomic()
+@log_calls(level=LoggingLevel.INFO)
 def change_balances(
     guild_id: int,
     user_ids: list[int],
@@ -252,3 +255,17 @@ def take_tax_for_roles() -> list[CreatedShopRoles]:
         );
     """)
     return list(to_delete)
+
+
+@psql_db.atomic()
+def swap_crystals_to_coins(
+    guild_id: int,
+    user_id: int,
+    amount: int,
+) -> None:
+    member_data = get_member(guild_id, user_id)
+    if member_data.donate_balance < 1:
+        raise NotEnoughMoney(amount)
+    amount = min(amount, member_data.donate_balance)
+    change_balance(guild_id, user_id, -amount, currency=CurrencyType.CRYSTAL)
+    change_balance(guild_id, user_id, amount * COINS_PER_CRYSTAL, currency=CurrencyType.COIN)

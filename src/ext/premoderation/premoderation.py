@@ -1,5 +1,7 @@
 import asyncio
 from typing import Optional, Union
+import aiohttp
+import io
 
 import disnake
 from disnake.ext import commands
@@ -26,6 +28,9 @@ logger = get_logger()
 t = get_translator(route="ext.premoderation")
 
 
+MAX_ATTACHMENTS = 5 # <= 10
+
+
 class PremoderationCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
@@ -45,11 +50,16 @@ class PremoderationCog(commands.Cog):
 
         if channel.id not in premoderation_channels:  # type: ignore
             return
+        
+        if len(message.attachments) > MAX_ATTACHMENTS:
+            await message.delete()
+            await channel.send(t('too_much_attachments'), delete_after=5)
+            return
 
         urls = []
         for attachment in message.attachments:
             content_type = attachment.content_type
-            logger.debug('Premoderatnio: new content, type: %s', content_type)
+            logger.debug('Premoderation: new content, type: %s', content_type)
             if not content_type:
                 continue
             if not content_type.startswith(('image', 'video', 'audio')):
@@ -87,14 +97,17 @@ class PremoderationCog(commands.Cog):
             'premoderation called for %d', inter.author.id,
         )
         switcher = PremoderationSwitcher()
-        switcher.add_view(PremoderationPaginator(inter.guild), label=t('content_premoderation'))
+        switcher.add_view(
+            PremoderationPaginator(self.bot, inter.guild), label=t('content_premoderation')
+        )
         switcher.add_view(RolePremoderationPaginator(inter.guild), label=t('roles_premoderation'))
         await switcher.start_from(inter)
 
 
 class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
-    def __init__(self, guild: disnake.Guild) -> None:
+    def __init__(self, bot: SEBot, guild: disnake.Guild) -> None:
         self.guild = guild
+        self._bot = bot
         super().__init__(
             PremoderationItem,
             items_per_page=1,
@@ -126,7 +139,6 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         channel = self.guild.get_channel(self.item.channel_id)
         if isinstance(channel, disnake.TextChannel):
             return channel
-        return None
 
     def create_message(self) -> str:
         if self.is_empty():
@@ -137,7 +149,7 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         message += f"{t('from_user')}: {to_mention_and_id(item.author.id)}"
         message += f"\n{t('to_channel')}: {to_mention_and_id(item.channel_id, '#')}"
         if item.content:
-            message += f"\n{(t('content'))}: {item.content}"
+            message += f"\n{(t('content'))}: {item.content[:1800]}{'(контент обрезан)' if len(item.content) > 1800 else ''}"
         if item.urls:
             message += f"\n\n{(t('files'))}: {backslash.join([str(url) for url in item.urls])}"
         return message
@@ -169,24 +181,44 @@ class PremoderationPaginator(PeeweePaginator[PremoderationItem]):
         if not exists:
             return
 
-        asyncio.create_task(_send_item(item, channel))  # type: ignore
+        asyncio.create_task(_send_item(self._bot, self.item, channel))  # type: ignore
 
 
-async def _send_item(item: PremoderationItem, channel: disnake.TextChannel) -> None:
+async def _send_item(bot: SEBot, item: PremoderationItem, channel: disnake.TextChannel) -> None:
     content = f"**{t('from_user')}**: <@{item.author.id}>"
     if item.content:
         content += f"\n\n{item.content}"
-    message = await channel.send(
-        content=content,
-        allowed_mentions=disnake.AllowedMentions(users=False),
-    )
-    if item.urls is not None:
-        for url in item.urls:
-            message = await channel.send(
-                content=url,
-            )
-    await message.add_reaction('❤️')
-    await message.add_reaction('💔')
+    async with bot.lock(channel):
+        message = await channel.send(
+            content=content,
+            allowed_mentions=disnake.AllowedMentions(users=False),
+        )
+        if item.urls is not None:
+            for url in item.urls:
+                if _is_audio_file(url):
+                    message = await _download_and_send(channel, url) or message
+                else:
+                    message = await channel.send(
+                        content=url,
+                    )
+        await message.add_reaction('❤️')
+        await message.add_reaction('💔')
+
+
+async def _download_and_send(channel: disnake.TextChannel, url: str) -> Optional[disnake.Message]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as r:
+            if r.status != 200:
+                return
+
+            *_, filename = url.split('/')
+            payload = io.BytesIO(await r.read())
+            file = disnake.File(fp=payload, filename=filename or 'file.mp3')
+            return await channel.send(file=file)
+
+
+def _is_audio_file(url: str) -> bool:
+    return url.endswith(('mp3', 'wav', 'aiff', 'ape', 'flac', 'ogg'))
 
 
 class RolePremoderationPaginator(PeeweePaginator[CreatedShopRoles]):

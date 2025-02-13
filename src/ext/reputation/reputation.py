@@ -1,4 +1,3 @@
-import logging
 from typing import Literal
 
 import disnake
@@ -9,10 +8,11 @@ from src.ext.reputation.services import change_reputation
 from src.discord_views.embeds import DefaultEmbed
 from src.converters import interacted_member
 from src.translation import get_translator
+from src.logger import get_logger
 from src.bot import SEBot
 
 
-loger = logging.getLogger('Arctic')
+logger = get_logger
 t = get_translator(route="ext.reputation")
 REPUTATION_ACTION_MAP: dict[str, Literal[1, -1, 0]] = {
     'increase': 1,

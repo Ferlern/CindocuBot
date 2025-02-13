@@ -108,7 +108,6 @@ class RoleInventorySelect(PeeweeItemSelect):
         roles = get_inventory_roles(author.guild.id, author.id)
         old_roles = snowflake_roles_intersection(author.roles, roles)
         await inter.response.send_message(t('role_selected'), ephemeral=True)
-        print(f'{old_roles = }')
         if old_roles:
             await author.remove_roles(*old_roles)
         await author.add_roles(disnake.Object(item.role_id))

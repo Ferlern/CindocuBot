@@ -7,6 +7,8 @@ import disnake
 from disnake.ext import commands
 
 from src import settings
+from src.setup_development.entry import setup_development
+from src.lock import AsyncioLockManager
 from src.database.services import get_guild_prefixes
 from src.logger import get_logger
 from src.translation import get_translator
@@ -20,13 +22,13 @@ logger = get_logger()
 t = get_translator()
 
 
-class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
+class SEBot(commands.AutoShardedBot):
     def __init__(self) -> None:
         allowed_mentions = disnake.AllowedMentions(roles=True,
                                                    everyone=True,
                                                    users=True)
         intents = disnake.Intents.all()  # It's OK. This bot is for one server
-        test_guilds = settings.TEST_GUILD_IDS if settings.DEBUG else None
+        test_guilds = settings.TEST_GUILD_IDS if settings.DEVELOPMENT else None
         super().__init__(
             command_prefix=_prefix_callable,
             test_guilds=test_guilds,
@@ -40,6 +42,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
         self.uptime = time.time()
         self.persistent_views_added = False
         self.image_channel_cycle = Cycle[int](settings.IMAGE_CHANNELS)
+        self.lock = AsyncioLockManager()
 
         self._load_exts()
 
@@ -61,8 +64,7 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
             await channel.send(embed=embed)
         except disnake.HTTPException:
             return False
-        else:
-            return True
+        return True
 
     async def save_file(self, file: disnake.File) -> Optional[str]:
         channel = self._next_image_channel()
@@ -87,6 +89,18 @@ class SEBot(commands.AutoShardedBot):  # pylint: disable=too-many-ancestors
         if not hasattr(self, 'uptime'):
             self.uptime = time.time()
 
+        if settings.DEVELOPMENT and not hasattr(self, 'prepared'):
+            await setup_development(
+                self,
+                settings.APP_NAME,
+                settings.TESTERS_DISCORD_IDS,
+                settings.TEST_GUILD_IDS,
+                settings.CREATE_NEW_TEST_GUILD,
+                settings.RECREATE_DATABASE_SCHEMA,
+                settings.PREPARE_DATABASE,
+                settings.PREPARE_GUILDS,
+            )
+            setattr(self, 'prepared', True)
         print(f'Ready: {self.user} (ID: {self.user.id})')
 
     async def process_commands(self, message) -> None:
@@ -256,3 +270,4 @@ def _prefix_callable(bot_: SEBot, message: disnake.Message) -> list[str]:
 
 
 bot = SEBot()
+bot.remove_command('help')

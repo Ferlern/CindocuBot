@@ -9,5 +9,4 @@ RUN poetry config virtualenvs.create false
 RUN poetry install
 
 COPY . ./
-ONBUILD RUN /usr/local/bin/python-build setup.py
 CMD ["python3.10", "-O", "run.py"]

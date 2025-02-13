@@ -17,4 +17,4 @@ ru:
   divorce_button_label: "Развод"
   divorce_succes_title: ":broken_heart: Расторжение брака"
   divorce_succes_desc: "<@%{author_id}> решает прекратить свои отношения. Наверное, это было к лучшему..."
-  not_for_you: "Это предложения не для тебя"
+  not_for_you: "Это предложение не для тебя"

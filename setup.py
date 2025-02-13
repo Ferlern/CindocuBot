@@ -1,6 +1,7 @@
-from src.database.create import create_tables
+from src.database.create import recreate_tables, create_database
 
 if __name__ == '__main__':
-    create_tables()
+    create_database()
+    recreate_tables()
 
     print('succes')

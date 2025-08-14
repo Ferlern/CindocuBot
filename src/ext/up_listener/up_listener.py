@@ -43,10 +43,11 @@ class UpListenerCog(commands.Cog):
         #     message = await message.channel.fetch_message(message.id)
 
         if not message.embeds or not message.guild or not message.interaction:
-            logger.info('Message from %d, but check is not passed', message.author.id)
+            logger.info('Message from %d, but no embeds / guild / interaction', message.author.id)
             return
 
         if not check(message.embeds[0]):
+            logger.info('Message from %d, but embed check is not passed', message.author.id)
             return
 
         self._m.append(message.id)

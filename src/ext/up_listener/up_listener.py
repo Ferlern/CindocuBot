@@ -59,7 +59,7 @@ class UpListenerCog(commands.Cog):
             amount=25,
         )
         self.bot.dispatch(
-            custom_events.EventName.MONITORING_GUILD_PROMOTED,
+            custom_events.EventName.MONITORING_GUILD_PROMOTED.value,
             message.guild,
             message.author,
         )

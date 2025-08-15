@@ -49,7 +49,7 @@ class UpReminderCog(commands.Cog):
     def __init__(self, bot: SEBot) -> None:
         self.bot = bot
 
-    @commands.Cog.listener(f'on_{custom_events.EventName.MONITORING_GUILD_PROMOTED}')
+    @commands.Cog.listener(f'on_{custom_events.EventName.MONITORING_GUILD_PROMOTED.value}')
     async def up_listener(self, guild: disnake.Guild, monitoring_bot: disnake.User) -> None:
         info = MONITORING_INFORMATION.get(monitoring_bot.id)
         if not info:

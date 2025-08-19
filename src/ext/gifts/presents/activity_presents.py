@@ -76,10 +76,10 @@ class ActivityPresent(Presents):
             title = t("activity_present"),
             description = (
                 t("chances") + "\n\n" + 
-                f"**50%** — {ActivityGifts.COINS}\n" +
-                f"**36%** — {ActivityGifts.DEFAULT_PET}\n" +
-                f"**12%** — {ActivityGifts.ROLE_SHARD}\n" +
-                f"**2%** — {ActivityGifts.LEGENDARY_PET}\n"
+                f"**50%** — {ActivityGifts.COINS.value}\n" +
+                f"**36%** — {ActivityGifts.DEFAULT_PET.value}\n" +
+                f"**12%** — {ActivityGifts.ROLE_SHARD.value}\n" +
+                f"**2%** — {ActivityGifts.LEGENDARY_PET.value}\n"
             )
         )
         embed.set_thumbnail(EMBED_THUMBNAIL)

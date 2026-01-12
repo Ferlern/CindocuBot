@@ -1,4 +1,6 @@
-from typing import Any
+from typing import Any, Union
+from inspect import iscoroutine
+
 import disnake
 from disnake.ext import commands
 
@@ -48,10 +50,13 @@ class PetAuctionCog(commands.Cog):
 
 class AuctionSwitcher(ViewSwitcher):
     async def _resolve_selection(
-        self, view, inter: disnake.MessageInteraction,
+        self, view: Union[AuctionItemsView, OwnerItemsView, MailView], inter: disnake.MessageInteraction,
     ) -> None:
+        embed = view.create_embed()
+        if iscoroutine(embed):
+            embed = await embed
         await inter.response.edit_message(
-            embed=view.create_embed(),  # type: ignore
+            embed=embed,
             view=view,
             allowed_mentions=disnake.AllowedMentions(users=False),
         )

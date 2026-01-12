@@ -55,7 +55,7 @@ class FunCog(commands.Cog):
 
 async def get_random_url(category: Categories) -> str:
     async with aiohttp.ClientSession() as session:
-        async with session.get(f'https://api.waifu.pics/sfw/{category}') as response:
+        async with session.get(f'https://api.waifu.pics/sfw/{category.value}') as response:
             json_resp = await response.json()
             return json_resp['url']
 

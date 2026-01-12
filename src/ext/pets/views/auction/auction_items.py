@@ -55,7 +55,7 @@ class AuctionItemsView(PeeweePaginator[AuctionPet]):
 
         await interaction.response.defer()
         await interaction.edit_original_message(
-            embed=self.create_embed(),
+            embed=await self.create_embed(),
             view=self
         )
 
@@ -67,11 +67,11 @@ class AuctionItemsView(PeeweePaginator[AuctionPet]):
 
         await inter.response.defer()
         await inter.followup.send(
-            embed=self.create_embed(),
+            embed=await self.create_embed(),
             view=self
         )
     
-    def create_embed(self) -> disnake.Embed:
+    async def create_embed(self) -> disnake.Embed:
         item = self.auction_item
         if not item:
             return DefaultEmbed(
@@ -89,7 +89,7 @@ class AuctionItemsView(PeeweePaginator[AuctionPet]):
         )
         embed.add_field(
             name = t("spec"),
-            value = f"```py\n{t(pet.spec)}```", # type: ignore
+            value = f"```py\n{t(pet.spec)}```",
             inline = False
         ) 
         embed.add_field(t("level"), format_pet_exp_and_lvl(pet.experience, pet.level))
@@ -100,10 +100,10 @@ class AuctionItemsView(PeeweePaginator[AuctionPet]):
             inline = False
         )
 
-        owner = self.bot.get_user(item.owner.id)
+        owner = await self.bot.getch_user(item.owner.id)
         sell_value = t(
             "sell_value",
-            owner=owner.mention, # type: ignore
+            owner=owner.mention if owner else "???",
             price=item.price,
             timestamp = disnake.utils.format_dt(
                 item.sale_date, 'f'
@@ -114,7 +114,8 @@ class AuctionItemsView(PeeweePaginator[AuctionPet]):
             value = sell_value,
             inline = False
         )
-        embed.set_thumbnail(owner.avatar) # type: ignore
+        if owner:
+            embed.set_thumbnail(owner.avatar)
         return embed
     
     def _update_components(self) -> None:
@@ -158,7 +159,7 @@ class AuctionItemsView(PeeweePaginator[AuctionPet]):
             )
         self._update_components()
         await inter.response.edit_message(
-            embed=self.create_embed(),
+            embed=await self.create_embed(),
             view=self
         )
 

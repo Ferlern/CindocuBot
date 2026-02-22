@@ -270,7 +270,8 @@ class PersonalVoiceControllerCog(commands.Cog):
         if category := after.category:
             overwrites.update(category.overwrites)
             for role_or_member, overwrite in overwrites.items():
-                overwrite.send_messages = after.overwrites[role_or_member].send_messages
+                if role_or_member in after.overwrites:
+                    overwrite.send_messages = after.overwrites[role_or_member].send_messages
 
 
         owner = after.guild.get_member(voice_data.user_id.id)

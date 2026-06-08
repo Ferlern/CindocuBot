@@ -49,8 +49,14 @@ class SEBot(commands.AutoShardedBot):
     async def save_avatar(
         self,
         user: Union[disnake.User, disnake.Member],
-    ) -> str:
-        url = await self.save_file(await user.display_avatar.to_file())
+    ) -> Optional[str]:
+        try:
+            file = await user.display_avatar.to_file()
+        except disnake.HTTPException as e:
+            if e.status == 415:
+                return None
+            raise
+        url = await self.save_file(file)
         return url or user.display_avatar.url
 
     async def possible_embed_image(self, url: str) -> bool:

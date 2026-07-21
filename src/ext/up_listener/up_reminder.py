@@ -31,13 +31,13 @@ class MonitoringData(NamedTuple):
     timezone: BaseTzInfo
 
 MONITORING_INFORMATION = {
-    1244278183814238259: MonitoringData(
+    464272403766444044: MonitoringData(
         reset_days=(1, 15),
         reset_time=12,
         cooldown=datetime.timedelta(hours=4),
         timezone=timezone('Europe/Moscow'),
     ),
-    1135447052734709761: MonitoringData(
+    575776004233232386: MonitoringData(
         reset_days=(1, 15),
         reset_time=0,
         cooldown=datetime.timedelta(hours=4),

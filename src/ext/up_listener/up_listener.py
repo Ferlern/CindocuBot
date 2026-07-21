@@ -13,8 +13,8 @@ from src.utils import custom_events
 logger = get_logger()
 t = get_translator(route='ext.up_listener')
 
-UP_MONITORING_ID = 1244278183814238259
-LIKE_MONITORING_ID = 1135447052734709761
+UP_MONITORING_ID = 464272403766444044
+LIKE_MONITORING_ID = 575776004233232386
 
 def _is_up(embed): return embed.color is not None and embed.color.value == 4437377
 def _is_like(embed): return bool(embed.description) and embed.description.startswith(('Вы успешно лайкнули', 'You successfully liked'))
